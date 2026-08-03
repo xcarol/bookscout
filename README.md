@@ -1,0 +1,2 @@
+# bookscout
+My personal 📚 library 
