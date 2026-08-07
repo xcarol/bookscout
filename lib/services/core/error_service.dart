@@ -1,0 +1,87 @@
+import 'dart:io';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:bookscout/main.dart';
+import 'package:bookscout/utils/snack_bar.dart';
+import 'package:bookscout/utils/app_constants.dart';
+import 'package:bookscout/utils/save_logs.dart';
+
+class ErrorService {
+  static void log(
+    dynamic error, {
+    StackTrace? stackTrace,
+    String? userMessage,
+    bool showSnackBar = false,
+    bool reportToCrashlytics = true,
+  }) {
+    debugPrint('--- ERROR ---');
+    debugPrint('Error: $error');
+    debugPrint('StackTrace: $stackTrace');
+    debugPrint('-------------');
+
+    if (userMessage == null || userMessage != AppConstants.saveLogsMessage) {
+      saveLogs([
+        '== ERROR ==',
+        'Error: $error',
+        '== ERROR ==',
+      ]);
+    }
+
+    bool shouldReport = _shouldReportAutomatically(error);
+
+    if ((shouldReport || reportToCrashlytics) &&
+        !kIsWeb &&
+        (Platform.isAndroid || Platform.isIOS)) {
+      try {
+        FirebaseCrashlytics.instance.recordError(
+          error,
+          stackTrace,
+          reason: userMessage ?? 'General Error',
+        );
+      } catch (e) {
+        final errorMessage = 'Failed to report to Firebase Crashlytics: $e';
+        debugPrint(errorMessage);
+
+        if (userMessage != null &&
+            userMessage != AppConstants.saveLogsMessage) {
+          saveLogs([errorMessage]);
+        }
+      }
+    }
+
+    if (showSnackBar) {
+      final context = scaffoldMessengerKey.currentContext;
+      String message = userMessage ?? '';
+
+      if (message.isEmpty && context != null) {
+        message = 'An error occurred. Please try again later.';
+      }
+
+      if (message.isNotEmpty) {
+        SnackMessage.showSnackBar(message);
+      }
+    }
+  }
+
+  static bool _shouldReportAutomatically(dynamic error) {
+    if (error is SocketException ||
+        error is HandshakeException ||
+        error is HttpException) {
+      return false;
+    }
+
+    if (error.toString().contains('permission-denied') ||
+        error.toString().contains('PERMISSION_DENIED')) {
+      return false;
+    }
+
+    if (error is PlatformException &&
+        (error.message?.contains('Unable to establish connection on channel') == true) &&
+        (error.message?.contains('FirebaseCoreHostApi.initializeCore') == true)) {
+      return false;
+    }
+
+    return true;
+  }
+}
