@@ -59,9 +59,33 @@ flutter:
   uses-material-design: true
   generate: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - .env
+    - assets/l10n/
+    - assets/facebook.png
+    - assets/instagram.png
+    - assets/logo-icon.png
+    - assets/logo-org.png
+    - assets/logo-splash.png
+    - assets/logo.png
+    - assets/notification-icon.png
+    - assets/tiktok.png
+    - assets/X.png
+    - assets/youtube.png
+
+flutter_launcher_icons:
+  android: true
+  image_path_android: "assets/logo-icon.png"
+  adaptive_icon_background: "#1E1E1E"
+  adaptive_icon_foreground: "assets/logo-icon.png"
+
+flutter_native_splash:
+  color: "#1E1E1E"
+  image: assets/logo-splash.png
+  android_12:
+    image: assets/logo-splash.png
+  ios: false
+  web: false
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
