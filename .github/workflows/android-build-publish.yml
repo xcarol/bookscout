@@ -1,0 +1,99 @@
+name: Android Release Build & Publish
+
+on:
+  workflow_run:
+    workflows: ["Create Release"]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  deploy-android:
+    name: Build & Deploy Signed Android AppBundle
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Java JDK
+      - name: Set up Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # 3. Setup Flutter SDK
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      # 4. Recreate .env file
+      - name: Create .env file
+        env:
+          ENV_FILE_CONTENT: ${{ secrets.ENV_FILE }}
+        run: |
+          echo "$ENV_FILE_CONTENT" > .env
+          VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}')
+          if [ -z "$VERSION" ]; then
+            echo "Error: Could not extract version from pubspec.yaml"
+            exit 1
+          fi
+          sed -i.bak '/^VERSION=/d' .env
+          [ -n "$(tail -c 1 .env)" ] && echo "" >> .env
+          echo "VERSION=$VERSION" >> .env
+
+      # 5. Recreate google-services.json for Firebase
+      - name: Create google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          echo "$GOOGLE_SERVICES_JSON" | base64 --decode > android/app/google-services.json
+
+      # 6. Decode Keystore file
+      - name: Decode Android Keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+
+      # 7. Recreate key.properties file
+      - name: Create key.properties
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          echo "storePassword=$ANDROID_KEYSTORE_PASSWORD" > android/key.properties
+          echo "keyPassword=$ANDROID_KEY_PASSWORD" >> android/key.properties
+          echo "keyAlias=$ANDROID_KEY_ALIAS" >> android/key.properties
+          echo "storeFile=upload-keystore.jks" >> android/key.properties
+
+      # 8. Fetch Flutter dependencies
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 9. Build Release AppBundle
+      - name: Build Android AppBundle
+        run: flutter build appbundle --release
+
+      # 10. Upload AAB as workflow artifact
+      - name: Upload AAB Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: build/app/outputs/bundle/release/app-release.aab
+
+      # 11. Deploy to Google Play Console (Internal Track)
+      - name: Deploy to Google Play Internal Testing
+        uses: KevinRohn/github-action-upload-play-store@v1.0.2
+        with:
+          service_account_json: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
+          package_name: com.xicra.bookscout
+          aab_file_path: build/app/outputs/bundle/release/app-release.aab
+          track: internal
+          release_status: completed

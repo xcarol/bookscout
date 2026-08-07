@@ -1,0 +1,36 @@
+name: Create Release
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - master
+
+jobs:
+  create-release:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract version and create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          BRANCH_NAME="$HEAD_REF"
+          
+          VERSION=${BRANCH_NAME#release/}
+          
+          echo "Creanting a release for version: $VERSION"
+          
+          gh release create "$VERSION" \
+            --target "$BASE_REF" \
+            --title "$VERSION" \
+            --generate-notes
