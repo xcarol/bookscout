@@ -3,7 +3,12 @@ import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart'
-    show PlatformDispatcher, TargetPlatform, defaultTargetPlatform, kDebugMode, kIsWeb;
+    show
+        PlatformDispatcher,
+        TargetPlatform,
+        defaultTargetPlatform,
+        kDebugMode,
+        kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -38,7 +43,8 @@ void _runMain() async {
         (defaultTargetPlatform == TargetPlatform.android ||
             defaultTargetPlatform == TargetPlatform.iOS)) {
       await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform);
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
 
       FlutterError.onError = (errorDetails) {
         FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
@@ -49,8 +55,9 @@ void _runMain() async {
         return true;
       };
 
-      await FirebaseCrashlytics.instance
-          .setCrashlyticsCollectionEnabled(kDebugMode);
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
+        kDebugMode,
+      );
     }
   } catch (error, stackTrace) {
     ErrorService.log(
@@ -75,13 +82,15 @@ void _runMain() async {
 
   debugPrint('Running BookScout...');
 
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => LanguageService()),
-      ChangeNotifierProvider(create: (_) => ThemeService()),
-    ],
-    child: const MyApp(),
-  ));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LanguageService()),
+        ChangeNotifierProvider(create: (_) => ThemeService()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {

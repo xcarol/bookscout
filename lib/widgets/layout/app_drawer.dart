@@ -25,11 +25,10 @@ class AppDrawer extends StatelessWidget {
 
   Widget _headerTile(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
 
     return DrawerHeader(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer,
-      ),
+      decoration: BoxDecoration(color: theme.colorScheme.primaryContainer),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,13 +51,16 @@ class AppDrawer extends StatelessWidget {
               color: theme.colorScheme.onPrimaryContainer,
             ),
           ),
-          Text(
-            AppLocalizations.of(context)!.anonymousUser,
-            style: TextStyle(
-              fontSize: 13,
-              color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.7),
+          if (l10n != null)
+            Text(
+              l10n.appTagline,
+              style: TextStyle(
+                fontSize: 13,
+                color: theme.colorScheme.onPrimaryContainer.withValues(
+                  alpha: 0.7,
+                ),
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -70,7 +72,9 @@ class AppDrawer extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.language),
       title: Text(AppLocalizations.of(context)!.language),
-      subtitle: Text(_getLanguageLabel(context, languageProvider.currentLanguage)),
+      subtitle: Text(
+        _getLanguageLabel(context, languageProvider.currentLanguage),
+      ),
       onTap: () async {
         final String? selectedLanguage = await showDialog<String>(
           context: context,

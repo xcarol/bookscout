@@ -13,7 +13,7 @@ class LanguageService with ChangeNotifier {
 
   String _currentLanguage =
       PreferencesService().prefs.getString(AppConstants.language) ??
-          AppConstants.catalan;
+      AppConstants.catalan;
 
   String get currentLanguage => _currentLanguage;
 

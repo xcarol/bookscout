@@ -66,22 +66,24 @@ class TitleListTheme extends ThemeExtension<TitleListTheme> {
           infoLineActiveFilterBackground ?? this.infoLineActiveFilterBackground,
       infoLineActiveFilterForeground:
           infoLineActiveFilterForeground ?? this.infoLineActiveFilterForeground,
-      infoLineInactiveFilterBackground: infoLineInactiveFilterBackground ??
+      infoLineInactiveFilterBackground:
+          infoLineInactiveFilterBackground ??
           this.infoLineInactiveFilterBackground,
-      infoLineInactiveFilterForeground: infoLineInactiveFilterForeground ??
+      infoLineInactiveFilterForeground:
+          infoLineInactiveFilterForeground ??
           this.infoLineInactiveFilterForeground,
       controlPanelActiveFilterBackground:
           controlPanelActiveFilterBackground ??
-              this.controlPanelActiveFilterBackground,
+          this.controlPanelActiveFilterBackground,
       controlPanelActiveFilterForeground:
           controlPanelActiveFilterForeground ??
-              this.controlPanelActiveFilterForeground,
+          this.controlPanelActiveFilterForeground,
       controlPanelInactiveFilterBackground:
           controlPanelInactiveFilterBackground ??
-              this.controlPanelInactiveFilterBackground,
+          this.controlPanelInactiveFilterBackground,
       controlPanelInactiveFilterForeground:
           controlPanelInactiveFilterForeground ??
-              this.controlPanelInactiveFilterForeground,
+          this.controlPanelInactiveFilterForeground,
       searchCursorColor: searchCursorColor ?? this.searchCursorColor,
       searchHintColor: searchHintColor ?? this.searchHintColor,
       searchSelectionColor: searchSelectionColor ?? this.searchSelectionColor,
@@ -94,45 +96,72 @@ class TitleListTheme extends ThemeExtension<TitleListTheme> {
       return this;
     }
     return TitleListTheme(
-      controlPanelBackground:
-          Color.lerp(controlPanelBackground, other.controlPanelBackground, t)!,
-      controlPanelForeground:
-          Color.lerp(controlPanelForeground, other.controlPanelForeground, t)!,
-      infoLineBackground:
-          Color.lerp(infoLineBackground, other.infoLineBackground, t)!,
-      infoLineActiveFilterBackground: Color.lerp(infoLineActiveFilterBackground,
-          other.infoLineActiveFilterBackground, t)!,
-      infoLineActiveFilterForeground: Color.lerp(infoLineActiveFilterForeground,
-          other.infoLineActiveFilterForeground, t)!,
+      controlPanelBackground: Color.lerp(
+        controlPanelBackground,
+        other.controlPanelBackground,
+        t,
+      )!,
+      controlPanelForeground: Color.lerp(
+        controlPanelForeground,
+        other.controlPanelForeground,
+        t,
+      )!,
+      infoLineBackground: Color.lerp(
+        infoLineBackground,
+        other.infoLineBackground,
+        t,
+      )!,
+      infoLineActiveFilterBackground: Color.lerp(
+        infoLineActiveFilterBackground,
+        other.infoLineActiveFilterBackground,
+        t,
+      )!,
+      infoLineActiveFilterForeground: Color.lerp(
+        infoLineActiveFilterForeground,
+        other.infoLineActiveFilterForeground,
+        t,
+      )!,
       infoLineInactiveFilterBackground: Color.lerp(
-          infoLineInactiveFilterBackground,
-          other.infoLineInactiveFilterBackground,
-          t)!,
+        infoLineInactiveFilterBackground,
+        other.infoLineInactiveFilterBackground,
+        t,
+      )!,
       infoLineInactiveFilterForeground: Color.lerp(
-          infoLineInactiveFilterForeground,
-          other.infoLineInactiveFilterForeground,
-          t)!,
+        infoLineInactiveFilterForeground,
+        other.infoLineInactiveFilterForeground,
+        t,
+      )!,
       controlPanelActiveFilterBackground: Color.lerp(
-          controlPanelActiveFilterBackground,
-          other.controlPanelActiveFilterBackground,
-          t)!,
+        controlPanelActiveFilterBackground,
+        other.controlPanelActiveFilterBackground,
+        t,
+      )!,
       controlPanelActiveFilterForeground: Color.lerp(
-          controlPanelActiveFilterForeground,
-          other.controlPanelActiveFilterForeground,
-          t)!,
+        controlPanelActiveFilterForeground,
+        other.controlPanelActiveFilterForeground,
+        t,
+      )!,
       controlPanelInactiveFilterBackground: Color.lerp(
-          controlPanelInactiveFilterBackground,
-          other.controlPanelInactiveFilterBackground,
-          t)!,
+        controlPanelInactiveFilterBackground,
+        other.controlPanelInactiveFilterBackground,
+        t,
+      )!,
       controlPanelInactiveFilterForeground: Color.lerp(
-          controlPanelInactiveFilterForeground,
-          other.controlPanelInactiveFilterForeground,
-          t)!,
-      searchCursorColor:
-          Color.lerp(searchCursorColor, other.searchCursorColor, t)!,
+        controlPanelInactiveFilterForeground,
+        other.controlPanelInactiveFilterForeground,
+        t,
+      )!,
+      searchCursorColor: Color.lerp(
+        searchCursorColor,
+        other.searchCursorColor,
+        t,
+      )!,
       searchHintColor: Color.lerp(searchHintColor, other.searchHintColor, t)!,
-      searchSelectionColor:
-          Color.lerp(searchSelectionColor, other.searchSelectionColor, t)!,
+      searchSelectionColor: Color.lerp(
+        searchSelectionColor,
+        other.searchSelectionColor,
+        t,
+      )!,
     );
   }
 }

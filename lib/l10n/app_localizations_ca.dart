@@ -12,6 +12,9 @@ class AppLocalizationsCa extends AppLocalizations {
   String get appTitle => 'BookScout';
 
   @override
+  String get appTagline => 'Organitza les teves lectures';
+
+  @override
   String get catalan => 'Català';
 
   @override
@@ -33,16 +36,14 @@ class AppLocalizationsCa extends AppLocalizations {
   String get about => 'Quant a';
 
   @override
-  String get aboutDescription => 'BookScout és una aplicació per organitzar i seguir les teves lectures.';
+  String get aboutDescription =>
+      'BookScout és una aplicació per organitzar i seguir les teves lectures.';
 
   @override
   String get cancel => 'Cancel·la';
 
   @override
   String get select => 'Selecciona';
-
-  @override
-  String get anonymousUser => 'Usuari anònim';
 
   @override
   String get welcomeMessage => 'Benvingut a BookScout';

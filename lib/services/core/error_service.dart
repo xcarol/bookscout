@@ -21,11 +21,7 @@ class ErrorService {
     debugPrint('-------------');
 
     if (userMessage == null || userMessage != AppConstants.saveLogsMessage) {
-      saveLogs([
-        '== ERROR ==',
-        'Error: $error',
-        '== ERROR ==',
-      ]);
+      saveLogs(['== ERROR ==', 'Error: $error', '== ERROR ==']);
     }
 
     bool shouldReport = _shouldReportAutomatically(error);
@@ -77,8 +73,10 @@ class ErrorService {
     }
 
     if (error is PlatformException &&
-        (error.message?.contains('Unable to establish connection on channel') == true) &&
-        (error.message?.contains('FirebaseCoreHostApi.initializeCore') == true)) {
+        (error.message?.contains('Unable to establish connection on channel') ==
+            true) &&
+        (error.message?.contains('FirebaseCoreHostApi.initializeCore') ==
+            true)) {
       return false;
     }
 

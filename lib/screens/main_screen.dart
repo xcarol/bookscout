@@ -18,10 +18,7 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: const Text(
           'BookScout',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 0.5),
         ),
         centerTitle: true,
       ),
@@ -30,26 +27,16 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.menu_book_outlined,
-              size: 64,
-              color: Colors.grey,
-            ),
+            const Icon(Icons.menu_book_outlined, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
               l10n?.welcomeMessage ?? 'Benvingut a BookScout',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
             Text(
               l10n?.emptyBooksMessage ?? 'No hi ha llibres a la llista',
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 14,
-              ),
+              style: const TextStyle(color: Colors.grey, fontSize: 14),
             ),
           ],
         ),

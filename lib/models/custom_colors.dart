@@ -80,17 +80,32 @@ class CustomColors extends ThemeExtension<CustomColors> {
       userRatedTitle: Color.lerp(userRatedTitle, other.userRatedTitle, t)!,
       followingTitle: Color.lerp(followingTitle, other.followingTitle, t)!,
       pinnedTitle: Color.lerp(pinnedTitle, other.pinnedTitle, t)!,
-      navigationBarSelected:
-          Color.lerp(navigationBarSelected, other.navigationBarSelected, t)!,
+      navigationBarSelected: Color.lerp(
+        navigationBarSelected,
+        other.navigationBarSelected,
+        t,
+      )!,
       navigationBarNotSelected: Color.lerp(
-          navigationBarNotSelected, other.navigationBarNotSelected, t)!,
-      chipCardBackground:
-          Color.lerp(chipCardBackground, other.chipCardBackground, t)!,
+        navigationBarNotSelected,
+        other.navigationBarNotSelected,
+        t,
+      )!,
+      chipCardBackground: Color.lerp(
+        chipCardBackground,
+        other.chipCardBackground,
+        t,
+      )!,
       dividerColor: Color.lerp(dividerColor, other.dividerColor, t)!,
-      bottomNavigationBarBackground: Color.lerp(bottomNavigationBarBackground,
-          other.bottomNavigationBarBackground, t)!,
-      appBarBackground:
-          Color.lerp(appBarBackground, other.appBarBackground, t)!,
+      bottomNavigationBarBackground: Color.lerp(
+        bottomNavigationBarBackground,
+        other.bottomNavigationBarBackground,
+        t,
+      )!,
+      appBarBackground: Color.lerp(
+        appBarBackground,
+        other.appBarBackground,
+        t,
+      )!,
       appBarText: Color.lerp(appBarText, other.appBarText, t)!,
     );
   }

@@ -13,8 +13,10 @@ class ThemeService with ChangeNotifier {
 
   ColorScheme _lightColorScheme = lightColorSchemeDefault;
   CustomColors _lightCustomColors = lightCustomColorsDefault;
-  TitleListTheme _lightTitleListTheme =
-      _createTitleListTheme(lightColorSchemeDefault, lightCustomColorsDefault);
+  TitleListTheme _lightTitleListTheme = _createTitleListTheme(
+    lightColorSchemeDefault,
+    lightCustomColorsDefault,
+  );
 
   ColorScheme get lightColorScheme => _lightColorScheme;
   CustomColors get lightCustomColors => _lightCustomColors;
@@ -22,40 +24,42 @@ class ThemeService with ChangeNotifier {
 
   ColorScheme _darkColorScheme = darkColorSchemeDefault;
   CustomColors _darkCustomColors = darkCustomColorsDefault;
-  TitleListTheme _darkTitleListTheme =
-      _createTitleListTheme(darkColorSchemeDefault, darkCustomColorsDefault);
+  TitleListTheme _darkTitleListTheme = _createTitleListTheme(
+    darkColorSchemeDefault,
+    darkCustomColorsDefault,
+  );
 
   ColorScheme get darkColorScheme => _darkColorScheme;
   CustomColors get darkCustomColors => _darkCustomColors;
   TitleListTheme get darkTitleListTheme => _darkTitleListTheme;
 
   ScrollbarThemeData get lightScrollbarTheme => ScrollbarThemeData(
-        thumbColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.dragged)) {
-            return _lightColorScheme.onSurfaceVariant.withValues(alpha: 0.8);
-          }
-          return _lightColorScheme.onSurfaceVariant.withValues(alpha: 0.5);
-        }),
-        thickness: WidgetStateProperty.all(5.0),
-        radius: const Radius.circular(8),
-        thumbVisibility: WidgetStateProperty.all(false),
-        trackVisibility: WidgetStateProperty.all(false),
-        interactive: true,
-      );
+    thumbColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.dragged)) {
+        return _lightColorScheme.onSurfaceVariant.withValues(alpha: 0.8);
+      }
+      return _lightColorScheme.onSurfaceVariant.withValues(alpha: 0.5);
+    }),
+    thickness: WidgetStateProperty.all(5.0),
+    radius: const Radius.circular(8),
+    thumbVisibility: WidgetStateProperty.all(false),
+    trackVisibility: WidgetStateProperty.all(false),
+    interactive: true,
+  );
 
   ScrollbarThemeData get darkScrollbarTheme => ScrollbarThemeData(
-        thumbColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.dragged)) {
-            return _darkColorScheme.onSurfaceVariant.withValues(alpha: 0.8);
-          }
-          return _darkColorScheme.onSurfaceVariant.withValues(alpha: 0.5);
-        }),
-        thickness: WidgetStateProperty.all(5.0),
-        radius: const Radius.circular(8),
-        thumbVisibility: WidgetStateProperty.all(false),
-        trackVisibility: WidgetStateProperty.all(false),
-        interactive: true,
-      );
+    thumbColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.dragged)) {
+        return _darkColorScheme.onSurfaceVariant.withValues(alpha: 0.8);
+      }
+      return _darkColorScheme.onSurfaceVariant.withValues(alpha: 0.5);
+    }),
+    thickness: WidgetStateProperty.all(5.0),
+    radius: const Radius.circular(8),
+    thumbVisibility: WidgetStateProperty.all(false),
+    trackVisibility: WidgetStateProperty.all(false),
+    interactive: true,
+  );
 
   void setupTheme() {
     _setColorScheme(
@@ -74,16 +78,22 @@ class ThemeService with ChangeNotifier {
   ) {
     _lightColorScheme = lightColorScheme;
     _lightCustomColors = lightCustomColors;
-    _lightTitleListTheme =
-        _createTitleListTheme(lightColorScheme, lightCustomColors);
+    _lightTitleListTheme = _createTitleListTheme(
+      lightColorScheme,
+      lightCustomColors,
+    );
     _darkColorScheme = darkColorScheme;
     _darkCustomColors = darkCustomColors;
-    _darkTitleListTheme =
-        _createTitleListTheme(darkColorScheme, darkCustomColors);
+    _darkTitleListTheme = _createTitleListTheme(
+      darkColorScheme,
+      darkCustomColors,
+    );
   }
 
   static TitleListTheme _createTitleListTheme(
-      ColorScheme colorScheme, CustomColors customColors) {
+    ColorScheme colorScheme,
+    CustomColors customColors,
+  ) {
     return TitleListTheme(
       infoLineBackground: colorScheme.primaryContainer,
       infoLineActiveFilterBackground: colorScheme.surface,
@@ -135,7 +145,8 @@ class ThemeService with ChangeNotifier {
     appBarText: lightColorSchemeDefault.onSurface,
   );
 
-  static ColorScheme darkColorSchemeDefault =
-      lightColorSchemeDefault.copyWith(brightness: Brightness.dark);
+  static ColorScheme darkColorSchemeDefault = lightColorSchemeDefault.copyWith(
+    brightness: Brightness.dark,
+  );
   static CustomColors darkCustomColorsDefault = lightCustomColorsDefault;
 }

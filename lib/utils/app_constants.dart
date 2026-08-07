@@ -23,11 +23,7 @@ class AppConstants {
   static const String spanish = 'es-ES';
   static const String english = 'en-US';
 
-  static const List<String> supportedLanguages = [
-    catalan,
-    spanish,
-    english,
-  ];
+  static const List<String> supportedLanguages = [catalan, spanish, english];
 
   // Environment & Logs
   static const String saveLogsMessage = 'saveLogs';

@@ -45,9 +45,7 @@ class LanguageForm extends Dialog {
                 selected: language.value == code,
               ),
             );
-            languageWidgets.add(
-              const SizedBox(height: 10),
-            );
+            languageWidgets.add(const SizedBox(height: 10));
           });
 
           return RadioGroup<String>(
