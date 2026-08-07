@@ -7,7 +7,7 @@ This folder contains the site for the BookScout GitHub Pages.
 If you need to update the website, follow these simple steps:
 
 1. **Modify `docs/index.html`**:
-   Make any desired text or design changes directly in `docs/index.html`. 
+   Make any desired text or design changes directly in `docs/index.html`.
    The page currently includes:
    - The header image (`imatge-destacada.png`)
    - The app's motto ("Discover. Track. Read.")
@@ -15,13 +15,17 @@ If you need to update the website, follow these simple steps:
    - Links to Google Play and GitHub
 
 2. **Update the Header Image**:
-   If you generate a new `imatge-destacada.png` in the `assets/google-play` folder, copy it over to the `docs/` folder:
+   If you generate a new `imatge-destacada.png` in the `assets/google-play`
+   folder, copy it over to the `docs/` folder:
+
    ```bash
    cp ./assets/google-play/imatge-destacada.png ./docs/imatge-destacada.png
    ```
 
 3. **Commit and Push**:
-   GitHub Pages will automatically rebuild and deploy the new version when you push changes to the main branch.
+   GitHub Pages will automatically rebuild and deploy the new version when
+   you push changes to the main branch.
+
    ```bash
    git add docs/
    git commit -m "docs: Update GitHub Pages content"
@@ -30,5 +34,7 @@ If you need to update the website, follow these simple steps:
 
 ## Configuration
 
-The site is served from the `/docs` folder on the `main` branch. You can configure this in your repository's settings:
-**Settings > Pages > Build and deployment > Source: "Deploy from a branch" > Branch: "main" > Folder: "/docs"**.
+The site is served from the `/docs` folder on the `main` branch.
+You can configure this in your repository's settings:
+**Settings > Pages > Build and deployment > Source: "Deploy from a branch" >
+Branch: "main" > Folder: "/docs"**.
