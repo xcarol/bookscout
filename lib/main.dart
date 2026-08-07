@@ -11,6 +11,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'package:bookscout/firebase_options.dart';
+import 'package:bookscout/l10n/app_localizations.dart';
 import 'package:bookscout/screens/main_screen.dart';
 import 'package:bookscout/services/core/error_service.dart';
 import 'package:bookscout/services/settings/language_service.dart';
@@ -121,6 +122,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     return MaterialApp(
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

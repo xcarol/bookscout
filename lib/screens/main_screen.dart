@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:bookscout/l10n/app_localizations.dart';
+import 'package:bookscout/widgets/layout/app_drawer.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -10,6 +12,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -21,27 +25,28 @@ class _MainScreenState extends State<MainScreen> {
         ),
         centerTitle: true,
       ),
-      body: const Center(
+      drawer: const AppDrawer(),
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.menu_book_outlined,
               size: 64,
               color: Colors.grey,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
-              'Benvingut a BookScout',
-              style: TextStyle(
+              l10n?.welcomeMessage ?? 'Benvingut a BookScout',
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
-              'No hi ha llibres a la llista',
-              style: TextStyle(
+              l10n?.emptyBooksMessage ?? 'No hi ha llibres a la llista',
+              style: const TextStyle(
                 color: Colors.grey,
                 fontSize: 14,
               ),
