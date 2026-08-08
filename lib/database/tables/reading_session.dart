@@ -10,8 +10,7 @@ class ReadingSessions extends Table {
   IntColumn get startPage => integer()();
   IntColumn get endPage => integer()();
   IntColumn get pagesRead => integer()();
-  IntColumn get durationMinutes =>
-      integer().withDefault(const Constant(0))();
+  IntColumn get durationMinutes => integer().withDefault(const Constant(0))();
   TextColumn get notes => text().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 

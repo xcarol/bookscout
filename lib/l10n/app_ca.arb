@@ -27,5 +27,35 @@
   "welcomeMessage": "Benvingut a BookScout",
   "@welcomeMessage": {},
   "emptyBooksMessage": "No hi ha llibres a la llista",
-  "@emptyBooksMessage": {}
+  "@emptyBooksMessage": {},
+  "home": "Inici",
+  "@home": {},
+  "search": "Cerca",
+  "@search": {},
+  "searchHint": "Cerca llibres per títol, autor o ISBN...",
+  "@searchHint": {},
+  "clearSearch": "Neteja la cerca",
+  "@clearSearch": {},
+  "noBooksFound": "No s'ha trobat cap llibre",
+  "@noBooksFound": {},
+  "searchInitialPrompt": "Escriu per començar a cercar llibres",
+  "@searchInitialPrompt": {},
+  "searchHistory": "Historial de cerca",
+  "@searchHistory": {},
+  "unknownAuthor": "Autor desconegut",
+  "@unknownAuthor": {},
+  "pagesCount": "{count} pàgines",
+  "@pagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchError": "S'ha produït un error en cercar llibres",
+  "@searchError": {},
+  "searchTimeout": "El temps d'espera de la cerca s'ha esgotat",
+  "@searchTimeout": {},
+  "retry": "Torna-ho a provar",
+  "@retry": {}
 }

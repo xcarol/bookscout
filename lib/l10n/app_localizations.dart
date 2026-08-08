@@ -183,6 +183,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No books in the list'**
   String get emptyBooksMessage;
+
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search books by title, author, or ISBN...'**
+  String get searchHint;
+
+  /// No description provided for @clearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get clearSearch;
+
+  /// No description provided for @noBooksFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No books found'**
+  String get noBooksFound;
+
+  /// No description provided for @searchInitialPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Type to start searching for books'**
+  String get searchInitialPrompt;
+
+  /// No description provided for @searchHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Search history'**
+  String get searchHistory;
+
+  /// No description provided for @unknownAuthor.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown author'**
+  String get unknownAuthor;
+
+  /// No description provided for @pagesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pages'**
+  String pagesCount(int count);
+
+  /// No description provided for @searchError.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while searching for books'**
+  String get searchError;
+
+  /// No description provided for @searchTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Search request timed out'**
+  String get searchTimeout;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
 }
 
 class _AppLocalizationsDelegate

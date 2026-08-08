@@ -1,13 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:bookscout/database/tables/book.dart';
 
-enum BookReadingStatus {
-  wantToRead,
-  reading,
-  read,
-  abandoned,
-  onHold,
-}
+enum BookReadingStatus { wantToRead, reading, read, abandoned, onHold }
 
 /// Reading status and rating of a book in the user's library.
 class UserBookStatuses extends Table {
@@ -20,7 +14,8 @@ class UserBookStatuses extends Table {
   DateTimeColumn get startDate => dateTime().nullable()();
   DateTimeColumn get finishDate => dateTime().nullable()();
   DateTimeColumn get dateAdded => dateTime().withDefault(currentDateAndTime)();
-  DateTimeColumn get dateUpdated => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get dateUpdated =>
+      dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column> get primaryKey => {bookId};

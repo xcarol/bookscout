@@ -50,4 +50,42 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get emptyBooksMessage => 'No hi ha llibres a la llista';
+
+  @override
+  String get home => 'Inici';
+
+  @override
+  String get search => 'Cerca';
+
+  @override
+  String get searchHint => 'Cerca llibres per títol, autor o ISBN...';
+
+  @override
+  String get clearSearch => 'Neteja la cerca';
+
+  @override
+  String get noBooksFound => 'No s\'ha trobat cap llibre';
+
+  @override
+  String get searchInitialPrompt => 'Escriu per començar a cercar llibres';
+
+  @override
+  String get searchHistory => 'Historial de cerca';
+
+  @override
+  String get unknownAuthor => 'Autor desconegut';
+
+  @override
+  String pagesCount(int count) {
+    return '$count pàgines';
+  }
+
+  @override
+  String get searchError => 'S\'ha produït un error en cercar llibres';
+
+  @override
+  String get searchTimeout => 'El temps d\'espera de la cerca s\'ha esgotat';
+
+  @override
+  String get retry => 'Torna-ho a provar';
 }

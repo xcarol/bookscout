@@ -25,8 +25,22 @@ class AppConstants {
 
   static const List<String> supportedLanguages = [catalan, spanish, english];
 
-  // Environment & Logs
+  // Environment & Keys
   static const String saveLogsMessage = 'saveLogs';
   static const String enableLogs = 'ENABLE_LOGS';
   static const String appVersion = 'VERSION';
+  static const String googleBooksApiKey = 'GOOGLE_BOOKS_API_KEY';
+
+  // Search & Pagination Limits
+  static const int minSearchChars = 3;
+  static const int searchDebounceMs = 300;
+  static const int maxSearchBooks = 20;
+  static const int searchHistoryLimit = 40;
+
+  // Cache & Network
+  static const String bookCoverCacheKey = 'bookscout_covers_cache';
+  static const int cacheMaxAgeDays = 30;
+  static const int cacheMaxObjects = 500;
+  static const int apiTimeoutSeconds = 10;
+  static const int openLibraryTimeoutSeconds = 12;
 }
