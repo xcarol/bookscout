@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:bookscout/l10n/app_localizations.dart';
 import 'package:bookscout/services/settings/language_service.dart';
+import 'package:bookscout/utils/app_constants.dart';
 import 'package:bookscout/widgets/dialogs_and_forms/language_form.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -107,7 +108,7 @@ class AppDrawer extends StatelessWidget {
     return AboutListTile(
       icon: const Icon(Icons.info_outline),
       applicationName: 'BookScout',
-      applicationVersion: dotenv.env['VERSION'] ?? '1.0.0',
+      applicationVersion: dotenv.env[AppConstants.appVersion] ?? '1.0.0',
       applicationIcon: Icon(
         Icons.auto_stories,
         size: 40,

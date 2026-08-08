@@ -50,4 +50,42 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get emptyBooksMessage => 'No hay libros en la lista';
+
+  @override
+  String get home => 'Inicio';
+
+  @override
+  String get search => 'Buscar';
+
+  @override
+  String get searchHint => 'Buscar libros por título, autor o ISBN...';
+
+  @override
+  String get clearSearch => 'Limpiar búsqueda';
+
+  @override
+  String get noBooksFound => 'No se encontraron libros';
+
+  @override
+  String get searchInitialPrompt => 'Escribe para empezar a buscar libros';
+
+  @override
+  String get searchHistory => 'Historial de búsqueda';
+
+  @override
+  String get unknownAuthor => 'Autor desconocido';
+
+  @override
+  String pagesCount(int count) {
+    return '$count páginas';
+  }
+
+  @override
+  String get searchError => 'Se produjo un error al buscar libros';
+
+  @override
+  String get searchTimeout => 'El tiempo de espera de la búsqueda ha expirado';
+
+  @override
+  String get retry => 'Reintentar';
 }

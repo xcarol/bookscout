@@ -130,15 +130,9 @@ class ThemeService with ChangeNotifier {
   );
 
   static CustomColors lightCustomColorsDefault = CustomColors(
-    inWatchlist: lightColorSchemeDefault.primary,
-    notInWatchlist: lightColorSchemeDefault.onSurfaceVariant,
-    ratedTitle: lightColorSchemeDefault.tertiary,
-    userRatedTitle: lightColorSchemeDefault.primary,
-    followingTitle: lightColorSchemeDefault.primary,
-    pinnedTitle: lightColorSchemeDefault.tertiary,
+    ratedBook: lightColorSchemeDefault.tertiary,
     navigationBarSelected: lightColorSchemeDefault.primary,
     navigationBarNotSelected: const Color(0xFF8E8E8E),
-    chipCardBackground: const Color(0xFF2B2B2B),
     dividerColor: lightColorSchemeDefault.secondary,
     bottomNavigationBarBackground: lightColorSchemeDefault.secondary,
     appBarBackground: lightColorSchemeDefault.primaryContainer,

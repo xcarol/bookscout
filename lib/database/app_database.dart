@@ -5,13 +5,9 @@ import 'package:bookscout/database/tables/tables.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [
-  Authors,
-  Books,
-  BookAuthors,
-  UserBookStatuses,
-  ReadingSessions,
-])
+@DriftDatabase(
+  tables: [Authors, Books, BookAuthors, UserBookStatuses, ReadingSessions],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
@@ -21,9 +17,7 @@ class AppDatabase extends _$AppDatabase {
   static QueryExecutor _openConnection() {
     return driftDatabase(
       name: 'bookscout_database',
-      native: const DriftNativeOptions(
-        shareAcrossIsolates: true,
-      ),
+      native: const DriftNativeOptions(shareAcrossIsolates: true),
     );
   }
 }

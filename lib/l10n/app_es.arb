@@ -27,5 +27,35 @@
   "welcomeMessage": "Bienvenido a BookScout",
   "@welcomeMessage": {},
   "emptyBooksMessage": "No hay libros en la lista",
-  "@emptyBooksMessage": {}
+  "@emptyBooksMessage": {},
+  "home": "Inicio",
+  "@home": {},
+  "search": "Buscar",
+  "@search": {},
+  "searchHint": "Buscar libros por título, autor o ISBN...",
+  "@searchHint": {},
+  "clearSearch": "Limpiar búsqueda",
+  "@clearSearch": {},
+  "noBooksFound": "No se encontraron libros",
+  "@noBooksFound": {},
+  "searchInitialPrompt": "Escribe para empezar a buscar libros",
+  "@searchInitialPrompt": {},
+  "searchHistory": "Historial de búsqueda",
+  "@searchHistory": {},
+  "unknownAuthor": "Autor desconocido",
+  "@unknownAuthor": {},
+  "pagesCount": "{count} páginas",
+  "@pagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchError": "Se produjo un error al buscar libros",
+  "@searchError": {},
+  "searchTimeout": "El tiempo de espera de la búsqueda ha expirado",
+  "@searchTimeout": {},
+  "retry": "Reintentar",
+  "@retry": {}
 }
