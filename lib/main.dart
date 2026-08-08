@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 import 'package:bookscout/firebase_options.dart';
 import 'package:bookscout/l10n/app_localizations.dart';
 import 'package:bookscout/screens/main_screen.dart';
+import 'package:bookscout/services/core/database_service.dart';
 import 'package:bookscout/services/core/error_service.dart';
 import 'package:bookscout/services/settings/language_service.dart';
 import 'package:bookscout/services/settings/preferences_service.dart';
@@ -64,6 +65,7 @@ void _runMain() async {
       error,
       userMessage: 'Error initializing Firebase',
       stackTrace: stackTrace,
+      reportToCrashlytics: false,
     );
   }
 
@@ -71,6 +73,7 @@ void _runMain() async {
     await Future.wait([
       dotenv.load(fileName: ".env"),
       PreferencesService().init(),
+      DatabaseService.init(),
     ]);
   } catch (error, stackTrace) {
     ErrorService.log(
