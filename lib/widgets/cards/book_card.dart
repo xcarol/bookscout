@@ -5,6 +5,7 @@ import 'package:bookscout/l10n/app_localizations.dart';
 import 'package:bookscout/models/book.dart';
 import 'package:bookscout/models/custom_colors.dart';
 import 'package:bookscout/utils/app_constants.dart';
+import 'package:bookscout/widgets/buttons/library_button.dart';
 
 class BookCustomCacheManager {
   static const key = AppConstants.bookCoverCacheKey;
@@ -37,10 +38,6 @@ class BookCard extends StatelessWidget {
           SizedBox(
             height: cardHeight,
             child: Card(
-              margin: EdgeInsets.zero,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero,
-              ),
               child: InkWell(
                 onTap: onTap,
                 child: Row(
@@ -54,7 +51,7 @@ class BookCard extends StatelessWidget {
               ),
             ),
           ),
-          Divider(height: 1, thickness: 1, color: customColors.dividerColor),
+          Divider(height: 1, color: customColors.dividerColor),
         ],
       ),
     );
@@ -159,48 +156,48 @@ class BookCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if (book.hasRating)
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.star_rounded,
-                        size: 18,
-                        color: customColors.ratedBook,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        book.averageRating!.toStringAsFixed(1),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
-                        ),
-                      ),
-                      if (book.ratingsCount != null && book.ratingsCount! > 0)
-                        Text(
-                          ' (${book.ratingsCount})',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                    ],
-                  )
-                else if (book.categories.isNotEmpty)
-                  Flexible(
-                    child: Text(
-                      book.categories.first,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: theme.colorScheme.primary,
-                        fontStyle: FontStyle.italic,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  )
-                else
-                  const SizedBox.shrink(),
+                Expanded(
+                  child: book.hasRating
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.star_rounded,
+                              size: 18,
+                              color: customColors.ratedBook,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              book.averageRating!.toStringAsFixed(1),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                              ),
+                            ),
+                            if (book.ratingsCount != null && book.ratingsCount! > 0)
+                              Text(
+                                ' (${book.ratingsCount})',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                          ],
+                        )
+                      : book.categories.isNotEmpty
+                          ? Text(
+                              book.categories.first,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: theme.colorScheme.primary,
+                                fontStyle: FontStyle.italic,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            )
+                          : const SizedBox.shrink(),
+                ),
+                LibraryButton(book: book),
               ],
             ),
           ],
