@@ -38,10 +38,6 @@ class BookCard extends StatelessWidget {
           SizedBox(
             height: cardHeight,
             child: Card(
-              margin: EdgeInsets.zero,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero,
-              ),
               child: InkWell(
                 onTap: onTap,
                 child: Row(
@@ -55,7 +51,7 @@ class BookCard extends StatelessWidget {
               ),
             ),
           ),
-          Divider(height: 1, thickness: 1, color: customColors.dividerColor),
+          Divider(height: 1, color: customColors.dividerColor),
         ],
       ),
     );
