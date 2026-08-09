@@ -374,7 +374,7 @@ class _SearchState extends State<Search> {
             ),
             const SizedBox(height: 16),
             Text(
-              '$errorText\n\nTrace: ${service.errorMessage}',
+              errorText,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 16),
             ),
