@@ -5,14 +5,14 @@ import 'package:bookscout/database/tables/user_book_status.dart';
 import 'package:bookscout/models/book.dart' as model;
 import 'package:bookscout/services/core/database_service.dart';
 
-class LibraryService extends ChangeNotifier {
+class LibraryRepository extends ChangeNotifier {
   final AppDatabase _db = DatabaseService.instance;
   
   Set<String> _libraryBookIds = {};
   
   Set<String> get libraryBookIds => _libraryBookIds;
   
-  LibraryService() {
+  LibraryRepository() {
     _init();
   }
   
@@ -54,5 +54,23 @@ class LibraryService extends ChangeNotifier {
     await (_db.delete(_db.userBookStatuses)..where((t) => t.bookId.equals(bookId))).go();
     _libraryBookIds.remove(bookId);
     notifyListeners();
+  }
+
+  Future<List<model.Book>> getLibraryBooks({int offset = 0, int limit = 20}) async {
+    final query = _db.select(_db.books).join([
+      innerJoin(
+        _db.userBookStatuses,
+        _db.userBookStatuses.bookId.equalsExp(_db.books.id),
+      ),
+    ])
+      ..orderBy([OrderingTerm.desc(_db.userBookStatuses.dateAdded)])
+      ..limit(limit, offset: offset);
+
+    final rows = await query.get();
+
+    return rows.map((row) {
+      final bookData = row.readTable(_db.books);
+      return model.Book.fromDrift(bookData);
+    }).toList();
   }
 }

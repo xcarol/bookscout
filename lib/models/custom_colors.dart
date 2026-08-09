@@ -9,6 +9,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
   final Color bottomNavigationBarBackground;
   final Color appBarBackground;
   final Color appBarText;
+  final Color chipCardBackground;
 
   const CustomColors({
     required this.ratedBook,
@@ -18,6 +19,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
     required this.bottomNavigationBarBackground,
     required this.appBarBackground,
     required this.appBarText,
+    required this.chipCardBackground,
   });
 
   @override
@@ -29,6 +31,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
     Color? bottomNavigationBarBackground,
     Color? appBarBackground,
     Color? appBarText,
+    Color? chipCardBackground,
   }) {
     return CustomColors(
       ratedBook: ratedBook ?? this.ratedBook,
@@ -41,6 +44,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
           bottomNavigationBarBackground ?? this.bottomNavigationBarBackground,
       appBarBackground: appBarBackground ?? this.appBarBackground,
       appBarText: appBarText ?? this.appBarText,
+      chipCardBackground: chipCardBackground ?? this.chipCardBackground,
     );
   }
 
@@ -73,6 +77,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
         t,
       )!,
       appBarText: Color.lerp(appBarText, other.appBarText, t)!,
+      chipCardBackground: Color.lerp(chipCardBackground, other.chipCardBackground, t)!,
     );
   }
 }

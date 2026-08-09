@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bookscout/models/book.dart';
-import 'package:bookscout/services/books/library_service.dart';
+import 'package:bookscout/services/books/library_repository.dart';
 
 class LibraryButton extends StatelessWidget {
   final Book book;
@@ -10,9 +10,9 @@ class LibraryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LibraryService>(
-      builder: (context, libraryService, child) {
-        final isInLibrary = libraryService.isInLibrary(book.id);
+    return Consumer<LibraryRepository>(
+      builder: (context, libraryRepository, child) {
+        final isInLibrary = libraryRepository.isInLibrary(book.id);
 
         return IconButton(
           icon: Icon(
@@ -22,7 +22,7 @@ class LibraryButton extends StatelessWidget {
                 : Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           onPressed: () async {
-            await libraryService.toggleLibrary(book);
+            libraryRepository.toggleLibrary(book);
           },
         );
       },
