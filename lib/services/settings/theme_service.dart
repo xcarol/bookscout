@@ -137,6 +137,7 @@ class ThemeService with ChangeNotifier {
     bottomNavigationBarBackground: lightColorSchemeDefault.secondary,
     appBarBackground: lightColorSchemeDefault.primaryContainer,
     appBarText: lightColorSchemeDefault.onSurface,
+    chipCardBackground: const Color.fromARGB(0xFF, 0x2B, 0x2B, 0x2B),
   );
 
   static ColorScheme darkColorSchemeDefault = lightColorSchemeDefault.copyWith(

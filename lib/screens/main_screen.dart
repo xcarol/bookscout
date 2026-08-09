@@ -3,6 +3,10 @@ import 'package:bookscout/l10n/app_localizations.dart';
 import 'package:bookscout/models/custom_colors.dart';
 import 'package:bookscout/screens/search.dart';
 import 'package:bookscout/widgets/layout/app_drawer.dart';
+import 'package:bookscout/widgets/lists/book_list.dart';
+import 'package:bookscout/services/books/book_list_service.dart';
+import 'package:bookscout/services/books/library_repository.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -13,6 +17,20 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  late final BookListService _libraryListService;
+
+  @override
+  void initState() {
+    super.initState();
+    final libraryRepository = context.read<LibraryRepository>();
+    _libraryListService = BookListService(libraryRepository)..load();
+  }
+
+  @override
+  void dispose() {
+    _libraryListService.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,26 +85,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _homeView(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.menu_book_outlined, size: 64, color: Colors.grey),
-          const SizedBox(height: 16),
-          Text(
-            l10n.welcomeMessage,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            l10n.emptyBooksMessage,
-            style: const TextStyle(color: Colors.grey, fontSize: 14),
-          ),
-        ],
-      ),
-    );
+    return BookList(listService: _libraryListService);
   }
 
   String _getTitleForIndex(int index, BuildContext context) {
