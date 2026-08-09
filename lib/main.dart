@@ -3,12 +3,7 @@ import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart'
-    show
-        PlatformDispatcher,
-        TargetPlatform,
-        defaultTargetPlatform,
-        kDebugMode,
-        kIsWeb;
+    show PlatformDispatcher, TargetPlatform, defaultTargetPlatform, kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -40,12 +35,34 @@ void _runMain() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    if (!kIsWeb &&
-        (defaultTargetPlatform == TargetPlatform.android ||
-            defaultTargetPlatform == TargetPlatform.iOS)) {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+    await Future.wait([
+      dotenv.load(fileName: ".env"),
+      PreferencesService().init(),
+      DatabaseService.init(),
+    ]);
+  } catch (error, stackTrace) {
+    ErrorService.log(
+      error,
+      userMessage: 'Error initializing services',
+      stackTrace: stackTrace,
+    );
+  }
+
+  try {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      if (Firebase.apps.isEmpty) {
+        try {
+          await Firebase.initializeApp(
+            options: DefaultFirebaseOptions.currentPlatform,
+          );
+        } catch (e) {
+          if (e.toString().contains('duplicate-app')) {
+            await Firebase.initializeApp();
+          } else {
+            rethrow;
+          }
+        }
+      }
 
       FlutterError.onError = (errorDetails) {
         FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
@@ -66,20 +83,6 @@ void _runMain() async {
       userMessage: 'Error initializing Firebase',
       stackTrace: stackTrace,
       reportToCrashlytics: false,
-    );
-  }
-
-  try {
-    await Future.wait([
-      dotenv.load(fileName: ".env"),
-      PreferencesService().init(),
-      DatabaseService.init(),
-    ]);
-  } catch (error, stackTrace) {
-    ErrorService.log(
-      error,
-      userMessage: 'Error initializing services',
-      stackTrace: stackTrace,
     );
   }
 
