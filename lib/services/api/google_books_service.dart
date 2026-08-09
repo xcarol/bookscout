@@ -84,6 +84,7 @@ class GoogleBooksService {
             headers: {
               HttpHeaders.acceptHeader: 'application/json',
               HttpHeaders.contentTypeHeader: 'application/json',
+              'Referer': 'https://com.xicra.bookscout/',
             },
           )
           .timeout(_timeout);
@@ -97,6 +98,7 @@ class GoogleBooksService {
               headers: {
                 HttpHeaders.acceptHeader: 'application/json',
                 HttpHeaders.contentTypeHeader: 'application/json',
+                'Referer': 'https://com.xicra.bookscout/',
               },
             )
             .timeout(_timeout);
