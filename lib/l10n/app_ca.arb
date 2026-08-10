@@ -57,5 +57,62 @@
   "searchTimeout": "El temps d'espera de la cerca s'ha esgotat",
   "@searchTimeout": {},
   "retry": "Torna-ho a provar",
-  "@retry": {}
+  "@retry": {},
+  "sessionInProgress": "Sessió en curs",
+  "@sessionInProgress": {},
+  "endSessionButton": "FINALITZAR SESSIÓ",
+  "@endSessionButton": {},
+  "endReadingSessionTitle": "Finalitzar Sessió de Lectura",
+  "@endReadingSessionTitle": {},
+  "errorEndTimeBeforeStart": "L'hora de fi no pot ser anterior a la d'inici.",
+  "@errorEndTimeBeforeStart": {},
+  "errorInvalidPage": "Número de pàgina invàlid.",
+  "@errorInvalidPage": {},
+  "errorConflictReachedPage": "Conflicte: La sessió del {date} va arribar a la pàgina {page}.",
+  "@errorConflictReachedPage": {
+    "placeholders": {
+      "date": {"type": "String"},
+      "page": {"type": "int"}
+    }
+  },
+  "errorConflictStartedPage": "Conflicte: La sessió del {date} va començar a la pàgina {page}.",
+  "@errorConflictStartedPage": {
+    "placeholders": {
+      "date": {"type": "String"},
+      "page": {"type": "int"}
+    }
+  },
+  "errorEndPageLessThanStart": "La pàgina final ({end}) ha de ser major que la inicial ({start}).",
+  "@errorEndPageLessThanStart": {
+    "placeholders": {
+      "end": {"type": "int"},
+      "start": {"type": "int"}
+    }
+  },
+  "startLabel": "Inici:",
+  "@startLabel": {},
+  "endLabel": "Fi:",
+  "@endLabel": {},
+  "locationLabel": "Ubicació",
+  "@locationLabel": {},
+  "pageReachedLabel": "Pàgina",
+  "@pageReachedLabel": {},
+  "save": "Desar",
+  "@save": {},
+  "locationHome": "Casa",
+  "@locationHome": {},
+  "locationBedroom": "Habitació",
+  "@locationBedroom": {},
+  "locationLivingroom": "Menjador",
+  "@locationLivingroom": {},
+  "locationTrain": "Tren",
+  "@locationTrain": {},
+  "locationBus": "Autobús",
+  "@locationBus": {},
+  "locationPark": "Parc",
+  "@locationPark": {},
+  "locationCafe": "Cafeteria",
+  "@locationCafe": {},
+  "locationOther": "Altre",
+  "@locationOther": {}
 }

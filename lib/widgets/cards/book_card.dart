@@ -108,84 +108,67 @@ class BookCard extends StatelessWidget {
 
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 12, 10),
+        padding: const EdgeInsets.fromLTRB(0, 10, 4, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  book.title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    height: 1.2,
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    book.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      height: 1.2,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  authorText,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (metaParts.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
-                    metaParts.join(' • '),
+                    authorText,
                     style: TextStyle(
-                      fontSize: 12,
-                      color: theme.colorScheme.onSurfaceVariant.withValues(
-                        alpha: 0.8,
-                      ),
+                      fontSize: 13,
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  if (metaParts.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      metaParts.join(' • '),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.colorScheme.onSurfaceVariant.withValues(
+                          alpha: 0.8,
+                        ),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
-                  child: book.hasRating
-                      ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.star_rounded,
-                              size: 18,
-                              color: customColors.ratedBook,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              book.averageRating!.toStringAsFixed(1),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13,
-                              ),
-                            ),
-                            if (book.ratingsCount != null && book.ratingsCount! > 0)
-                              Text(
-                                ' (${book.ratingsCount})',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
-                              ),
-                          ],
-                        )
-                      : book.categories.isNotEmpty
-                          ? Text(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (book.categories.isNotEmpty) ...[
+                          Flexible(
+                            child: Text(
                               book.categories.first,
                               style: TextStyle(
                                 fontSize: 12,
@@ -194,8 +177,37 @@ class BookCard extends StatelessWidget {
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                            )
-                          : const SizedBox.shrink(),
+                            ),
+                          ),
+                          if (book.hasRating) const SizedBox(width: 8),
+                        ],
+                        if (book.hasRating) ...[
+                          Icon(
+                            Icons.star_rounded,
+                            size: 18,
+                            color: customColors.ratedBook,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            book.averageRating!.toStringAsFixed(1),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
+                          if (book.ratingsCount != null &&
+                              book.ratingsCount! > 0)
+                            Text(
+                              ' (${book.ratingsCount})',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                        ],
+                      ],
+                    ),
+                  ),
                 ),
                 LibraryButton(book: book),
               ],

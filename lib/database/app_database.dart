@@ -1,6 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 
+import 'package:path_provider/path_provider.dart';
+
 import 'package:bookscout/database/tables/tables.dart';
 
 part 'app_database.g.dart';
@@ -17,7 +19,10 @@ class AppDatabase extends _$AppDatabase {
   static QueryExecutor _openConnection() {
     return driftDatabase(
       name: 'bookscout_database',
-      native: const DriftNativeOptions(shareAcrossIsolates: true),
+      native: DriftNativeOptions(
+        shareAcrossIsolates: true,
+        databaseDirectory: getApplicationSupportDirectory,
+      ),
     );
   }
 }

@@ -255,6 +255,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retry;
+
+  /// No description provided for @sessionInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Session in progress'**
+  String get sessionInProgress;
+
+  /// No description provided for @endSessionButton.
+  ///
+  /// In en, this message translates to:
+  /// **'END SESSION'**
+  String get endSessionButton;
+
+  /// No description provided for @endReadingSessionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'End Reading Session'**
+  String get endReadingSessionTitle;
+
+  /// No description provided for @errorEndTimeBeforeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'End time cannot be before start time.'**
+  String get errorEndTimeBeforeStart;
+
+  /// No description provided for @errorInvalidPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid page number.'**
+  String get errorInvalidPage;
+
+  /// No description provided for @errorConflictReachedPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Conflict: Session on {date} reached page {page}.'**
+  String errorConflictReachedPage(String date, int page);
+
+  /// No description provided for @errorConflictStartedPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Conflict: Session on {date} started at page {page}.'**
+  String errorConflictStartedPage(String date, int page);
+
+  /// No description provided for @errorEndPageLessThanStart.
+  ///
+  /// In en, this message translates to:
+  /// **'End page ({end}) cannot be less than start page ({start}).'**
+  String errorEndPageLessThanStart(int end, int start);
+
+  /// No description provided for @startLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Start:'**
+  String get startLabel;
+
+  /// No description provided for @endLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'End:'**
+  String get endLabel;
+
+  /// No description provided for @locationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get locationLabel;
+
+  /// No description provided for @pageReachedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Page Reached'**
+  String get pageReachedLabel;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @locationHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get locationHome;
+
+  /// No description provided for @locationBedroom.
+  ///
+  /// In en, this message translates to:
+  /// **'Bedroom'**
+  String get locationBedroom;
+
+  /// No description provided for @locationLivingroom.
+  ///
+  /// In en, this message translates to:
+  /// **'Living room'**
+  String get locationLivingroom;
+
+  /// No description provided for @locationTrain.
+  ///
+  /// In en, this message translates to:
+  /// **'Train'**
+  String get locationTrain;
+
+  /// No description provided for @locationBus.
+  ///
+  /// In en, this message translates to:
+  /// **'Bus'**
+  String get locationBus;
+
+  /// No description provided for @locationPark.
+  ///
+  /// In en, this message translates to:
+  /// **'Park'**
+  String get locationPark;
+
+  /// No description provided for @locationCafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Cafe'**
+  String get locationCafe;
+
+  /// No description provided for @locationOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get locationOther;
 }
 
 class _AppLocalizationsDelegate

@@ -57,5 +57,62 @@
   "searchTimeout": "El tiempo de espera de la búsqueda ha expirado",
   "@searchTimeout": {},
   "retry": "Reintentar",
-  "@retry": {}
+  "@retry": {},
+  "sessionInProgress": "Sesión en curso",
+  "@sessionInProgress": {},
+  "endSessionButton": "FINALIZAR SESIÓN",
+  "@endSessionButton": {},
+  "endReadingSessionTitle": "Finalizar Sesión de Lectura",
+  "@endReadingSessionTitle": {},
+  "errorEndTimeBeforeStart": "La hora de fin no puede ser anterior a la de inicio.",
+  "@errorEndTimeBeforeStart": {},
+  "errorInvalidPage": "Número de página inválido.",
+  "@errorInvalidPage": {},
+  "errorConflictReachedPage": "Conflicto: La sesión del {date} llegó a la página {page}.",
+  "@errorConflictReachedPage": {
+    "placeholders": {
+      "date": {"type": "String"},
+      "page": {"type": "int"}
+    }
+  },
+  "errorConflictStartedPage": "Conflicto: La sesión del {date} empezó en la página {page}.",
+  "@errorConflictStartedPage": {
+    "placeholders": {
+      "date": {"type": "String"},
+      "page": {"type": "int"}
+    }
+  },
+  "errorEndPageLessThanStart": "La página final ({end}) debe ser mayor que la inicial ({start}).",
+  "@errorEndPageLessThanStart": {
+    "placeholders": {
+      "end": {"type": "int"},
+      "start": {"type": "int"}
+    }
+  },
+  "startLabel": "Inicio:",
+  "@startLabel": {},
+  "endLabel": "Fin:",
+  "@endLabel": {},
+  "locationLabel": "Ubicación",
+  "@locationLabel": {},
+  "pageReachedLabel": "Página",
+  "@pageReachedLabel": {},
+  "save": "Guardar",
+  "@save": {},
+  "locationHome": "Casa",
+  "@locationHome": {},
+  "locationBedroom": "Habitación",
+  "@locationBedroom": {},
+  "locationLivingroom": "Salón",
+  "@locationLivingroom": {},
+  "locationTrain": "Tren",
+  "@locationTrain": {},
+  "locationBus": "Autobús",
+  "@locationBus": {},
+  "locationPark": "Parque",
+  "@locationPark": {},
+  "locationCafe": "Cafetería",
+  "@locationCafe": {},
+  "locationOther": "Otro",
+  "@locationOther": {}
 }
