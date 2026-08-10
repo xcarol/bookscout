@@ -20,6 +20,7 @@ import 'package:bookscout/services/settings/preferences_service.dart';
 import 'package:bookscout/services/settings/theme_service.dart';
 import 'package:bookscout/services/system/app_lifecycle_service.dart';
 import 'package:bookscout/services/books/library_repository.dart';
+import 'package:bookscout/services/books/reading_session_service.dart';
 import 'package:bookscout/utils/app_constants.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
@@ -95,6 +96,7 @@ void _runMain() async {
         ChangeNotifierProvider(create: (_) => LanguageService()),
         ChangeNotifierProvider(create: (_) => ThemeService()),
         ChangeNotifierProvider(create: (_) => LibraryRepository()),
+        ChangeNotifierProvider(create: (_) => ReadingSessionService()),
       ],
       child: const MyApp(),
     ),

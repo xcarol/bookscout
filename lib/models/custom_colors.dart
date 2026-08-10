@@ -77,7 +77,11 @@ class CustomColors extends ThemeExtension<CustomColors> {
         t,
       )!,
       appBarText: Color.lerp(appBarText, other.appBarText, t)!,
-      chipCardBackground: Color.lerp(chipCardBackground, other.chipCardBackground, t)!,
+      chipCardBackground: Color.lerp(
+        chipCardBackground,
+        other.chipCardBackground,
+        t,
+      )!,
     );
   }
 }

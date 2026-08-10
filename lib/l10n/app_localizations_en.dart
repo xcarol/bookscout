@@ -88,4 +88,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retry => 'Retry';
+
+  @override
+  String get sessionInProgress => 'Session in progress';
+
+  @override
+  String get endSessionButton => 'END SESSION';
+
+  @override
+  String get endReadingSessionTitle => 'End Reading Session';
+
+  @override
+  String get errorEndTimeBeforeStart => 'End time cannot be before start time.';
+
+  @override
+  String get errorInvalidPage => 'Invalid page number.';
+
+  @override
+  String errorConflictReachedPage(String date, int page) {
+    return 'Conflict: Session on $date reached page $page.';
+  }
+
+  @override
+  String errorConflictStartedPage(String date, int page) {
+    return 'Conflict: Session on $date started at page $page.';
+  }
+
+  @override
+  String errorEndPageLessThanStart(int end, int start) {
+    return 'End page ($end) cannot be less than start page ($start).';
+  }
+
+  @override
+  String get startLabel => 'Start:';
+
+  @override
+  String get endLabel => 'End:';
+
+  @override
+  String get locationLabel => 'Location';
+
+  @override
+  String get pageReachedLabel => 'Page Reached';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get locationHome => 'Home';
+
+  @override
+  String get locationBedroom => 'Bedroom';
+
+  @override
+  String get locationLivingroom => 'Living room';
+
+  @override
+  String get locationTrain => 'Train';
+
+  @override
+  String get locationBus => 'Bus';
+
+  @override
+  String get locationPark => 'Park';
+
+  @override
+  String get locationCafe => 'Cafe';
+
+  @override
+  String get locationOther => 'Other';
 }

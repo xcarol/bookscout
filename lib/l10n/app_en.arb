@@ -57,5 +57,62 @@
   "searchTimeout": "Search request timed out",
   "@searchTimeout": {},
   "retry": "Retry",
-  "@retry": {}
+  "@retry": {},
+  "sessionInProgress": "Session in progress",
+  "@sessionInProgress": {},
+  "endSessionButton": "END SESSION",
+  "@endSessionButton": {},
+  "endReadingSessionTitle": "End Reading Session",
+  "@endReadingSessionTitle": {},
+  "errorEndTimeBeforeStart": "End time cannot be before start time.",
+  "@errorEndTimeBeforeStart": {},
+  "errorInvalidPage": "Invalid page number.",
+  "@errorInvalidPage": {},
+  "errorConflictReachedPage": "Conflict: Session on {date} reached page {page}.",
+  "@errorConflictReachedPage": {
+    "placeholders": {
+      "date": {"type": "String"},
+      "page": {"type": "int"}
+    }
+  },
+  "errorConflictStartedPage": "Conflict: Session on {date} started at page {page}.",
+  "@errorConflictStartedPage": {
+    "placeholders": {
+      "date": {"type": "String"},
+      "page": {"type": "int"}
+    }
+  },
+  "errorEndPageLessThanStart": "End page ({end}) must be greater than start page ({start}).",
+  "@errorEndPageLessThanStart": {
+    "placeholders": {
+      "end": {"type": "int"},
+      "start": {"type": "int"}
+    }
+  },
+  "startLabel": "Start:",
+  "@startLabel": {},
+  "endLabel": "End:",
+  "@endLabel": {},
+  "locationLabel": "Location",
+  "@locationLabel": {},
+  "pageReachedLabel": "Page Reached",
+  "@pageReachedLabel": {},
+  "save": "Save",
+  "@save": {},
+  "locationHome": "Home",
+  "@locationHome": {},
+  "locationBedroom": "Bedroom",
+  "@locationBedroom": {},
+  "locationLivingroom": "Living room",
+  "@locationLivingroom": {},
+  "locationTrain": "Train",
+  "@locationTrain": {},
+  "locationBus": "Bus",
+  "@locationBus": {},
+  "locationPark": "Park",
+  "@locationPark": {},
+  "locationCafe": "Cafe",
+  "@locationCafe": {},
+  "locationOther": "Other",
+  "@locationOther": {}
 }

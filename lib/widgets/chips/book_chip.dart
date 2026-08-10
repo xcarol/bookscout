@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:bookscout/models/book.dart';
 import 'package:bookscout/models/custom_colors.dart';
+import 'package:bookscout/services/books/reading_session_service.dart';
 import 'package:bookscout/widgets/cards/book_card.dart';
+import 'package:provider/provider.dart';
 
 const double cardHeight = 280.0;
 const double cardWidth = 140.0;
@@ -19,6 +21,7 @@ class BookChip extends StatelessWidget {
         height: cardHeight,
         width: cardWidth,
         child: Card(
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
           color: Theme.of(
             context,
           ).extension<CustomColors>()!.chipCardBackground,
@@ -30,26 +33,73 @@ class BookChip extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: _bookCover(context, book.coverUrl),
-                ),
+                _bookCover(context, book.coverUrl),
                 Positioned(
                   bottom: 0,
                   left: 0,
                   right: 0,
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(12),
-                      bottomRight: Radius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(8, 24, 8, 8),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: 0.7),
+                        ],
+                      ),
                     ),
-                    child: Container(
-                      color: Theme.of(context)
-                          .extension<CustomColors>()!
-                          .chipCardBackground
-                          .withValues(alpha: 0.95),
-                      padding: const EdgeInsets.all(8.0),
-                      child: _details(context, book),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Consumer<ReadingSessionService>(
+                          builder: (context, readingSessionService, child) {
+                            final isSessionActive =
+                                readingSessionService.isSessionActive;
+
+                            return Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: isSessionActive
+                                    ? Colors.grey.withValues(alpha: 0.5)
+                                    : Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer
+                                          .withValues(alpha: 0.9),
+                                shape: BoxShape.circle,
+                              ),
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                iconSize: 20,
+                                icon: const Icon(Icons.play_arrow_rounded),
+                                color: isSessionActive
+                                    ? Colors.white.withValues(alpha: 0.38)
+                                    : Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimaryContainer,
+                                onPressed: isSessionActive
+                                    ? null
+                                    : () async {
+                                        await readingSessionService
+                                            .startSession(book.id);
+                                      },
+                              ),
+                            );
+                          },
+                        ),
+                        if (book.currentPage != null && book.currentPage! > 0)
+                          Text(
+                            '${book.currentPage} • ${book.pageCount != null && book.pageCount! > 0 ? ((book.currentPage!) / book.pageCount! * 100).toStringAsFixed(0) : '  '}%',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
@@ -90,37 +140,6 @@ class BookChip extends StatelessWidget {
         placeholder: (context, url) => placeholder,
         errorWidget: (context, url, error) => placeholder,
       ),
-    );
-  }
-
-  Widget _details(BuildContext context, Book book) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          book.title,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-        ),
-        if (book.authorsFormatted.isNotEmpty) ...[
-          const SizedBox(height: 4),
-          Text(
-            book.authorsFormatted,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ],
     );
   }
 }

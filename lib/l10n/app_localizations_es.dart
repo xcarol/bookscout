@@ -88,4 +88,74 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get retry => 'Reintentar';
+
+  @override
+  String get sessionInProgress => 'Sesión en curso';
+
+  @override
+  String get endSessionButton => 'FINALIZAR SESIÓN';
+
+  @override
+  String get endReadingSessionTitle => 'Finalizar Sesión de Lectura';
+
+  @override
+  String get errorEndTimeBeforeStart =>
+      'La hora de fin no puede ser anterior a la de inicio.';
+
+  @override
+  String get errorInvalidPage => 'Número de página inválido.';
+
+  @override
+  String errorConflictReachedPage(String date, int page) {
+    return 'Conflicto: La sesión del $date llegó a la página $page.';
+  }
+
+  @override
+  String errorConflictStartedPage(String date, int page) {
+    return 'Conflicto: La sesión del $date empezó en la página $page.';
+  }
+
+  @override
+  String errorEndPageLessThanStart(int end, int start) {
+    return 'La página final ($end) no puede ser menor a la inicial ($start).';
+  }
+
+  @override
+  String get startLabel => 'Inicio:';
+
+  @override
+  String get endLabel => 'Fin:';
+
+  @override
+  String get locationLabel => 'Ubicación';
+
+  @override
+  String get pageReachedLabel => 'Página';
+
+  @override
+  String get save => 'Guardar';
+
+  @override
+  String get locationHome => 'Casa';
+
+  @override
+  String get locationBedroom => 'Habitación';
+
+  @override
+  String get locationLivingroom => 'Salón';
+
+  @override
+  String get locationTrain => 'Tren';
+
+  @override
+  String get locationBus => 'Autobús';
+
+  @override
+  String get locationPark => 'Parque';
+
+  @override
+  String get locationCafe => 'Cafetería';
+
+  @override
+  String get locationOther => 'Otro';
 }

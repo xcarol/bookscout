@@ -55,11 +55,18 @@ class _BookListState extends State<BookList> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.menu_book_outlined, size: 64, color: Colors.grey),
+                const Icon(
+                  Icons.menu_book_outlined,
+                  size: 64,
+                  color: Colors.grey,
+                ),
                 const SizedBox(height: 16),
                 Text(
                   l10n.welcomeMessage,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(

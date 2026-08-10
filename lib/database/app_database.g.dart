@@ -2109,6 +2109,17 @@ class $ReadingSessionsTable extends ReadingSessions
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _locationMeta = const VerificationMeta(
+    'location',
+  );
+  @override
+  late final GeneratedColumn<String> location = GeneratedColumn<String>(
+    'location',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -2131,6 +2142,7 @@ class $ReadingSessionsTable extends ReadingSessions
     pagesRead,
     durationMinutes,
     notes,
+    location,
     createdAt,
   ];
   @override
@@ -2203,6 +2215,12 @@ class $ReadingSessionsTable extends ReadingSessions
         notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
       );
     }
+    if (data.containsKey('location')) {
+      context.handle(
+        _locationMeta,
+        location.isAcceptableOrUnknown(data['location']!, _locationMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -2250,6 +2268,10 @@ class $ReadingSessionsTable extends ReadingSessions
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
       ),
+      location: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}location'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -2272,6 +2294,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
   final int pagesRead;
   final int durationMinutes;
   final String? notes;
+  final String? location;
   final DateTime createdAt;
   const ReadingSession({
     required this.id,
@@ -2282,6 +2305,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
     required this.pagesRead,
     required this.durationMinutes,
     this.notes,
+    this.location,
     required this.createdAt,
   });
   @override
@@ -2296,6 +2320,9 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
     map['duration_minutes'] = Variable<int>(durationMinutes);
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || location != null) {
+      map['location'] = Variable<String>(location);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
@@ -2313,6 +2340,9 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
+      location: location == null && nullToAbsent
+          ? const Value.absent()
+          : Value(location),
       createdAt: Value(createdAt),
     );
   }
@@ -2331,6 +2361,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
       pagesRead: serializer.fromJson<int>(json['pagesRead']),
       durationMinutes: serializer.fromJson<int>(json['durationMinutes']),
       notes: serializer.fromJson<String?>(json['notes']),
+      location: serializer.fromJson<String?>(json['location']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -2346,6 +2377,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
       'pagesRead': serializer.toJson<int>(pagesRead),
       'durationMinutes': serializer.toJson<int>(durationMinutes),
       'notes': serializer.toJson<String?>(notes),
+      'location': serializer.toJson<String?>(location),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -2359,6 +2391,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
     int? pagesRead,
     int? durationMinutes,
     Value<String?> notes = const Value.absent(),
+    Value<String?> location = const Value.absent(),
     DateTime? createdAt,
   }) => ReadingSession(
     id: id ?? this.id,
@@ -2369,6 +2402,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
     pagesRead: pagesRead ?? this.pagesRead,
     durationMinutes: durationMinutes ?? this.durationMinutes,
     notes: notes.present ? notes.value : this.notes,
+    location: location.present ? location.value : this.location,
     createdAt: createdAt ?? this.createdAt,
   );
   ReadingSession copyWithCompanion(ReadingSessionsCompanion data) {
@@ -2383,6 +2417,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
           ? data.durationMinutes.value
           : this.durationMinutes,
       notes: data.notes.present ? data.notes.value : this.notes,
+      location: data.location.present ? data.location.value : this.location,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -2398,6 +2433,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
           ..write('pagesRead: $pagesRead, ')
           ..write('durationMinutes: $durationMinutes, ')
           ..write('notes: $notes, ')
+          ..write('location: $location, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -2413,6 +2449,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
     pagesRead,
     durationMinutes,
     notes,
+    location,
     createdAt,
   );
   @override
@@ -2427,6 +2464,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
           other.pagesRead == this.pagesRead &&
           other.durationMinutes == this.durationMinutes &&
           other.notes == this.notes &&
+          other.location == this.location &&
           other.createdAt == this.createdAt);
 }
 
@@ -2439,6 +2477,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
   final Value<int> pagesRead;
   final Value<int> durationMinutes;
   final Value<String?> notes;
+  final Value<String?> location;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const ReadingSessionsCompanion({
@@ -2450,6 +2489,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
     this.pagesRead = const Value.absent(),
     this.durationMinutes = const Value.absent(),
     this.notes = const Value.absent(),
+    this.location = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -2462,6 +2502,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
     required int pagesRead,
     this.durationMinutes = const Value.absent(),
     this.notes = const Value.absent(),
+    this.location = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -2478,6 +2519,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
     Expression<int>? pagesRead,
     Expression<int>? durationMinutes,
     Expression<String>? notes,
+    Expression<String>? location,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
@@ -2490,6 +2532,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
       if (pagesRead != null) 'pages_read': pagesRead,
       if (durationMinutes != null) 'duration_minutes': durationMinutes,
       if (notes != null) 'notes': notes,
+      if (location != null) 'location': location,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -2504,6 +2547,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
     Value<int>? pagesRead,
     Value<int>? durationMinutes,
     Value<String?>? notes,
+    Value<String?>? location,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
   }) {
@@ -2516,6 +2560,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
       pagesRead: pagesRead ?? this.pagesRead,
       durationMinutes: durationMinutes ?? this.durationMinutes,
       notes: notes ?? this.notes,
+      location: location ?? this.location,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -2548,6 +2593,9 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
+    if (location.present) {
+      map['location'] = Variable<String>(location.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -2568,6 +2616,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
           ..write('pagesRead: $pagesRead, ')
           ..write('durationMinutes: $durationMinutes, ')
           ..write('notes: $notes, ')
+          ..write('location: $location, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -3629,6 +3678,7 @@ typedef $$ReadingSessionsTableCreateCompanionBuilder =
       required int pagesRead,
       Value<int> durationMinutes,
       Value<String?> notes,
+      Value<String?> location,
       Value<DateTime> createdAt,
       Value<int> rowid,
     });
@@ -3642,6 +3692,7 @@ typedef $$ReadingSessionsTableUpdateCompanionBuilder =
       Value<int> pagesRead,
       Value<int> durationMinutes,
       Value<String?> notes,
+      Value<String?> location,
       Value<DateTime> createdAt,
       Value<int> rowid,
     });
@@ -3692,6 +3743,11 @@ class $$ReadingSessionsTableFilterComposer
 
   ColumnFilters<String> get notes => $composableBuilder(
     column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get location => $composableBuilder(
+    column: $table.location,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3750,6 +3806,11 @@ class $$ReadingSessionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get location => $composableBuilder(
+    column: $table.location,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -3790,6 +3851,9 @@ class $$ReadingSessionsTableAnnotationComposer
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get location =>
+      $composableBuilder(column: $table.location, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -3840,6 +3904,7 @@ class $$ReadingSessionsTableTableManager
                 Value<int> pagesRead = const Value.absent(),
                 Value<int> durationMinutes = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<String?> location = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ReadingSessionsCompanion(
@@ -3851,6 +3916,7 @@ class $$ReadingSessionsTableTableManager
                 pagesRead: pagesRead,
                 durationMinutes: durationMinutes,
                 notes: notes,
+                location: location,
                 createdAt: createdAt,
                 rowid: rowid,
               ),
@@ -3864,6 +3930,7 @@ class $$ReadingSessionsTableTableManager
                 required int pagesRead,
                 Value<int> durationMinutes = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<String?> location = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ReadingSessionsCompanion.insert(
@@ -3875,6 +3942,7 @@ class $$ReadingSessionsTableTableManager
                 pagesRead: pagesRead,
                 durationMinutes: durationMinutes,
                 notes: notes,
+                location: location,
                 createdAt: createdAt,
                 rowid: rowid,
               ),

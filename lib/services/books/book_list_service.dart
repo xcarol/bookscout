@@ -40,21 +40,24 @@ class BookListService extends ChangeNotifier {
     _isLoading = true;
     _isLoadingMore = false;
     _errorMessage = null;
-    _books.clear();
     _offset = 0;
     _hasMore = true;
     notifyListeners();
 
     try {
-      final newBooks = await _libraryRepository.getLibraryBooks(offset: _offset, limit: _pageSize);
+      final newBooks = await _libraryRepository.getLibraryBooks(
+        offset: 0,
+        limit: _pageSize,
+      );
+      _books.clear();
       _books.addAll(newBooks);
-      _offset += newBooks.length;
+      _offset = newBooks.length;
       _hasMore = newBooks.length == _pageSize;
       _isLoading = false;
-      notifyListeners();
     } catch (e) {
       _isLoading = false;
       _errorMessage = e.toString();
+    } finally {
       notifyListeners();
     }
   }
@@ -68,7 +71,10 @@ class BookListService extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final newBooks = await _libraryRepository.getLibraryBooks(offset: _offset, limit: _pageSize);
+      final newBooks = await _libraryRepository.getLibraryBooks(
+        offset: _offset,
+        limit: _pageSize,
+      );
       if (newBooks.isNotEmpty) {
         _books.addAll(newBooks);
         _offset += newBooks.length;
