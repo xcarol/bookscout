@@ -23,7 +23,7 @@ class BookCard extends StatelessWidget {
   final Book book;
   final VoidCallback? onTap;
 
-  static const double cardHeight = 150.0;
+  static const double cardHeight = 160.0;
 
   const BookCard({super.key, required this.book, this.onTap});
 
@@ -150,6 +150,20 @@ class BookCard extends StatelessWidget {
                         fontSize: 12,
                         color: theme.colorScheme.onSurfaceVariant.withValues(
                           alpha: 0.8,
+                        ),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                  if (book.publisher != null && book.publisher!.isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      book.publisher!,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.colorScheme.onSurfaceVariant.withValues(
+                          alpha: 0.6,
                         ),
                       ),
                       maxLines: 1,
