@@ -53,7 +53,7 @@ class OpenLibraryService {
 
         final books = docs
             .whereType<Map<String, dynamic>>()
-            .map((doc) => Book.fromOpenLibraryJson(doc))
+            .map((doc) => Book.fromOpenLibraryJson(doc, isLite: true))
             .where((b) => b.title.isNotEmpty)
             .toList();
 
@@ -71,6 +71,48 @@ class OpenLibraryService {
         stackTrace: stackTrace,
       );
       rethrow;
+    }
+  }
+
+  Future<Book?> getBookByIsbn(String isbn) async {
+    final queryParameters = <String, String>{
+      'bibkeys': 'ISBN:$isbn',
+      'format': 'json',
+      'jscmd': 'data',
+    };
+
+    final uri = Uri.https(
+      _authority,
+      UrlConstants.openLibraryApiBooksPath,
+      queryParameters,
+    );
+
+    try {
+      final response = await _client
+          .get(uri, headers: {HttpHeaders.acceptHeader: 'application/json'})
+          .timeout(_timeout);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final bookData = data['ISBN:$isbn'] as Map<String, dynamic>?;
+
+        if (bookData != null) {
+          return Book.fromOpenLibraryDataJson(bookData);
+        }
+        return null;
+      } else {
+        throw HttpException(
+          'OpenLibrary API error: HTTP ${response.statusCode}',
+          uri: uri,
+        );
+      }
+    } catch (e, stackTrace) {
+      ErrorService.log(
+        e,
+        userMessage: 'Error getting book from OpenLibrary',
+        stackTrace: stackTrace,
+      );
+      return null;
     }
   }
 }

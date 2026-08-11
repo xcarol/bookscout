@@ -104,7 +104,7 @@ class GoogleBooksService {
 
         final books = items
             .whereType<Map<String, dynamic>>()
-            .map((item) => Book.fromGoogleBooksJson(item))
+            .map((item) => Book.fromGoogleBooksJson(item, isLite: true))
             .where((b) => b.title.isNotEmpty)
             .toList();
 

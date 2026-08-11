@@ -4,6 +4,8 @@ import 'package:bookscout/database/app_database.dart';
 import 'package:bookscout/database/tables/user_book_status.dart';
 import 'package:bookscout/models/book.dart' as model;
 import 'package:bookscout/services/core/database_service.dart';
+import 'package:bookscout/services/api/google_books_service.dart';
+import 'package:bookscout/services/api/open_library_service.dart';
 
 class LibraryRepository extends ChangeNotifier {
   final AppDatabase _db = DatabaseService.instance;
@@ -36,13 +38,27 @@ class LibraryRepository extends ChangeNotifier {
   }
 
   Future<void> addToLibrary(model.Book book) async {
+    model.Book bookToSave = book;
+    if (book.isLite) {
+      final googleBook = await GoogleBooksService().getBookById(book.id);
+      if (googleBook != null) {
+        bookToSave = googleBook;
+      }
+      if (bookToSave.isbn != null) {
+        final olBook = await OpenLibraryService().getBookByIsbn(bookToSave.isbn!);
+        if (olBook != null) {
+          bookToSave = bookToSave.merge(olBook);
+        }
+      }
+    }
+
     await _db.transaction(() async {
       await _db
           .into(_db.books)
-          .insert(book.toCompanion(), mode: InsertMode.insertOrReplace);
+          .insert(bookToSave.toCompanion(), mode: InsertMode.insertOrReplace);
 
-      for (int i = 0; i < book.authors.length; i++) {
-        final authorName = book.authors[i];
+      for (int i = 0; i < bookToSave.authors.length; i++) {
+        final authorName = bookToSave.authors[i];
         final authorId = authorName
             .toLowerCase()
             .replaceAll(' ', '_')
@@ -60,7 +76,7 @@ class LibraryRepository extends ChangeNotifier {
             .into(_db.bookAuthors)
             .insert(
               BookAuthorsCompanion.insert(
-                bookId: book.id,
+                bookId: bookToSave.id,
                 authorId: authorId,
                 orderIndex: Value(i),
               ),
@@ -72,13 +88,13 @@ class LibraryRepository extends ChangeNotifier {
           .into(_db.userBookStatuses)
           .insert(
             UserBookStatusesCompanion.insert(
-              bookId: book.id,
+              bookId: bookToSave.id,
               status: BookReadingStatus.wantToRead,
             ),
             mode: InsertMode.insertOrReplace,
           );
     });
-    _libraryBookIds.add(book.id);
+    _libraryBookIds.add(bookToSave.id);
     notifyListeners();
   }
 

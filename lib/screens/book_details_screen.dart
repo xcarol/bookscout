@@ -4,11 +4,61 @@ import 'package:bookscout/widgets/buttons/library_button.dart';
 import 'package:bookscout/widgets/text_and_info/expandable_description.dart';
 import 'package:bookscout/l10n/app_localizations.dart';
 import 'package:bookscout/models/custom_colors.dart';
+import 'package:provider/provider.dart';
+import 'package:bookscout/services/books/library_repository.dart';
+import 'package:bookscout/services/api/google_books_service.dart';
+import 'package:bookscout/services/api/open_library_service.dart';
 
-class BookDetailsScreen extends StatelessWidget {
+class BookDetailsScreen extends StatefulWidget {
   final Book book;
 
   const BookDetailsScreen({super.key, required this.book});
+
+  @override
+  State<BookDetailsScreen> createState() => _BookDetailsScreenState();
+}
+
+class _BookDetailsScreenState extends State<BookDetailsScreen> {
+  late Book _book;
+  bool _isLoadingFull = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _book = widget.book;
+    _loadFullDetailsIfNeeded();
+  }
+
+  Future<void> _loadFullDetailsIfNeeded() async {
+    if (!_book.isLite) return;
+
+    setState(() => _isLoadingFull = true);
+    final repo = context.read<LibraryRepository>();
+    
+    if (repo.isInLibrary(_book.id)) {
+      final fullBook = await repo.getBook(_book.id);
+      if (fullBook != null && mounted) {
+        setState(() => _book = fullBook);
+      }
+    } else {
+      var fullBook = await GoogleBooksService().getBookById(_book.id);
+      if (fullBook != null) {
+        if (fullBook.isbn != null) {
+          final olBook = await OpenLibraryService().getBookByIsbn(fullBook.isbn!);
+          if (olBook != null) {
+            fullBook = fullBook.merge(olBook);
+          }
+        }
+        if (mounted) {
+          setState(() => _book = fullBook!);
+        }
+      }
+    }
+    
+    if (mounted) {
+      setState(() => _isLoadingFull = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +113,7 @@ class BookDetailsScreen extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
                       child: Center(
                         child: Hero(
-                          tag: 'book_cover_${book.id}',
+                          tag: 'book_cover_${_book.id}',
                           child: AspectRatio(
                             aspectRatio: 0.65,
                             child: Container(
@@ -79,10 +129,10 @@ class BookDetailsScreen extends StatelessWidget {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(4.0),
                                 child:
-                                    book.coverUrl != null &&
-                                        book.coverUrl!.isNotEmpty
+                                    _book.coverUrl != null &&
+                                        _book.coverUrl!.isNotEmpty
                                     ? Image.network(
-                                        book.coverUrl!,
+                                        _book.coverUrl!,
                                         fit: BoxFit.cover,
                                         errorBuilder:
                                             (context, error, stackTrace) =>
@@ -137,7 +187,7 @@ class BookDetailsScreen extends StatelessWidget {
             _buildMetadata(context),
             const SizedBox(height: 24),
             ExpandableDescription(
-              text: book.description ?? '',
+              text: _book.description ?? '',
               initialMaxLines: 20,
             ),
             const SizedBox(height: 40),
@@ -155,8 +205,12 @@ class BookDetailsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (_isLoadingFull) ...[
+                const Center(child: LinearProgressIndicator()),
+                const SizedBox(height: 16),
+              ],
               Text(
-                book.title,
+                _book.title,
                 style: theme.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -164,7 +218,7 @@ class BookDetailsScreen extends StatelessWidget {
             ],
           ),
         ),
-        LibraryButton(book: book),
+        LibraryButton(book: _book),
       ],
     );
   }
@@ -173,15 +227,15 @@ class BookDetailsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (book.authorsFormatted.isNotEmpty)
+        if (_book.authorsFormatted.isNotEmpty)
           Text(
-            book.authorsFormatted,
+            _book.authorsFormatted,
             style: theme.textTheme.titleMedium?.copyWith(
               color: theme.colorScheme.primary,
               fontWeight: FontWeight.w600,
             ),
           ),
-        if (book.authorsFormatted.isEmpty)
+        if (_book.authorsFormatted.isEmpty)
           Text(
             l10n.unknownAuthor,
             style: theme.textTheme.titleMedium?.copyWith(
@@ -189,10 +243,10 @@ class BookDetailsScreen extends StatelessWidget {
               fontStyle: FontStyle.italic,
             ),
           ),
-        if (book.subtitle != null && book.subtitle!.isNotEmpty) ...[
+        if (_book.subtitle != null && _book.subtitle!.isNotEmpty) ...[
           const SizedBox(height: 8),
           Text(
-            book.subtitle!,
+            _book.subtitle!,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -208,20 +262,24 @@ class BookDetailsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (book.pageCount != null)
-          _buildMetaRow(l10n.labelPages, book.pageCount.toString(), context),
-        if (book.publishedYear != null)
-          _buildMetaRow(l10n.labelPublished, book.publishedYear!, context),
-        if (book.publisher != null && book.publisher!.isNotEmpty)
-          _buildMetaRow(l10n.labelPublisher, book.publisher!, context),
-        if (book.language != null && book.language!.isNotEmpty)
-          _buildMetaRow(l10n.language, book.language!.toUpperCase(), context),
-        if (book.categories.isNotEmpty)
-          _buildMetaRow(l10n.labelGenres, book.categories.join(', '), context),
-        if (book.hasRating)
+        if (_book.pageCount != null)
+          _buildMetaRow(l10n.labelPages, _book.pageCount.toString(), context),
+        if (_book.publishedYear != null)
+          _buildMetaRow(l10n.labelPublished, _book.publishedYear!, context),
+        if (_book.publisher != null && _book.publisher!.isNotEmpty)
+          _buildMetaRow(l10n.labelPublisher, _book.publisher!, context),
+        if (_book.language != null && _book.language!.isNotEmpty)
+          _buildMetaRow(l10n.language, _book.language!.toUpperCase(), context),
+        if (_book.categories.isNotEmpty)
+          _buildMetaRow(
+            l10n.labelGenres,
+            _book.categories.join(', '),
+            context,
+          ),
+        if (_book.hasRating)
           _buildMetaRow(
             l10n.labelRating,
-            '${book.averageRating!.toStringAsFixed(1)} (${book.ratingsCount ?? 0})',
+            '${_book.averageRating!.toStringAsFixed(1)} (${_book.ratingsCount ?? 0})',
             context,
           ),
       ],
@@ -233,7 +291,9 @@ class BookDetailsScreen extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 6.0),
       child: Text(
         '$label: $value',
-        style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
       ),
     );
   }

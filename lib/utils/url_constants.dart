@@ -8,6 +8,7 @@ class UrlConstants {
   // OpenLibrary API
   static const String openLibraryApiAuthority = 'openlibrary.org';
   static const String openLibraryApiPath = '/search.json';
+  static const String openLibraryApiBooksPath = '/api/books';
   static const String openLibraryBaseUrl = 'https://openlibrary.org';
   static const String openLibraryCoversBaseUrl =
       'https://covers.openlibrary.org/b/id/';
