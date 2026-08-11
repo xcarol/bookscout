@@ -14,6 +14,11 @@ class Books extends Table {
   TextColumn get publishedDate => text().nullable()();
   TextColumn get coverUrl => text().nullable()();
   TextColumn get language => text().nullable()();
+  RealColumn get averageRating => real().nullable()();
+  IntColumn get ratingsCount => integer().nullable()();
+  TextColumn get categories => text().nullable()();
+  TextColumn get previewLink => text().nullable()();
+  TextColumn get infoLink => text().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 
   @override

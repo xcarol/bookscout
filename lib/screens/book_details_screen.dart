@@ -130,11 +130,11 @@ class BookDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTitleAndSubtitle(theme),
+            _buildTitle(theme),
             const SizedBox(height: 8),
-            _buildAuthors(theme),
-            const SizedBox(height: 16),
-            _buildStats(context, l10n),
+            _buildAuthorsAndSubtitle(theme, l10n),
+            const SizedBox(height: 24),
+            _buildMetadata(context),
             const SizedBox(height: 24),
             ExpandableDescription(
               text: book.description ?? '',
@@ -147,30 +147,54 @@ class BookDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTitleAndSubtitle(ThemeData theme) {
-    return Column(
+  Widget _buildTitle(ThemeData theme) {
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Text(
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
                 book.title,
                 style: theme.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-            LibraryButton(book: book),
-          ],
+            ],
+          ),
         ),
+        LibraryButton(book: book),
+      ],
+    );
+  }
+
+  Widget _buildAuthorsAndSubtitle(ThemeData theme, AppLocalizations l10n) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (book.authorsFormatted.isNotEmpty)
+          Text(
+            book.authorsFormatted,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.colorScheme.primary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        if (book.authorsFormatted.isEmpty)
+          Text(
+            l10n.unknownAuthor,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.colorScheme.primary,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
         if (book.subtitle != null && book.subtitle!.isNotEmpty) ...[
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           Text(
             book.subtitle!,
             style: theme.textTheme.titleMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
@@ -178,48 +202,39 @@ class BookDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAuthors(ThemeData theme) {
-    return Text(
-      book.authorsFormatted,
-      style: theme.textTheme.titleMedium?.copyWith(
-        color: theme.colorScheme.primary,
-        fontWeight: FontWeight.w600,
-      ),
-    );
-  }
+  Widget _buildMetadata(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
 
-  Widget _buildStats(BuildContext context, AppLocalizations l10n) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (book.pageCount != null)
-          _buildStat(context, Icons.pages, l10n.pagesCount(book.pageCount!)),
+          _buildMetaRow(l10n.labelPages, book.pageCount.toString(), context),
         if (book.publishedYear != null)
-          _buildStat(context, Icons.calendar_today, book.publishedYear!),
-        if (book.averageRating != null)
-          _buildStat(
+          _buildMetaRow(l10n.labelPublished, book.publishedYear!, context),
+        if (book.publisher != null && book.publisher!.isNotEmpty)
+          _buildMetaRow(l10n.labelPublisher, book.publisher!, context),
+        if (book.language != null && book.language!.isNotEmpty)
+          _buildMetaRow(l10n.language, book.language!.toUpperCase(), context),
+        if (book.categories.isNotEmpty)
+          _buildMetaRow(l10n.labelGenres, book.categories.join(', '), context),
+        if (book.hasRating)
+          _buildMetaRow(
+            l10n.labelRating,
+            '${book.averageRating!.toStringAsFixed(1)} (${book.ratingsCount ?? 0})',
             context,
-            Icons.star,
-            book.averageRating!.toStringAsFixed(1),
           ),
-        if (book.language != null)
-          _buildStat(context, Icons.language, book.language!.toUpperCase()),
       ],
     );
   }
 
-  Widget _buildStat(BuildContext context, IconData icon, String value) {
-    return Column(
-      children: [
-        Icon(icon, color: Theme.of(context).colorScheme.onSurfaceVariant),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-        ),
-      ],
+  Widget _buildMetaRow(String label, String value, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6.0),
+      child: Text(
+        '$label: $value',
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+      ),
     );
   }
 }

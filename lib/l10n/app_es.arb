@@ -116,5 +116,17 @@
   "locationOther": "Otro",
   "@locationOther": {},
   "missingDescription": "No hay descripción disponible.",
-  "@missingDescription": {}
+  "@missingDescription": {},
+  "labelPages": "Páginas",
+  "@labelPages": {},
+  "labelPublished": "Publicación",
+  "@labelPublished": {},
+  "labelPublisher": "Editorial",
+  "@labelPublisher": {},
+  "labelGenres": "Géneros",
+  "@labelGenres": {},
+  "labelRating": "Valoración",
+  "@labelRating": {},
+  "labelAuthors": "Autores",
+  "@labelAuthors": {}
 }

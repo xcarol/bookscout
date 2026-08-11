@@ -161,4 +161,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get missingDescription => 'No hay descripción disponible.';
+
+  @override
+  String get labelPages => 'Páginas';
+
+  @override
+  String get labelPublished => 'Publicación';
+
+  @override
+  String get labelPublisher => 'Editorial';
+
+  @override
+  String get labelGenres => 'Géneros';
+
+  @override
+  String get labelRating => 'Valoración';
+
+  @override
+  String get labelAuthors => 'Autores';
 }

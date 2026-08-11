@@ -19,6 +19,8 @@ class Book {
   final int? ratingsCount;
   final String? coverUrl;
   final String? language;
+  final String? previewLink;
+  final String? infoLink;
   final DateTime? createdAt;
 
   final double? userRating;
@@ -43,6 +45,8 @@ class Book {
     this.ratingsCount,
     this.coverUrl,
     this.language,
+    this.previewLink,
+    this.infoLink,
     this.createdAt,
     this.userRating,
     this.readingStatus,
@@ -131,11 +135,11 @@ class Book {
           imageLinks['thumbnail'] ??
           imageLinks['smallThumbnail'];
 
-      if (rawCover is String && rawCover.isNotEmpty) {
-        coverUrl = rawCover
-            .replaceFirst('http://', 'https://')
-            .replaceAll('&edge=curl', '');
-      }
+      coverUrl = (rawCover is String)
+          ? rawCover
+                .replaceFirst('http://', 'https://')
+                .replaceAll('&edge=curl', '')
+          : null;
     }
 
     return Book(
@@ -154,6 +158,8 @@ class Book {
       ratingsCount: ratingsCount,
       coverUrl: coverUrl,
       language: language,
+      previewLink: volumeInfo['previewLink'] as String?,
+      infoLink: volumeInfo['infoLink'] as String?,
     );
   }
 
@@ -251,6 +257,13 @@ class Book {
       publishedDate: drift.Value(publishedDate),
       coverUrl: drift.Value(coverUrl),
       language: drift.Value(language),
+      averageRating: drift.Value(averageRating),
+      ratingsCount: drift.Value(ratingsCount),
+      categories: drift.Value(
+        categories.isNotEmpty ? categories.join(',') : null,
+      ),
+      previewLink: drift.Value(previewLink),
+      infoLink: drift.Value(infoLink),
     );
   }
 
@@ -277,11 +290,14 @@ class Book {
       isbn10: data.isbn10,
       isbn13: data.isbn13,
       pageCount: data.pageCount,
+      categories: data.categories?.split(',') ?? const [],
       coverUrl: data.coverUrl,
       language: data.language,
+      previewLink: data.previewLink,
+      infoLink: data.infoLink,
       createdAt: data.createdAt,
-      averageRating: averageRating,
-      ratingsCount: ratingsCount,
+      averageRating: averageRating ?? data.averageRating,
+      ratingsCount: ratingsCount ?? data.ratingsCount,
       userRating: userRating,
       readingStatus: readingStatus,
       currentPage: currentPage,
@@ -307,6 +323,8 @@ class Book {
       'ratingsCount': ratingsCount,
       'coverUrl': coverUrl,
       'language': language,
+      'previewLink': previewLink,
+      'infoLink': infoLink,
       'createdAt': createdAt?.toIso8601String(),
       'userRating': userRating,
       'readingStatus': readingStatus,
@@ -337,6 +355,8 @@ class Book {
       ratingsCount: map['ratingsCount'] as int?,
       coverUrl: map['coverUrl'] as String?,
       language: map['language'] as String?,
+      previewLink: map['previewLink'] as String?,
+      infoLink: map['infoLink'] as String?,
       createdAt: map['createdAt'] != null
           ? DateTime.tryParse(map['createdAt'] as String)
           : null,
@@ -364,6 +384,8 @@ class Book {
     int? ratingsCount,
     String? coverUrl,
     String? language,
+    String? previewLink,
+    String? infoLink,
     DateTime? createdAt,
     double? userRating,
     String? readingStatus,
@@ -387,6 +409,8 @@ class Book {
       ratingsCount: ratingsCount ?? this.ratingsCount,
       coverUrl: coverUrl ?? this.coverUrl,
       language: language ?? this.language,
+      previewLink: previewLink ?? this.previewLink,
+      infoLink: infoLink ?? this.infoLink,
       createdAt: createdAt ?? this.createdAt,
       userRating: userRating ?? this.userRating,
       readingStatus: readingStatus ?? this.readingStatus,

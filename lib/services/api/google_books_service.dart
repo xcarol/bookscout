@@ -39,6 +39,12 @@ class GoogleBooksService {
   OpenLibraryService get _fallbackService =>
       openLibraryFallback ?? OpenLibraryService(client: _client);
 
+  Map<String, String> get _defaultHeaders => {
+    HttpHeaders.acceptHeader: 'application/json',
+    HttpHeaders.contentTypeHeader: 'application/json',
+    'Referer': 'https://com.xicra.bookscout/',
+  };
+
   /// Searches for books using the Google Books API.
   /// Requires [AppConstants.googleBooksApiKey] to be set in .env.
   /// Falls back to OpenLibrary API if HTTP 429 (quota / rate limit exceeded) is returned.
@@ -79,28 +85,14 @@ class GoogleBooksService {
 
     try {
       var response = await _client
-          .get(
-            uri,
-            headers: {
-              HttpHeaders.acceptHeader: 'application/json',
-              HttpHeaders.contentTypeHeader: 'application/json',
-              'Referer': 'https://com.xicra.bookscout/',
-            },
-          )
+          .get(uri, headers: _defaultHeaders)
           .timeout(_timeout);
 
       // If transient server error (500, 502, 503, 504), retry once after a short delay
       if (response.statusCode >= 500 && response.statusCode < 600) {
         await Future.delayed(const Duration(milliseconds: 600));
         response = await _client
-            .get(
-              uri,
-              headers: {
-                HttpHeaders.acceptHeader: 'application/json',
-                HttpHeaders.contentTypeHeader: 'application/json',
-                'Referer': 'https://com.xicra.bookscout/',
-              },
-            )
+            .get(uri, headers: _defaultHeaders)
             .timeout(_timeout);
       }
 
@@ -172,7 +164,10 @@ class GoogleBooksService {
       return null;
     }
 
-    final queryParameters = <String, String>{ApiConstants.key: apiKey};
+    final queryParameters = <String, String>{
+      ApiConstants.projection: ApiConstants.full,
+      ApiConstants.key: apiKey,
+    };
 
     final uri = Uri.https(
       _authority,
@@ -182,14 +177,14 @@ class GoogleBooksService {
 
     try {
       var response = await _client
-          .get(uri, headers: {HttpHeaders.acceptHeader: 'application/json'})
+          .get(uri, headers: _defaultHeaders)
           .timeout(_timeout);
 
       // If transient server error (500, 502, 503, 504), retry once
       if (response.statusCode >= 500 && response.statusCode < 600) {
         await Future.delayed(const Duration(milliseconds: 600));
         response = await _client
-            .get(uri, headers: {HttpHeaders.acceptHeader: 'application/json'})
+            .get(uri, headers: _defaultHeaders)
             .timeout(_timeout);
       }
 

@@ -161,4 +161,22 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get missingDescription => 'No hi ha descripció disponible.';
+
+  @override
+  String get labelPages => 'Pàgines';
+
+  @override
+  String get labelPublished => 'Publicació';
+
+  @override
+  String get labelPublisher => 'Editorial';
+
+  @override
+  String get labelGenres => 'Gèneres';
+
+  @override
+  String get labelRating => 'Valoració';
+
+  @override
+  String get labelAuthors => 'Autors';
 }
