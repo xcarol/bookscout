@@ -117,7 +117,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String errorEndPageLessThanStart(int end, int start) {
-    return 'La página final ($end) no puede ser menor a la inicial ($start).';
+    return 'La página final ($end) debe ser mayor que la inicial ($start).';
   }
 
   @override
@@ -158,4 +158,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get locationOther => 'Otro';
+
+  @override
+  String get missingDescription => 'No hay descripción disponible.';
 }

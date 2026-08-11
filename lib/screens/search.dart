@@ -7,6 +7,7 @@ import 'package:bookscout/services/books/book_search_service.dart';
 import 'package:bookscout/services/settings/search_history_service.dart';
 import 'package:bookscout/utils/app_constants.dart';
 import 'package:bookscout/widgets/cards/book_card.dart';
+import 'package:bookscout/screens/book_details_screen.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -476,7 +477,11 @@ class _SearchState extends State<Search> {
           return BookCard(
             book: book,
             onTap: () {
-              // Ready for details navigation in future phases
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => BookDetailsScreen(book: book),
+                ),
+              );
             },
           );
         },

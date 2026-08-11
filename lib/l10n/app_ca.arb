@@ -113,6 +113,8 @@
   "@locationPark": {},
   "locationCafe": "Cafeteria",
   "@locationCafe": {},
-  "locationOther": "Altre",
-  "@locationOther": {}
+  "locationOther": "Altres",
+  "@locationOther": {},
+  "missingDescription": "No hi ha descripció disponible.",
+  "@missingDescription": {}
 }

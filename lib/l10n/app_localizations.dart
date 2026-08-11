@@ -301,7 +301,7 @@ abstract class AppLocalizations {
   /// No description provided for @errorEndPageLessThanStart.
   ///
   /// In en, this message translates to:
-  /// **'End page ({end}) cannot be less than start page ({start}).'**
+  /// **'End page ({end}) must be greater than start page ({start}).'**
   String errorEndPageLessThanStart(int end, int start);
 
   /// No description provided for @startLabel.
@@ -381,6 +381,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get locationOther;
+
+  /// No description provided for @missingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'No description available.'**
+  String get missingDescription;
 }
 
 class _AppLocalizationsDelegate

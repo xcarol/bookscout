@@ -1,0 +1,30 @@
+import 'package:flutter/material.dart';
+import 'package:bookscout/l10n/app_localizations.dart';
+import 'package:bookscout/widgets/text_and_info/expandable_text.dart';
+
+class ExpandableDescription extends StatelessWidget {
+  final String text;
+  final int initialMaxLines;
+
+  const ExpandableDescription({
+    super.key,
+    required this.text,
+    this.initialMaxLines = 3,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final displayText = text.isEmpty
+        ? AppLocalizations.of(context)!.missingDescription
+        : text;
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: ExpandableText(
+        text: displayText,
+        initialMaxLines: initialMaxLines,
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+      ),
+    );
+  }
+}

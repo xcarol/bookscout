@@ -114,5 +114,7 @@
   "locationCafe": "Cafe",
   "@locationCafe": {},
   "locationOther": "Other",
-  "@locationOther": {}
+  "@locationOther": {},
+  "missingDescription": "No description available.",
+  "@missingDescription": {}
 }
