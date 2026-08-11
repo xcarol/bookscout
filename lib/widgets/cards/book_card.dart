@@ -105,6 +105,9 @@ class BookCard extends StatelessWidget {
     if (book.pageCount != null && book.pageCount! > 0) {
       metaParts.add(l10n.pagesCount(book.pageCount!));
     }
+    if (book.language != null && book.language!.isNotEmpty) {
+      metaParts.add(book.language!.toUpperCase());
+    }
 
     return Expanded(
       child: Padding(
