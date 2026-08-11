@@ -489,6 +489,61 @@ class $BooksTable extends Books with TableInfo<$BooksTable, Book> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _averageRatingMeta = const VerificationMeta(
+    'averageRating',
+  );
+  @override
+  late final GeneratedColumn<double> averageRating = GeneratedColumn<double>(
+    'average_rating',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _ratingsCountMeta = const VerificationMeta(
+    'ratingsCount',
+  );
+  @override
+  late final GeneratedColumn<int> ratingsCount = GeneratedColumn<int>(
+    'ratings_count',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _categoriesMeta = const VerificationMeta(
+    'categories',
+  );
+  @override
+  late final GeneratedColumn<String> categories = GeneratedColumn<String>(
+    'categories',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _previewLinkMeta = const VerificationMeta(
+    'previewLink',
+  );
+  @override
+  late final GeneratedColumn<String> previewLink = GeneratedColumn<String>(
+    'preview_link',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _infoLinkMeta = const VerificationMeta(
+    'infoLink',
+  );
+  @override
+  late final GeneratedColumn<String> infoLink = GeneratedColumn<String>(
+    'info_link',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -515,6 +570,11 @@ class $BooksTable extends Books with TableInfo<$BooksTable, Book> {
     publishedDate,
     coverUrl,
     language,
+    averageRating,
+    ratingsCount,
+    categories,
+    previewLink,
+    infoLink,
     createdAt,
   ];
   @override
@@ -611,6 +671,45 @@ class $BooksTable extends Books with TableInfo<$BooksTable, Book> {
         language.isAcceptableOrUnknown(data['language']!, _languageMeta),
       );
     }
+    if (data.containsKey('average_rating')) {
+      context.handle(
+        _averageRatingMeta,
+        averageRating.isAcceptableOrUnknown(
+          data['average_rating']!,
+          _averageRatingMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ratings_count')) {
+      context.handle(
+        _ratingsCountMeta,
+        ratingsCount.isAcceptableOrUnknown(
+          data['ratings_count']!,
+          _ratingsCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('categories')) {
+      context.handle(
+        _categoriesMeta,
+        categories.isAcceptableOrUnknown(data['categories']!, _categoriesMeta),
+      );
+    }
+    if (data.containsKey('preview_link')) {
+      context.handle(
+        _previewLinkMeta,
+        previewLink.isAcceptableOrUnknown(
+          data['preview_link']!,
+          _previewLinkMeta,
+        ),
+      );
+    }
+    if (data.containsKey('info_link')) {
+      context.handle(
+        _infoLinkMeta,
+        infoLink.isAcceptableOrUnknown(data['info_link']!, _infoLinkMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -674,6 +773,26 @@ class $BooksTable extends Books with TableInfo<$BooksTable, Book> {
         DriftSqlType.string,
         data['${effectivePrefix}language'],
       ),
+      averageRating: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}average_rating'],
+      ),
+      ratingsCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}ratings_count'],
+      ),
+      categories: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}categories'],
+      ),
+      previewLink: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}preview_link'],
+      ),
+      infoLink: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}info_link'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -700,6 +819,11 @@ class Book extends DataClass implements Insertable<Book> {
   final String? publishedDate;
   final String? coverUrl;
   final String? language;
+  final double? averageRating;
+  final int? ratingsCount;
+  final String? categories;
+  final String? previewLink;
+  final String? infoLink;
   final DateTime createdAt;
   const Book({
     required this.id,
@@ -714,6 +838,11 @@ class Book extends DataClass implements Insertable<Book> {
     this.publishedDate,
     this.coverUrl,
     this.language,
+    this.averageRating,
+    this.ratingsCount,
+    this.categories,
+    this.previewLink,
+    this.infoLink,
     required this.createdAt,
   });
   @override
@@ -750,6 +879,21 @@ class Book extends DataClass implements Insertable<Book> {
     }
     if (!nullToAbsent || language != null) {
       map['language'] = Variable<String>(language);
+    }
+    if (!nullToAbsent || averageRating != null) {
+      map['average_rating'] = Variable<double>(averageRating);
+    }
+    if (!nullToAbsent || ratingsCount != null) {
+      map['ratings_count'] = Variable<int>(ratingsCount);
+    }
+    if (!nullToAbsent || categories != null) {
+      map['categories'] = Variable<String>(categories);
+    }
+    if (!nullToAbsent || previewLink != null) {
+      map['preview_link'] = Variable<String>(previewLink);
+    }
+    if (!nullToAbsent || infoLink != null) {
+      map['info_link'] = Variable<String>(infoLink);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
@@ -789,6 +933,21 @@ class Book extends DataClass implements Insertable<Book> {
       language: language == null && nullToAbsent
           ? const Value.absent()
           : Value(language),
+      averageRating: averageRating == null && nullToAbsent
+          ? const Value.absent()
+          : Value(averageRating),
+      ratingsCount: ratingsCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ratingsCount),
+      categories: categories == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categories),
+      previewLink: previewLink == null && nullToAbsent
+          ? const Value.absent()
+          : Value(previewLink),
+      infoLink: infoLink == null && nullToAbsent
+          ? const Value.absent()
+          : Value(infoLink),
       createdAt: Value(createdAt),
     );
   }
@@ -811,6 +970,11 @@ class Book extends DataClass implements Insertable<Book> {
       publishedDate: serializer.fromJson<String?>(json['publishedDate']),
       coverUrl: serializer.fromJson<String?>(json['coverUrl']),
       language: serializer.fromJson<String?>(json['language']),
+      averageRating: serializer.fromJson<double?>(json['averageRating']),
+      ratingsCount: serializer.fromJson<int?>(json['ratingsCount']),
+      categories: serializer.fromJson<String?>(json['categories']),
+      previewLink: serializer.fromJson<String?>(json['previewLink']),
+      infoLink: serializer.fromJson<String?>(json['infoLink']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -830,6 +994,11 @@ class Book extends DataClass implements Insertable<Book> {
       'publishedDate': serializer.toJson<String?>(publishedDate),
       'coverUrl': serializer.toJson<String?>(coverUrl),
       'language': serializer.toJson<String?>(language),
+      'averageRating': serializer.toJson<double?>(averageRating),
+      'ratingsCount': serializer.toJson<int?>(ratingsCount),
+      'categories': serializer.toJson<String?>(categories),
+      'previewLink': serializer.toJson<String?>(previewLink),
+      'infoLink': serializer.toJson<String?>(infoLink),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -847,6 +1016,11 @@ class Book extends DataClass implements Insertable<Book> {
     Value<String?> publishedDate = const Value.absent(),
     Value<String?> coverUrl = const Value.absent(),
     Value<String?> language = const Value.absent(),
+    Value<double?> averageRating = const Value.absent(),
+    Value<int?> ratingsCount = const Value.absent(),
+    Value<String?> categories = const Value.absent(),
+    Value<String?> previewLink = const Value.absent(),
+    Value<String?> infoLink = const Value.absent(),
     DateTime? createdAt,
   }) => Book(
     id: id ?? this.id,
@@ -865,6 +1039,13 @@ class Book extends DataClass implements Insertable<Book> {
         : this.publishedDate,
     coverUrl: coverUrl.present ? coverUrl.value : this.coverUrl,
     language: language.present ? language.value : this.language,
+    averageRating: averageRating.present
+        ? averageRating.value
+        : this.averageRating,
+    ratingsCount: ratingsCount.present ? ratingsCount.value : this.ratingsCount,
+    categories: categories.present ? categories.value : this.categories,
+    previewLink: previewLink.present ? previewLink.value : this.previewLink,
+    infoLink: infoLink.present ? infoLink.value : this.infoLink,
     createdAt: createdAt ?? this.createdAt,
   );
   Book copyWithCompanion(BooksCompanion data) {
@@ -887,6 +1068,19 @@ class Book extends DataClass implements Insertable<Book> {
           : this.publishedDate,
       coverUrl: data.coverUrl.present ? data.coverUrl.value : this.coverUrl,
       language: data.language.present ? data.language.value : this.language,
+      averageRating: data.averageRating.present
+          ? data.averageRating.value
+          : this.averageRating,
+      ratingsCount: data.ratingsCount.present
+          ? data.ratingsCount.value
+          : this.ratingsCount,
+      categories: data.categories.present
+          ? data.categories.value
+          : this.categories,
+      previewLink: data.previewLink.present
+          ? data.previewLink.value
+          : this.previewLink,
+      infoLink: data.infoLink.present ? data.infoLink.value : this.infoLink,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -906,6 +1100,11 @@ class Book extends DataClass implements Insertable<Book> {
           ..write('publishedDate: $publishedDate, ')
           ..write('coverUrl: $coverUrl, ')
           ..write('language: $language, ')
+          ..write('averageRating: $averageRating, ')
+          ..write('ratingsCount: $ratingsCount, ')
+          ..write('categories: $categories, ')
+          ..write('previewLink: $previewLink, ')
+          ..write('infoLink: $infoLink, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -925,6 +1124,11 @@ class Book extends DataClass implements Insertable<Book> {
     publishedDate,
     coverUrl,
     language,
+    averageRating,
+    ratingsCount,
+    categories,
+    previewLink,
+    infoLink,
     createdAt,
   );
   @override
@@ -943,6 +1147,11 @@ class Book extends DataClass implements Insertable<Book> {
           other.publishedDate == this.publishedDate &&
           other.coverUrl == this.coverUrl &&
           other.language == this.language &&
+          other.averageRating == this.averageRating &&
+          other.ratingsCount == this.ratingsCount &&
+          other.categories == this.categories &&
+          other.previewLink == this.previewLink &&
+          other.infoLink == this.infoLink &&
           other.createdAt == this.createdAt);
 }
 
@@ -959,6 +1168,11 @@ class BooksCompanion extends UpdateCompanion<Book> {
   final Value<String?> publishedDate;
   final Value<String?> coverUrl;
   final Value<String?> language;
+  final Value<double?> averageRating;
+  final Value<int?> ratingsCount;
+  final Value<String?> categories;
+  final Value<String?> previewLink;
+  final Value<String?> infoLink;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const BooksCompanion({
@@ -974,6 +1188,11 @@ class BooksCompanion extends UpdateCompanion<Book> {
     this.publishedDate = const Value.absent(),
     this.coverUrl = const Value.absent(),
     this.language = const Value.absent(),
+    this.averageRating = const Value.absent(),
+    this.ratingsCount = const Value.absent(),
+    this.categories = const Value.absent(),
+    this.previewLink = const Value.absent(),
+    this.infoLink = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -990,6 +1209,11 @@ class BooksCompanion extends UpdateCompanion<Book> {
     this.publishedDate = const Value.absent(),
     this.coverUrl = const Value.absent(),
     this.language = const Value.absent(),
+    this.averageRating = const Value.absent(),
+    this.ratingsCount = const Value.absent(),
+    this.categories = const Value.absent(),
+    this.previewLink = const Value.absent(),
+    this.infoLink = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -1007,6 +1231,11 @@ class BooksCompanion extends UpdateCompanion<Book> {
     Expression<String>? publishedDate,
     Expression<String>? coverUrl,
     Expression<String>? language,
+    Expression<double>? averageRating,
+    Expression<int>? ratingsCount,
+    Expression<String>? categories,
+    Expression<String>? previewLink,
+    Expression<String>? infoLink,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
@@ -1023,6 +1252,11 @@ class BooksCompanion extends UpdateCompanion<Book> {
       if (publishedDate != null) 'published_date': publishedDate,
       if (coverUrl != null) 'cover_url': coverUrl,
       if (language != null) 'language': language,
+      if (averageRating != null) 'average_rating': averageRating,
+      if (ratingsCount != null) 'ratings_count': ratingsCount,
+      if (categories != null) 'categories': categories,
+      if (previewLink != null) 'preview_link': previewLink,
+      if (infoLink != null) 'info_link': infoLink,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1041,6 +1275,11 @@ class BooksCompanion extends UpdateCompanion<Book> {
     Value<String?>? publishedDate,
     Value<String?>? coverUrl,
     Value<String?>? language,
+    Value<double?>? averageRating,
+    Value<int?>? ratingsCount,
+    Value<String?>? categories,
+    Value<String?>? previewLink,
+    Value<String?>? infoLink,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
   }) {
@@ -1057,6 +1296,11 @@ class BooksCompanion extends UpdateCompanion<Book> {
       publishedDate: publishedDate ?? this.publishedDate,
       coverUrl: coverUrl ?? this.coverUrl,
       language: language ?? this.language,
+      averageRating: averageRating ?? this.averageRating,
+      ratingsCount: ratingsCount ?? this.ratingsCount,
+      categories: categories ?? this.categories,
+      previewLink: previewLink ?? this.previewLink,
+      infoLink: infoLink ?? this.infoLink,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -1101,6 +1345,21 @@ class BooksCompanion extends UpdateCompanion<Book> {
     if (language.present) {
       map['language'] = Variable<String>(language.value);
     }
+    if (averageRating.present) {
+      map['average_rating'] = Variable<double>(averageRating.value);
+    }
+    if (ratingsCount.present) {
+      map['ratings_count'] = Variable<int>(ratingsCount.value);
+    }
+    if (categories.present) {
+      map['categories'] = Variable<String>(categories.value);
+    }
+    if (previewLink.present) {
+      map['preview_link'] = Variable<String>(previewLink.value);
+    }
+    if (infoLink.present) {
+      map['info_link'] = Variable<String>(infoLink.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1125,6 +1384,11 @@ class BooksCompanion extends UpdateCompanion<Book> {
           ..write('publishedDate: $publishedDate, ')
           ..write('coverUrl: $coverUrl, ')
           ..write('language: $language, ')
+          ..write('averageRating: $averageRating, ')
+          ..write('ratingsCount: $ratingsCount, ')
+          ..write('categories: $categories, ')
+          ..write('previewLink: $previewLink, ')
+          ..write('infoLink: $infoLink, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -2857,6 +3121,11 @@ typedef $$BooksTableCreateCompanionBuilder =
       Value<String?> publishedDate,
       Value<String?> coverUrl,
       Value<String?> language,
+      Value<double?> averageRating,
+      Value<int?> ratingsCount,
+      Value<String?> categories,
+      Value<String?> previewLink,
+      Value<String?> infoLink,
       Value<DateTime> createdAt,
       Value<int> rowid,
     });
@@ -2874,6 +3143,11 @@ typedef $$BooksTableUpdateCompanionBuilder =
       Value<String?> publishedDate,
       Value<String?> coverUrl,
       Value<String?> language,
+      Value<double?> averageRating,
+      Value<int?> ratingsCount,
+      Value<String?> categories,
+      Value<String?> previewLink,
+      Value<String?> infoLink,
       Value<DateTime> createdAt,
       Value<int> rowid,
     });
@@ -2943,6 +3217,31 @@ class $$BooksTableFilterComposer extends Composer<_$AppDatabase, $BooksTable> {
 
   ColumnFilters<String> get language => $composableBuilder(
     column: $table.language,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get averageRating => $composableBuilder(
+    column: $table.averageRating,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ratingsCount => $composableBuilder(
+    column: $table.ratingsCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get categories => $composableBuilder(
+    column: $table.categories,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get previewLink => $composableBuilder(
+    column: $table.previewLink,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get infoLink => $composableBuilder(
+    column: $table.infoLink,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3021,6 +3320,31 @@ class $$BooksTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<double> get averageRating => $composableBuilder(
+    column: $table.averageRating,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get ratingsCount => $composableBuilder(
+    column: $table.ratingsCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get categories => $composableBuilder(
+    column: $table.categories,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get previewLink => $composableBuilder(
+    column: $table.previewLink,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get infoLink => $composableBuilder(
+    column: $table.infoLink,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -3078,6 +3402,29 @@ class $$BooksTableAnnotationComposer
   GeneratedColumn<String> get language =>
       $composableBuilder(column: $table.language, builder: (column) => column);
 
+  GeneratedColumn<double> get averageRating => $composableBuilder(
+    column: $table.averageRating,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get ratingsCount => $composableBuilder(
+    column: $table.ratingsCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get categories => $composableBuilder(
+    column: $table.categories,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get previewLink => $composableBuilder(
+    column: $table.previewLink,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get infoLink =>
+      $composableBuilder(column: $table.infoLink, builder: (column) => column);
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 }
@@ -3122,6 +3469,11 @@ class $$BooksTableTableManager
                 Value<String?> publishedDate = const Value.absent(),
                 Value<String?> coverUrl = const Value.absent(),
                 Value<String?> language = const Value.absent(),
+                Value<double?> averageRating = const Value.absent(),
+                Value<int?> ratingsCount = const Value.absent(),
+                Value<String?> categories = const Value.absent(),
+                Value<String?> previewLink = const Value.absent(),
+                Value<String?> infoLink = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BooksCompanion(
@@ -3137,6 +3489,11 @@ class $$BooksTableTableManager
                 publishedDate: publishedDate,
                 coverUrl: coverUrl,
                 language: language,
+                averageRating: averageRating,
+                ratingsCount: ratingsCount,
+                categories: categories,
+                previewLink: previewLink,
+                infoLink: infoLink,
                 createdAt: createdAt,
                 rowid: rowid,
               ),
@@ -3154,6 +3511,11 @@ class $$BooksTableTableManager
                 Value<String?> publishedDate = const Value.absent(),
                 Value<String?> coverUrl = const Value.absent(),
                 Value<String?> language = const Value.absent(),
+                Value<double?> averageRating = const Value.absent(),
+                Value<int?> ratingsCount = const Value.absent(),
+                Value<String?> categories = const Value.absent(),
+                Value<String?> previewLink = const Value.absent(),
+                Value<String?> infoLink = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BooksCompanion.insert(
@@ -3169,6 +3531,11 @@ class $$BooksTableTableManager
                 publishedDate: publishedDate,
                 coverUrl: coverUrl,
                 language: language,
+                averageRating: averageRating,
+                ratingsCount: ratingsCount,
+                categories: categories,
+                previewLink: previewLink,
+                infoLink: infoLink,
                 createdAt: createdAt,
                 rowid: rowid,
               ),

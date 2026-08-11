@@ -5,6 +5,7 @@ import 'package:bookscout/models/custom_colors.dart';
 import 'package:bookscout/services/books/reading_session_service.dart';
 import 'package:bookscout/widgets/cards/book_card.dart';
 import 'package:provider/provider.dart';
+import 'package:bookscout/screens/book_details_screen.dart';
 
 const double cardHeight = 280.0;
 const double cardWidth = 140.0;
@@ -28,7 +29,11 @@ class BookChip extends StatelessWidget {
           margin: EdgeInsets.zero,
           child: InkWell(
             onTap: () {
-              // TODO: Navigate to book details
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => BookDetailsScreen(book: book),
+                ),
+              );
             },
             child: Stack(
               fit: StackFit.expand,

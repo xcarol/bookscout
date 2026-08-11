@@ -301,7 +301,7 @@ abstract class AppLocalizations {
   /// No description provided for @errorEndPageLessThanStart.
   ///
   /// In en, this message translates to:
-  /// **'End page ({end}) cannot be less than start page ({start}).'**
+  /// **'End page ({end}) must be greater than start page ({start}).'**
   String errorEndPageLessThanStart(int end, int start);
 
   /// No description provided for @startLabel.
@@ -381,6 +381,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get locationOther;
+
+  /// No description provided for @missingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'No description available.'**
+  String get missingDescription;
+
+  /// No description provided for @labelPages.
+  ///
+  /// In en, this message translates to:
+  /// **'Pages'**
+  String get labelPages;
+
+  /// No description provided for @labelPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Published'**
+  String get labelPublished;
+
+  /// No description provided for @labelPublisher.
+  ///
+  /// In en, this message translates to:
+  /// **'Publisher'**
+  String get labelPublisher;
+
+  /// No description provided for @labelGenres.
+  ///
+  /// In en, this message translates to:
+  /// **'Genres'**
+  String get labelGenres;
+
+  /// No description provided for @labelRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating'**
+  String get labelRating;
+
+  /// No description provided for @labelAuthors.
+  ///
+  /// In en, this message translates to:
+  /// **'Authors'**
+  String get labelAuthors;
 }
 
 class _AppLocalizationsDelegate

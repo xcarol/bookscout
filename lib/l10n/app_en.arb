@@ -114,5 +114,19 @@
   "locationCafe": "Cafe",
   "@locationCafe": {},
   "locationOther": "Other",
-  "@locationOther": {}
+  "@locationOther": {},
+  "missingDescription": "No description available.",
+  "@missingDescription": {},
+  "labelPages": "Pages",
+  "@labelPages": {},
+  "labelPublished": "Published",
+  "@labelPublished": {},
+  "labelPublisher": "Publisher",
+  "@labelPublisher": {},
+  "labelGenres": "Genres",
+  "@labelGenres": {},
+  "labelRating": "Rating",
+  "@labelRating": {},
+  "labelAuthors": "Authors",
+  "@labelAuthors": {}
 }

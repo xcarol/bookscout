@@ -4,6 +4,8 @@ import 'package:bookscout/database/app_database.dart';
 import 'package:bookscout/database/tables/user_book_status.dart';
 import 'package:bookscout/models/book.dart' as model;
 import 'package:bookscout/services/core/database_service.dart';
+import 'package:bookscout/services/api/google_books_service.dart';
+import 'package:bookscout/services/api/open_library_service.dart';
 
 class LibraryRepository extends ChangeNotifier {
   final AppDatabase _db = DatabaseService.instance;
@@ -36,21 +38,63 @@ class LibraryRepository extends ChangeNotifier {
   }
 
   Future<void> addToLibrary(model.Book book) async {
+    model.Book bookToSave = book;
+    if (book.isLite) {
+      final googleBook = await GoogleBooksService().getBookById(book.id);
+      if (googleBook != null) {
+        bookToSave = googleBook;
+      }
+      if (bookToSave.isbn != null) {
+        final olBook = await OpenLibraryService().getBookByIsbn(bookToSave.isbn!);
+        if (olBook != null) {
+          bookToSave = bookToSave.merge(olBook);
+        }
+      }
+    }
+
     await _db.transaction(() async {
       await _db
           .into(_db.books)
-          .insert(book.toCompanion(), mode: InsertMode.insertOrReplace);
+          .insert(bookToSave.toCompanion(), mode: InsertMode.insertOrReplace);
+
+      for (int i = 0; i < bookToSave.authors.length; i++) {
+        final authorName = bookToSave.authors[i];
+        final authorId = authorName
+            .toLowerCase()
+            .replaceAll(' ', '_')
+            .replaceAll(RegExp(r'[^a-z0-9_]'), '');
+        if (authorId.isEmpty) continue;
+
+        await _db
+            .into(_db.authors)
+            .insert(
+              AuthorsCompanion.insert(id: authorId, name: authorName),
+              mode: InsertMode.insertOrIgnore,
+            );
+
+        await _db
+            .into(_db.bookAuthors)
+            .insert(
+              BookAuthorsCompanion.insert(
+                bookId: bookToSave.id,
+                authorId: authorId,
+                orderIndex: Value(i),
+              ),
+              mode: InsertMode.insertOrIgnore,
+            );
+      }
+
       await _db
           .into(_db.userBookStatuses)
           .insert(
             UserBookStatusesCompanion.insert(
-              bookId: book.id,
+              bookId: bookToSave.id,
               status: BookReadingStatus.wantToRead,
             ),
             mode: InsertMode.insertOrReplace,
           );
     });
-    _libraryBookIds.add(book.id);
+    _libraryBookIds.add(bookToSave.id);
     notifyListeners();
   }
 
@@ -78,18 +122,39 @@ class LibraryRepository extends ChangeNotifier {
 
     final rows = await query.get();
 
-    return rows.map((row) {
+    final books = <model.Book>[];
+    for (final row in rows) {
       final bookData = row.readTable(_db.books);
       final statusData = row.readTable(_db.userBookStatuses);
 
-      return model.Book.fromDrift(
-        bookData,
-        currentPage: statusData.currentPage,
-        isFavorite: statusData.isFavorite,
-        userRating: statusData.rating,
-        readingStatus: statusData.status.name,
+      final authors = await _getAuthorsForBook(bookData.id);
+
+      books.add(
+        model.Book.fromDrift(
+          bookData,
+          authors: authors,
+          currentPage: statusData.currentPage,
+          isFavorite: statusData.isFavorite,
+          userRating: statusData.rating,
+          readingStatus: statusData.status.name,
+        ),
       );
-    }).toList();
+    }
+    return books;
+  }
+
+  Future<List<String>> _getAuthorsForBook(String bookId) async {
+    final authorsQuery =
+        _db.select(_db.bookAuthors).join([
+            innerJoin(
+              _db.authors,
+              _db.authors.id.equalsExp(_db.bookAuthors.authorId),
+            ),
+          ])
+          ..where(_db.bookAuthors.bookId.equals(bookId))
+          ..orderBy([OrderingTerm.asc(_db.bookAuthors.orderIndex)]);
+    final authorsRows = await authorsQuery.get();
+    return authorsRows.map((r) => r.readTable(_db.authors).name).toList();
   }
 
   Future<model.Book?> getBook(String id) async {
@@ -97,7 +162,9 @@ class LibraryRepository extends ChangeNotifier {
       _db.books,
     )..where((t) => t.id.equals(id))).getSingleOrNull();
     if (bookData == null) return null;
-    return model.Book.fromDrift(bookData);
+
+    final authors = await _getAuthorsForBook(id);
+    return model.Book.fromDrift(bookData, authors: authors);
   }
 
   Future<List<ReadingSession>> getReadingSessions(String bookId) async {

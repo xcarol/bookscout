@@ -19,12 +19,15 @@ class Book {
   final int? ratingsCount;
   final String? coverUrl;
   final String? language;
+  final String? previewLink;
+  final String? infoLink;
   final DateTime? createdAt;
 
   final double? userRating;
   final String? readingStatus;
   final int? currentPage;
   final bool isFavorite;
+  final bool isLite;
 
   const Book({
     required this.id,
@@ -43,11 +46,14 @@ class Book {
     this.ratingsCount,
     this.coverUrl,
     this.language,
+    this.previewLink,
+    this.infoLink,
     this.createdAt,
     this.userRating,
     this.readingStatus,
     this.currentPage,
     this.isFavorite = false,
+    this.isLite = false,
   });
 
   String get authorsFormatted {
@@ -65,7 +71,7 @@ class Book {
 
   String? get isbn => isbn13 ?? isbn10;
 
-  factory Book.fromGoogleBooksJson(Map<String, dynamic> json) {
+  factory Book.fromGoogleBooksJson(Map<String, dynamic> json, {bool isLite = false}) {
     final id = json['id'] as String? ?? '';
     final volumeInfo = json['volumeInfo'] as Map<String, dynamic>? ?? {};
 
@@ -131,11 +137,11 @@ class Book {
           imageLinks['thumbnail'] ??
           imageLinks['smallThumbnail'];
 
-      if (rawCover is String && rawCover.isNotEmpty) {
-        coverUrl = rawCover
-            .replaceFirst('http://', 'https://')
-            .replaceAll('&edge=curl', '');
-      }
+      coverUrl = (rawCover is String)
+          ? rawCover
+                .replaceFirst('http://', 'https://')
+                .replaceAll('&edge=curl', '')
+          : null;
     }
 
     return Book(
@@ -154,10 +160,13 @@ class Book {
       ratingsCount: ratingsCount,
       coverUrl: coverUrl,
       language: language,
+      previewLink: volumeInfo['previewLink'] as String?,
+      infoLink: volumeInfo['infoLink'] as String?,
+      isLite: isLite,
     );
   }
 
-  factory Book.fromOpenLibraryJson(Map<String, dynamic> json) {
+  factory Book.fromOpenLibraryJson(Map<String, dynamic> json, {bool isLite = false}) {
     final key = json['key'] as String? ?? '';
     final id = key.replaceAll('/works/', '');
     final title = json['title'] as String? ?? '';
@@ -234,6 +243,77 @@ class Book {
       ratingsCount: ratingsCount,
       coverUrl: coverUrl,
       language: language,
+      isLite: isLite,
+    );
+  }
+
+  factory Book.fromOpenLibraryDataJson(Map<String, dynamic> json) {
+    final title = json['title'] as String? ?? '';
+    final url = json['url'] as String?;
+    final id = json['key']?.toString().replaceAll('/books/', '') ?? '';
+
+    final authorsList = (json['authors'] as List?)
+        ?.map((a) => (a as Map)['name'].toString())
+        .toList() ?? const <String>[];
+
+    final publishDate = json['publish_date']?.toString();
+    final publishersList = (json['publishers'] as List?)
+        ?.map((p) => (p as Map)['name'].toString())
+        .toList();
+    final publisher = publishersList?.isNotEmpty == true ? publishersList!.first : null;
+
+    int? pageCount;
+    if (json['number_of_pages'] is num) {
+      pageCount = (json['number_of_pages'] as num).toInt();
+    }
+
+    final categoriesList = (json['subjects'] as List?)
+        ?.map((s) => (s as Map)['name'].toString())
+        .toList() ?? const <String>[];
+
+    String? coverUrl;
+    final cover = json['cover'] as Map?;
+    if (cover != null) {
+      coverUrl = cover['large'] ?? cover['medium'] ?? cover['small'];
+    }
+
+    return Book(
+      id: id,
+      title: title,
+      authors: authorsList,
+      publisher: publisher,
+      publishedDate: publishDate,
+      pageCount: pageCount,
+      categories: categoriesList,
+      coverUrl: coverUrl,
+      infoLink: url,
+    );
+  }
+
+  Book merge(Book other) {
+    return copyWith(
+      title: title.isEmpty ? other.title : title,
+      subtitle: subtitle?.isNotEmpty == true ? subtitle : other.subtitle,
+      originalTitle: originalTitle?.isNotEmpty == true ? originalTitle : other.originalTitle,
+      authors: authors.isNotEmpty ? authors : other.authors,
+      publisher: publisher?.isNotEmpty == true ? publisher : other.publisher,
+      publishedDate: publishedDate?.isNotEmpty == true ? publishedDate : other.publishedDate,
+      description: description?.isNotEmpty == true ? description : other.description,
+      isbn10: isbn10?.isNotEmpty == true ? isbn10 : other.isbn10,
+      isbn13: isbn13?.isNotEmpty == true ? isbn13 : other.isbn13,
+      pageCount: (pageCount != null && pageCount! > 0) ? pageCount : other.pageCount,
+      categories: categories.isNotEmpty ? categories : other.categories,
+      averageRating: averageRating ?? other.averageRating,
+      ratingsCount: ratingsCount ?? other.ratingsCount,
+      coverUrl: coverUrl?.isNotEmpty == true ? coverUrl : other.coverUrl,
+      language: language?.isNotEmpty == true ? language : other.language,
+      previewLink: previewLink?.isNotEmpty == true ? previewLink : other.previewLink,
+      infoLink: infoLink?.isNotEmpty == true ? infoLink : other.infoLink,
+      createdAt: createdAt ?? other.createdAt,
+      userRating: userRating ?? other.userRating,
+      readingStatus: readingStatus ?? other.readingStatus,
+      currentPage: currentPage ?? other.currentPage,
+      isLite: false,
     );
   }
 
@@ -251,12 +331,18 @@ class Book {
       publishedDate: drift.Value(publishedDate),
       coverUrl: drift.Value(coverUrl),
       language: drift.Value(language),
+      averageRating: drift.Value(averageRating),
+      ratingsCount: drift.Value(ratingsCount),
+      categories: drift.Value(
+        categories.isNotEmpty ? categories.join(',') : null,
+      ),
+      previewLink: drift.Value(previewLink),
+      infoLink: drift.Value(infoLink),
     );
   }
 
   factory Book.fromDrift(
     db.Book data, {
-
     List<String> authors = const [],
     double? averageRating,
     int? ratingsCount,
@@ -264,6 +350,7 @@ class Book {
     String? readingStatus,
     int? currentPage,
     bool isFavorite = false,
+    bool isLite = false,
   }) {
     return Book(
       id: data.id,
@@ -277,15 +364,19 @@ class Book {
       isbn10: data.isbn10,
       isbn13: data.isbn13,
       pageCount: data.pageCount,
+      categories: data.categories?.split(',') ?? const [],
       coverUrl: data.coverUrl,
       language: data.language,
+      previewLink: data.previewLink,
+      infoLink: data.infoLink,
       createdAt: data.createdAt,
-      averageRating: averageRating,
-      ratingsCount: ratingsCount,
+      averageRating: averageRating ?? data.averageRating,
+      ratingsCount: ratingsCount ?? data.ratingsCount,
       userRating: userRating,
       readingStatus: readingStatus,
       currentPage: currentPage,
       isFavorite: isFavorite,
+      isLite: isLite,
     );
   }
 
@@ -307,11 +398,14 @@ class Book {
       'ratingsCount': ratingsCount,
       'coverUrl': coverUrl,
       'language': language,
+      'previewLink': previewLink,
+      'infoLink': infoLink,
       'createdAt': createdAt?.toIso8601String(),
       'userRating': userRating,
       'readingStatus': readingStatus,
       'currentPage': currentPage,
       'isFavorite': isFavorite,
+      'isLite': isLite,
     };
   }
 
@@ -337,6 +431,8 @@ class Book {
       ratingsCount: map['ratingsCount'] as int?,
       coverUrl: map['coverUrl'] as String?,
       language: map['language'] as String?,
+      previewLink: map['previewLink'] as String?,
+      infoLink: map['infoLink'] as String?,
       createdAt: map['createdAt'] != null
           ? DateTime.tryParse(map['createdAt'] as String)
           : null,
@@ -344,6 +440,7 @@ class Book {
       readingStatus: map['readingStatus'] as String?,
       currentPage: map['currentPage'] as int?,
       isFavorite: map['isFavorite'] as bool? ?? false,
+      isLite: map['isLite'] as bool? ?? false,
     );
   }
 
@@ -364,11 +461,14 @@ class Book {
     int? ratingsCount,
     String? coverUrl,
     String? language,
+    String? previewLink,
+    String? infoLink,
     DateTime? createdAt,
     double? userRating,
     String? readingStatus,
     int? currentPage,
     bool? isFavorite,
+    bool? isLite,
   }) {
     return Book(
       id: id ?? this.id,
@@ -387,11 +487,14 @@ class Book {
       ratingsCount: ratingsCount ?? this.ratingsCount,
       coverUrl: coverUrl ?? this.coverUrl,
       language: language ?? this.language,
+      previewLink: previewLink ?? this.previewLink,
+      infoLink: infoLink ?? this.infoLink,
       createdAt: createdAt ?? this.createdAt,
       userRating: userRating ?? this.userRating,
       readingStatus: readingStatus ?? this.readingStatus,
       currentPage: currentPage ?? this.currentPage,
       isFavorite: isFavorite ?? this.isFavorite,
+      isLite: isLite ?? this.isLite,
     );
   }
 }

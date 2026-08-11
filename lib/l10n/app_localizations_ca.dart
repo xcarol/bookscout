@@ -117,7 +117,7 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String errorEndPageLessThanStart(int end, int start) {
-    return 'La pàgina final ($end) no pot ser menor a la inicial ($start).';
+    return 'La pàgina final ($end) ha de ser major que la inicial ($start).';
   }
 
   @override
@@ -157,5 +157,26 @@ class AppLocalizationsCa extends AppLocalizations {
   String get locationCafe => 'Cafeteria';
 
   @override
-  String get locationOther => 'Altre';
+  String get locationOther => 'Altres';
+
+  @override
+  String get missingDescription => 'No hi ha descripció disponible.';
+
+  @override
+  String get labelPages => 'Pàgines';
+
+  @override
+  String get labelPublished => 'Publicació';
+
+  @override
+  String get labelPublisher => 'Editorial';
+
+  @override
+  String get labelGenres => 'Gèneres';
+
+  @override
+  String get labelRating => 'Valoració';
+
+  @override
+  String get labelAuthors => 'Autors';
 }
