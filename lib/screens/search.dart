@@ -116,6 +116,9 @@ class _SearchState extends State<Search> {
           }
         },
       );
+      Timer(const Duration(seconds: 2), () {
+        _historyService.add(_controller.text);
+      });
     } else if (text.trim().isEmpty) {
       _resetLastSearch();
       _searchService.clear();
