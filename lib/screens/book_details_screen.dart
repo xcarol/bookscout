@@ -34,7 +34,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
 
     setState(() => _isLoadingFull = true);
     final repo = context.read<LibraryRepository>();
-    
+
     if (repo.isInLibrary(_book.id)) {
       final fullBook = await repo.getBook(_book.id);
       if (fullBook != null && mounted) {
@@ -44,7 +44,9 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
       var fullBook = await GoogleBooksService().getBookById(_book.id);
       if (fullBook != null) {
         if (fullBook.isbn != null) {
-          final olBook = await OpenLibraryService().getBookByIsbn(fullBook.isbn!);
+          final olBook = await OpenLibraryService().getBookByIsbn(
+            fullBook.isbn!,
+          );
           if (olBook != null) {
             fullBook = fullBook.merge(olBook);
           }
@@ -54,7 +56,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
         }
       }
     }
-    
+
     if (mounted) {
       setState(() => _isLoadingFull = false);
     }
@@ -271,11 +273,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
         if (_book.language != null && _book.language!.isNotEmpty)
           _buildMetaRow(l10n.language, _book.language!.toUpperCase(), context),
         if (_book.categories.isNotEmpty)
-          _buildMetaRow(
-            l10n.labelGenres,
-            _book.categories.join(', '),
-            context,
-          ),
+          _buildMetaRow(l10n.labelGenres, _book.categories.join(', '), context),
         if (_book.hasRating)
           _buildMetaRow(
             l10n.labelRating,
@@ -291,9 +289,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
       padding: const EdgeInsets.only(bottom: 6.0),
       child: Text(
         '$label: $value',
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
       ),
     );
   }
