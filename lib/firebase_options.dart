@@ -55,9 +55,10 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSy_PLACEHOLDER_ANDROID_KEY',
-    appId: '1:000000000000:android:placeholder',
-    messagingSenderId: '000000000000',
-    projectId: 'book-scout-app',
+    apiKey: 'AIzaSyCupnAa6ZVYoUEG75erzgAkbf5IT2cT1Go',
+    appId: '1:362913032287:android:70edfd7f4f83f3a80753ea',
+    messagingSenderId: '362913032287',
+    projectId: 'bookscout-a206b',
+    storageBucket: 'bookscout-a206b.firebasestorage.app',
   );
 }

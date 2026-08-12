@@ -1,5 +1,4 @@
 # BookScout related
-/android/app/google-services.json
 /bugreport*
 firebase.json
 .env*
