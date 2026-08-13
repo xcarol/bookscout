@@ -45,7 +45,9 @@ class LibraryRepository extends ChangeNotifier {
         bookToSave = googleBook;
       }
       if (bookToSave.isbn != null) {
-        final olBook = await OpenLibraryService().getBookByIsbn(bookToSave.isbn!);
+        final olBook = await OpenLibraryService().getBookByIsbn(
+          bookToSave.isbn!,
+        );
         if (olBook != null) {
           bookToSave = bookToSave.merge(olBook);
         }

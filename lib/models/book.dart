@@ -71,7 +71,10 @@ class Book {
 
   String? get isbn => isbn13 ?? isbn10;
 
-  factory Book.fromGoogleBooksJson(Map<String, dynamic> json, {bool isLite = false}) {
+  factory Book.fromGoogleBooksJson(
+    Map<String, dynamic> json, {
+    bool isLite = false,
+  }) {
     final id = json['id'] as String? ?? '';
     final volumeInfo = json['volumeInfo'] as Map<String, dynamic>? ?? {};
 
@@ -166,7 +169,10 @@ class Book {
     );
   }
 
-  factory Book.fromOpenLibraryJson(Map<String, dynamic> json, {bool isLite = false}) {
+  factory Book.fromOpenLibraryJson(
+    Map<String, dynamic> json, {
+    bool isLite = false,
+  }) {
     final key = json['key'] as String? ?? '';
     final id = key.replaceAll('/works/', '');
     final title = json['title'] as String? ?? '';
@@ -252,24 +258,30 @@ class Book {
     final url = json['url'] as String?;
     final id = json['key']?.toString().replaceAll('/books/', '') ?? '';
 
-    final authorsList = (json['authors'] as List?)
-        ?.map((a) => (a as Map)['name'].toString())
-        .toList() ?? const <String>[];
+    final authorsList =
+        (json['authors'] as List?)
+            ?.map((a) => (a as Map)['name'].toString())
+            .toList() ??
+        const <String>[];
 
     final publishDate = json['publish_date']?.toString();
     final publishersList = (json['publishers'] as List?)
         ?.map((p) => (p as Map)['name'].toString())
         .toList();
-    final publisher = publishersList?.isNotEmpty == true ? publishersList!.first : null;
+    final publisher = publishersList?.isNotEmpty == true
+        ? publishersList!.first
+        : null;
 
     int? pageCount;
     if (json['number_of_pages'] is num) {
       pageCount = (json['number_of_pages'] as num).toInt();
     }
 
-    final categoriesList = (json['subjects'] as List?)
-        ?.map((s) => (s as Map)['name'].toString())
-        .toList() ?? const <String>[];
+    final categoriesList =
+        (json['subjects'] as List?)
+            ?.map((s) => (s as Map)['name'].toString())
+            .toList() ??
+        const <String>[];
 
     String? coverUrl;
     final cover = json['cover'] as Map?;
@@ -294,20 +306,30 @@ class Book {
     return copyWith(
       title: title.isEmpty ? other.title : title,
       subtitle: subtitle?.isNotEmpty == true ? subtitle : other.subtitle,
-      originalTitle: originalTitle?.isNotEmpty == true ? originalTitle : other.originalTitle,
+      originalTitle: originalTitle?.isNotEmpty == true
+          ? originalTitle
+          : other.originalTitle,
       authors: authors.isNotEmpty ? authors : other.authors,
       publisher: publisher?.isNotEmpty == true ? publisher : other.publisher,
-      publishedDate: publishedDate?.isNotEmpty == true ? publishedDate : other.publishedDate,
-      description: description?.isNotEmpty == true ? description : other.description,
+      publishedDate: publishedDate?.isNotEmpty == true
+          ? publishedDate
+          : other.publishedDate,
+      description: description?.isNotEmpty == true
+          ? description
+          : other.description,
       isbn10: isbn10?.isNotEmpty == true ? isbn10 : other.isbn10,
       isbn13: isbn13?.isNotEmpty == true ? isbn13 : other.isbn13,
-      pageCount: (pageCount != null && pageCount! > 0) ? pageCount : other.pageCount,
+      pageCount: (pageCount != null && pageCount! > 0)
+          ? pageCount
+          : other.pageCount,
       categories: categories.isNotEmpty ? categories : other.categories,
       averageRating: averageRating ?? other.averageRating,
       ratingsCount: ratingsCount ?? other.ratingsCount,
       coverUrl: coverUrl?.isNotEmpty == true ? coverUrl : other.coverUrl,
       language: language?.isNotEmpty == true ? language : other.language,
-      previewLink: previewLink?.isNotEmpty == true ? previewLink : other.previewLink,
+      previewLink: previewLink?.isNotEmpty == true
+          ? previewLink
+          : other.previewLink,
       infoLink: infoLink?.isNotEmpty == true ? infoLink : other.infoLink,
       createdAt: createdAt ?? other.createdAt,
       userRating: userRating ?? other.userRating,
