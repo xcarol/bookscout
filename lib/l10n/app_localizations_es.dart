@@ -182,4 +182,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get actionDelete => 'Eliminar';
+
+  @override
+  String get searchFilterAll => 'Todos';
+
+  @override
+  String get searchFilterTitle => 'Título';
+
+  @override
+  String get searchFilterAuthor => 'Autor';
+
+  @override
+  String get searchFilterIsbn => 'ISBN';
 }

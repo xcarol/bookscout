@@ -10,6 +10,7 @@ import 'package:bookscout/services/core/error_service.dart';
 import 'package:bookscout/utils/api_constants.dart';
 import 'package:bookscout/utils/app_constants.dart';
 import 'package:bookscout/utils/url_constants.dart';
+import 'package:bookscout/models/search_filter.dart';
 
 class GoogleBooksSearchResult {
   final List<Book> books;
@@ -53,6 +54,7 @@ class GoogleBooksService {
     int startIndex = 0,
     int maxResults = AppConstants.maxSearchBooks,
     String? langRestrict,
+    SearchFilter filter = SearchFilter.title,
   }) async {
     final cleanQuery = query.trim();
     if (cleanQuery.isEmpty) {
@@ -68,8 +70,23 @@ class GoogleBooksService {
       return GoogleBooksSearchResult.empty;
     }
 
+    String qParam = cleanQuery;
+    switch (filter) {
+      case SearchFilter.title:
+        qParam = 'intitle:$cleanQuery';
+        break;
+      case SearchFilter.author:
+        qParam = 'inauthor:$cleanQuery';
+        break;
+      case SearchFilter.isbn:
+        qParam = 'isbn:$cleanQuery';
+        break;
+      case SearchFilter.all:
+        qParam = cleanQuery;
+    }
+
     final queryParameters = <String, String>{
-      ApiConstants.q: cleanQuery,
+      ApiConstants.q: qParam,
       ApiConstants.startIndex: startIndex.toString(),
       ApiConstants.maxResults: maxResults.toString(),
       ApiConstants.printType: ApiConstants.books,
@@ -119,6 +136,7 @@ class GoogleBooksService {
           cleanQuery,
           startIndex: startIndex,
           maxResults: maxResults,
+          filter: filter,
         );
       } else {
         final errorMsg =

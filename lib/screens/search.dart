@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bookscout/l10n/app_localizations.dart';
 import 'package:bookscout/models/book.dart';
+import 'package:bookscout/models/search_filter.dart';
 import 'package:bookscout/services/books/book_search_service.dart';
 import 'package:bookscout/services/settings/search_history_service.dart';
 import 'package:bookscout/utils/app_constants.dart';
@@ -25,6 +26,7 @@ class _SearchState extends State<Search> {
 
   String _previousText = '';
   String _lastSearchedText = '';
+  SearchFilter _searchFilter = SearchFilter.title;
   Timer? _debounce;
 
   final LayerLink _layerLink = LayerLink();
@@ -238,7 +240,11 @@ class _SearchState extends State<Search> {
 
     if (!mounted) return;
     final langCode = Localizations.localeOf(context).languageCode;
-    await _searchService.search(term, langCode: langCode);
+    await _searchService.search(
+      term,
+      langCode: langCode,
+      filter: _searchFilter,
+    );
   }
 
   @override
@@ -282,47 +288,85 @@ class _SearchState extends State<Search> {
         horizontal: _searchHorizontalPadding,
         vertical: _searchVerticalPadding,
       ),
-      child: TextField(
-        controller: _controller,
-        focusNode: _searchFocusNode,
-        style: TextStyle(color: textColor),
-        cursorColor: colorScheme.primary,
-        textInputAction: TextInputAction.search,
-        decoration: InputDecoration(
-          hintText: AppLocalizations.of(context)!.searchHint,
-          hintStyle: TextStyle(
-            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+      child: Column(
+        children: [
+          TextField(
+            controller: _controller,
+            focusNode: _searchFocusNode,
+            style: TextStyle(color: textColor),
+            cursorColor: colorScheme.primary,
+            textInputAction: TextInputAction.search,
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.searchHint,
+              hintStyle: TextStyle(
+                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+              ),
+              prefixIcon: Icon(Icons.search, color: colorScheme.primary),
+              suffixIcon: _controller.text.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () async =>
+                          await _resetSearch(clearText: true),
+                      tooltip: AppLocalizations.of(context)!.clearSearch,
+                    )
+                  : null,
+              filled: true,
+              fillColor: colorScheme.surface,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: borderColor),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: borderColor.withValues(alpha: 0.5),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: colorScheme.primary, width: 2),
+              ),
+            ),
+            onSubmitted: (title) {
+              searchBooks(title);
+            },
           ),
-          prefixIcon: Icon(Icons.search, color: colorScheme.primary),
-          suffixIcon: _controller.text.isNotEmpty
-              ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () async => await _resetSearch(clearText: true),
-                  tooltip: AppLocalizations.of(context)!.clearSearch,
-                )
-              : null,
-          filled: true,
-          fillColor: colorScheme.surface,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
+          const SizedBox(height: 12),
+          SegmentedButton<SearchFilter>(
+            segments: [
+              ButtonSegment<SearchFilter>(
+                value: SearchFilter.all,
+                label: Text(AppLocalizations.of(context)!.searchFilterAll),
+              ),
+              ButtonSegment<SearchFilter>(
+                value: SearchFilter.title,
+                label: Text(AppLocalizations.of(context)!.searchFilterTitle),
+              ),
+              ButtonSegment<SearchFilter>(
+                value: SearchFilter.author,
+                label: Text(AppLocalizations.of(context)!.searchFilterAuthor),
+              ),
+              ButtonSegment<SearchFilter>(
+                value: SearchFilter.isbn,
+                label: Text(AppLocalizations.of(context)!.searchFilterIsbn),
+              ),
+            ],
+            selected: <SearchFilter>{_searchFilter},
+            onSelectionChanged: (Set<SearchFilter> newSelection) {
+              setState(() {
+                _searchFilter = newSelection.first;
+              });
+              if (_controller.text.trim().isNotEmpty) {
+                _resetLastSearch();
+                searchBooks(_controller.text);
+              }
+            },
           ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: borderColor),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: borderColor.withValues(alpha: 0.5)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: colorScheme.primary, width: 2),
-          ),
-        ),
-        onSubmitted: (title) {
-          searchBooks(title);
-        },
+        ],
       ),
     );
   }

@@ -122,5 +122,13 @@
   "noReadingSessions": "No sessions",
   "@noReadingSessions": {},
   "actionDelete": "Delete",
-  "@actionDelete": {}
+  "@actionDelete": {},
+  "searchFilterAll": "All",
+  "@searchFilterAll": {},
+  "searchFilterTitle": "Title",
+  "@searchFilterTitle": {},
+  "searchFilterAuthor": "Author",
+  "@searchFilterAuthor": {},
+  "searchFilterIsbn": "ISBN",
+  "@searchFilterIsbn": {}
 }
