@@ -75,20 +75,6 @@
       "page": {"type": "int"}
     }
   },
-  "errorConflictStartedPage": "Conflict: Session on {date} started at page {page}.",
-  "@errorConflictStartedPage": {
-    "placeholders": {
-      "date": {"type": "String"},
-      "page": {"type": "int"}
-    }
-  },
-  "errorEndPageLessThanStart": "End page ({end}) must be greater than start page ({start}).",
-  "@errorEndPageLessThanStart": {
-    "placeholders": {
-      "end": {"type": "int"},
-      "start": {"type": "int"}
-    }
-  },
   "startLabel": "Start:",
   "@startLabel": {},
   "endLabel": "End:",
@@ -128,5 +114,13 @@
   "labelRating": "Rating",
   "@labelRating": {},
   "labelAuthors": "Authors",
-  "@labelAuthors": {}
+  "@labelAuthors": {},
+  "confirmDeleteSession": "Confirm Delete",
+  "@confirmDeleteSession": {},
+  "confirmDeleteSessionMessage": "Are you sure you want to delete this session?",
+  "@confirmDeleteSessionMessage": {},
+  "noReadingSessions": "No sessions",
+  "@noReadingSessions": {},
+  "actionDelete": "Delete",
+  "@actionDelete": {}
 }

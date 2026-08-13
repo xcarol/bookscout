@@ -292,18 +292,6 @@ abstract class AppLocalizations {
   /// **'Conflict: Session on {date} reached page {page}.'**
   String errorConflictReachedPage(String date, int page);
 
-  /// No description provided for @errorConflictStartedPage.
-  ///
-  /// In en, this message translates to:
-  /// **'Conflict: Session on {date} started at page {page}.'**
-  String errorConflictStartedPage(String date, int page);
-
-  /// No description provided for @errorEndPageLessThanStart.
-  ///
-  /// In en, this message translates to:
-  /// **'End page ({end}) must be greater than start page ({start}).'**
-  String errorEndPageLessThanStart(int end, int start);
-
   /// No description provided for @startLabel.
   ///
   /// In en, this message translates to:
@@ -423,6 +411,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Authors'**
   String get labelAuthors;
+
+  /// No description provided for @confirmDeleteSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Delete'**
+  String get confirmDeleteSession;
+
+  /// No description provided for @confirmDeleteSessionMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this session?'**
+  String get confirmDeleteSessionMessage;
+
+  /// No description provided for @noReadingSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'No sessions'**
+  String get noReadingSessions;
+
+  /// No description provided for @actionDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get actionDelete;
 }
 
 class _AppLocalizationsDelegate

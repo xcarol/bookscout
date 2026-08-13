@@ -80,10 +80,8 @@ class _ExpandableTextState extends State<ExpandableText> {
                 },
                 child: Center(
                   child: Icon(
-                    Icons.more_horiz,
-                    color: _isExpanded
-                        ? Colors.transparent
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                    _isExpanded ? Icons.keyboard_arrow_up : Icons.more_horiz,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),

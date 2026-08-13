@@ -111,16 +111,6 @@ class AppLocalizationsCa extends AppLocalizations {
   }
 
   @override
-  String errorConflictStartedPage(String date, int page) {
-    return 'Conflicte: La sessió del $date va començar a la pàgina $page.';
-  }
-
-  @override
-  String errorEndPageLessThanStart(int end, int start) {
-    return 'La pàgina final ($end) ha de ser major que la inicial ($start).';
-  }
-
-  @override
   String get startLabel => 'Inici:';
 
   @override
@@ -179,4 +169,17 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get labelAuthors => 'Autors';
+
+  @override
+  String get confirmDeleteSession => 'Confirmar eliminació';
+
+  @override
+  String get confirmDeleteSessionMessage =>
+      'Estàs segur que vols eliminar aquesta sessió?';
+
+  @override
+  String get noReadingSessions => 'No hi ha sessions';
+
+  @override
+  String get actionDelete => 'Eliminar';
 }

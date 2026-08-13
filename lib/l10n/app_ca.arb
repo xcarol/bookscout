@@ -75,20 +75,6 @@
       "page": {"type": "int"}
     }
   },
-  "errorConflictStartedPage": "Conflicte: La sessió del {date} va començar a la pàgina {page}.",
-  "@errorConflictStartedPage": {
-    "placeholders": {
-      "date": {"type": "String"},
-      "page": {"type": "int"}
-    }
-  },
-  "errorEndPageLessThanStart": "La pàgina final ({end}) ha de ser major que la inicial ({start}).",
-  "@errorEndPageLessThanStart": {
-    "placeholders": {
-      "end": {"type": "int"},
-      "start": {"type": "int"}
-    }
-  },
   "startLabel": "Inici:",
   "@startLabel": {},
   "endLabel": "Fi:",
@@ -128,5 +114,13 @@
   "labelRating": "Valoració",
   "@labelRating": {},
   "labelAuthors": "Autors",
-  "@labelAuthors": {}
+  "@labelAuthors": {},
+  "confirmDeleteSession": "Confirmar eliminació",
+  "@confirmDeleteSession": {},
+  "confirmDeleteSessionMessage": "Estàs segur que vols eliminar aquesta sessió?",
+  "@confirmDeleteSessionMessage": {},
+  "noReadingSessions": "No hi ha sessions",
+  "@noReadingSessions": {},
+  "actionDelete": "Eliminar",
+  "@actionDelete": {}
 }

@@ -3,20 +3,26 @@ import 'package:bookscout/database/app_database.dart';
 import 'package:bookscout/services/books/library_repository.dart';
 import 'package:bookscout/services/books/reading_session_service.dart';
 import 'package:provider/provider.dart';
-import 'package:drift/drift.dart' as drift;
 import 'package:intl/intl.dart';
 import 'package:bookscout/l10n/app_localizations.dart';
+import 'package:bookscout/utils/reading_session_validator.dart';
+import 'package:bookscout/models/reading_location.dart';
 
 class FinishReadingDialog extends StatefulWidget {
   final String bookId;
   final DateTime initialStartTime;
   final String? initialLocation;
 
+  final bool isManualAdd;
+  final ReadingSession? existingSession;
+
   const FinishReadingDialog({
     super.key,
     required this.bookId,
     required this.initialStartTime,
     this.initialLocation,
+    this.isManualAdd = false,
+    this.existingSession,
   });
 
   @override
@@ -35,18 +41,44 @@ class _FinishReadingDialogState extends State<FinishReadingDialog> {
   List<ReadingSession> _previousSessions = [];
   bool _isLoading = true;
   String? _errorMsg;
+  bool _initializedLocation = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initializedLocation) {
+      _initializedLocation = true;
+      final dbText =
+          widget.existingSession?.location ?? widget.initialLocation ?? '';
+      if (dbText.isNotEmpty) {
+        final loc = ReadingLocation.fromString(dbText);
+        if (loc != ReadingLocation.other || dbText == 'other') {
+          _locationController.text = loc.getLocalizedName(context);
+        } else {
+          _locationController.text = dbText;
+        }
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _startDate = widget.initialStartTime;
-    _startTime = TimeOfDay.fromDateTime(widget.initialStartTime);
+    if (widget.existingSession != null) {
+      final s = widget.existingSession!;
+      _endDate = s.date;
+      _endTime = TimeOfDay.fromDateTime(s.date);
+      _startDate = s.date.subtract(Duration(minutes: s.durationMinutes));
+      _startTime = TimeOfDay.fromDateTime(_startDate);
+      _pageController.text = s.endPage.toString();
+    } else {
+      _startDate = widget.initialStartTime;
+      _startTime = TimeOfDay.fromDateTime(widget.initialStartTime);
 
-    final now = DateTime.now();
-    _endDate = now;
-    _endTime = TimeOfDay.fromDateTime(now);
-
-    _locationController.text = widget.initialLocation ?? '';
+      final now = DateTime.now();
+      _endDate = now;
+      _endTime = TimeOfDay.fromDateTime(now);
+    }
 
     _loadPreviousSessions();
   }
@@ -60,23 +92,31 @@ class _FinishReadingDialogState extends State<FinishReadingDialog> {
 
   Future<void> _loadPreviousSessions() async {
     final repo = context.read<LibraryRepository>();
-    final sessions = await repo.getReadingSessions(widget.bookId);
+    var sessions = await repo.getReadingSessions(widget.bookId);
+
+    if (widget.existingSession != null) {
+      sessions = sessions
+          .where((s) => s.id != widget.existingSession!.id)
+          .toList();
+    }
+
     if (mounted) {
       setState(() {
         _previousSessions = sessions;
         _isLoading = false;
 
-        if (sessions.isNotEmpty) {
-          _pageController.text = sessions.first.endPage.toString();
-        } else {
-          _pageController.text = '0';
+        if (widget.existingSession == null) {
+          if (sessions.isNotEmpty) {
+            _pageController.text = sessions.first.endPage.toString();
+          } else {
+            _pageController.text = '0';
+          }
         }
       });
     }
   }
 
   Future<void> _save() async {
-    final l10n = AppLocalizations.of(context)!;
     setState(() {
       _errorMsg = null;
     });
@@ -96,70 +136,61 @@ class _FinishReadingDialogState extends State<FinishReadingDialog> {
       _endTime.minute,
     );
 
-    if (end.isBefore(start)) {
-      setState(() => _errorMsg = l10n.errorEndTimeBeforeStart);
-      return;
-    }
-
-    final int? endPage = int.tryParse(_pageController.text);
-    if (endPage == null || endPage < 0) {
-      setState(() => _errorMsg = l10n.errorInvalidPage);
-      return;
-    }
-
-    for (final s in _previousSessions) {
-      if (end.isAfter(s.date) && endPage < s.endPage) {
-        setState(
-          () => _errorMsg = l10n.errorConflictReachedPage(
-            DateFormat('dd/MM/yy HH:mm').format(s.date),
-            s.endPage,
-          ),
-        );
-        return;
-      }
-      if (start.isBefore(s.date) && endPage > s.startPage) {
-        setState(
-          () => _errorMsg = l10n.errorConflictStartedPage(
-            DateFormat('dd/MM/yy HH:mm').format(s.date),
-            s.startPage,
-          ),
-        );
-        return;
-      }
-    }
-
-    int startPage = 0;
-    for (final s in _previousSessions) {
-      if (s.date.isBefore(start) && s.endPage > startPage) {
-        startPage = s.endPage;
-      }
-    }
-    if (endPage <= startPage) {
-      setState(
-        () => _errorMsg = l10n.errorEndPageLessThanStart(endPage, startPage),
-      );
-      return;
-    }
-
-    final duration = end.difference(start).inMinutes;
-    final id = DateTime.now().millisecondsSinceEpoch.toString();
-
-    final companion = ReadingSessionsCompanion.insert(
-      id: id,
-      bookId: widget.bookId,
-      date: drift.Value(end),
-      startPage: startPage,
-      endPage: endPage,
-      pagesRead: endPage - startPage,
-      durationMinutes: drift.Value(duration),
-      location: drift.Value(_locationController.text),
+    final int? endPageInput = int.tryParse(_pageController.text);
+    final error = ReadingSessionValidator.validate(
+      context: context,
+      start: start,
+      end: end,
+      endPage: endPageInput,
+      previousSessions: _previousSessions,
     );
 
+    if (error != null) {
+      setState(() => _errorMsg = error);
+      return;
+    }
+
+    final int endPage = int.parse(_pageController.text);
+    final duration = end.difference(start).inMinutes;
     final libraryRepo = context.read<LibraryRepository>();
     final sessionService = context.read<ReadingSessionService>();
 
-    await libraryRepo.insertReadingSession(companion);
-    await sessionService.endSession();
+    String locationToSave = _locationController.text;
+    for (final loc in ReadingLocation.values) {
+      if (loc.getLocalizedName(context) == locationToSave) {
+        locationToSave = loc.name;
+        break;
+      }
+    }
+
+    if (widget.existingSession != null) {
+      final updatedSession = ReadingSession(
+        id: widget.existingSession!.id,
+        bookId: widget.bookId,
+        date: end,
+        endPage: endPage,
+        durationMinutes: duration,
+        location: locationToSave,
+        createdAt: widget.existingSession!.createdAt,
+      );
+      await libraryRepo.updateReadingSession(updatedSession);
+    } else {
+      final id = DateTime.now().millisecondsSinceEpoch.toString();
+      final session = ReadingSession(
+        id: id,
+        bookId: widget.bookId,
+        date: end,
+        endPage: endPage,
+        durationMinutes: duration,
+        location: locationToSave,
+        createdAt: DateTime.now(),
+      );
+      await libraryRepo.insertReadingSession(session);
+
+      if (!widget.isManualAdd) {
+        await sessionService.endSession();
+      }
+    }
 
     if (mounted) {
       Navigator.of(context).pop();
@@ -167,20 +198,34 @@ class _FinishReadingDialogState extends State<FinishReadingDialog> {
   }
 
   void _ensureChronologicalOrder() {
-    final start = DateTime(
+    DateTime start = DateTime(
       _startDate.year,
       _startDate.month,
       _startDate.day,
       _startTime.hour,
       _startTime.minute,
     );
-    final end = DateTime(
+    DateTime end = DateTime(
       _endDate.year,
       _endDate.month,
       _endDate.day,
       _endTime.hour,
       _endTime.minute,
     );
+
+    final now = DateTime.now();
+
+    if (start.isAfter(now)) {
+      start = now;
+      _startDate = start;
+      _startTime = TimeOfDay.fromDateTime(start);
+    }
+
+    if (end.isAfter(now)) {
+      end = now;
+      _endDate = end;
+      _endTime = TimeOfDay.fromDateTime(end);
+    }
 
     if (start.isAfter(end)) {
       _endDate = start;
@@ -220,12 +265,22 @@ class _FinishReadingDialogState extends State<FinishReadingDialog> {
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
     );
-    if (d != null) setState(() => _endDate = d);
+    if (d != null) {
+      setState(() {
+        _endDate = d;
+        _ensureChronologicalOrder();
+      });
+    }
   }
 
   Future<void> _pickEndTime() async {
     final t = await showTimePicker(context: context, initialTime: _endTime);
-    if (t != null) setState(() => _endTime = t);
+    if (t != null) {
+      setState(() {
+        _endTime = t;
+        _ensureChronologicalOrder();
+      });
+    }
   }
 
   @override
@@ -308,12 +363,19 @@ class _FinishReadingDialogState extends State<FinishReadingDialog> {
             ),
             const SizedBox(height: 12),
 
-            TextField(
+            DropdownMenu<String>(
               controller: _locationController,
-              decoration: InputDecoration(
-                labelText: l10n.locationLabel,
-                border: const OutlineInputBorder(),
-              ),
+              label: Text(l10n.locationLabel),
+              expandedInsets: EdgeInsets.zero,
+              requestFocusOnTap: true,
+              dropdownMenuEntries: ReadingLocation.values
+                  .map(
+                    (loc) => DropdownMenuEntry(
+                      value: loc.name,
+                      label: loc.getLocalizedName(context),
+                    ),
+                  )
+                  .toList(),
             ),
             const SizedBox(height: 12),
 

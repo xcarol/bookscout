@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:bookscout/services/books/library_repository.dart';
 import 'package:bookscout/services/api/google_books_service.dart';
 import 'package:bookscout/services/api/open_library_service.dart';
+import 'package:bookscout/screens/reading_sessions_screen.dart';
 
 class BookDetailsScreen extends StatefulWidget {
   final Book book;
@@ -219,6 +220,16 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
               ),
             ],
           ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.edit_note),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ReadingSessionsScreen(book: _book),
+              ),
+            );
+          },
         ),
         LibraryButton(book: _book),
       ],

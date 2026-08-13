@@ -7,9 +7,7 @@ class ReadingSessions extends Table {
   TextColumn get bookId =>
       text().references(Books, #id, onDelete: KeyAction.cascade)();
   DateTimeColumn get date => dateTime().withDefault(currentDateAndTime)();
-  IntColumn get startPage => integer()();
   IntColumn get endPage => integer()();
-  IntColumn get pagesRead => integer()();
   IntColumn get durationMinutes => integer().withDefault(const Constant(0))();
   TextColumn get notes => text().nullable()();
   TextColumn get location => text().nullable()();

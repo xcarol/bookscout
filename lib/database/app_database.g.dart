@@ -2319,34 +2319,12 @@ class $ReadingSessionsTable extends ReadingSessions
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
-  static const VerificationMeta _startPageMeta = const VerificationMeta(
-    'startPage',
-  );
-  @override
-  late final GeneratedColumn<int> startPage = GeneratedColumn<int>(
-    'start_page',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
   static const VerificationMeta _endPageMeta = const VerificationMeta(
     'endPage',
   );
   @override
   late final GeneratedColumn<int> endPage = GeneratedColumn<int>(
     'end_page',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _pagesReadMeta = const VerificationMeta(
-    'pagesRead',
-  );
-  @override
-  late final GeneratedColumn<int> pagesRead = GeneratedColumn<int>(
-    'pages_read',
     aliasedName,
     false,
     type: DriftSqlType.int,
@@ -2401,9 +2379,7 @@ class $ReadingSessionsTable extends ReadingSessions
     id,
     bookId,
     date,
-    startPage,
     endPage,
-    pagesRead,
     durationMinutes,
     notes,
     location,
@@ -2440,14 +2416,6 @@ class $ReadingSessionsTable extends ReadingSessions
         date.isAcceptableOrUnknown(data['date']!, _dateMeta),
       );
     }
-    if (data.containsKey('start_page')) {
-      context.handle(
-        _startPageMeta,
-        startPage.isAcceptableOrUnknown(data['start_page']!, _startPageMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_startPageMeta);
-    }
     if (data.containsKey('end_page')) {
       context.handle(
         _endPageMeta,
@@ -2455,14 +2423,6 @@ class $ReadingSessionsTable extends ReadingSessions
       );
     } else if (isInserting) {
       context.missing(_endPageMeta);
-    }
-    if (data.containsKey('pages_read')) {
-      context.handle(
-        _pagesReadMeta,
-        pagesRead.isAcceptableOrUnknown(data['pages_read']!, _pagesReadMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_pagesReadMeta);
     }
     if (data.containsKey('duration_minutes')) {
       context.handle(
@@ -2512,17 +2472,9 @@ class $ReadingSessionsTable extends ReadingSessions
         DriftSqlType.dateTime,
         data['${effectivePrefix}date'],
       )!,
-      startPage: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}start_page'],
-      )!,
       endPage: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}end_page'],
-      )!,
-      pagesRead: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}pages_read'],
       )!,
       durationMinutes: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
@@ -2553,9 +2505,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
   final String id;
   final String bookId;
   final DateTime date;
-  final int startPage;
   final int endPage;
-  final int pagesRead;
   final int durationMinutes;
   final String? notes;
   final String? location;
@@ -2564,9 +2514,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
     required this.id,
     required this.bookId,
     required this.date,
-    required this.startPage,
     required this.endPage,
-    required this.pagesRead,
     required this.durationMinutes,
     this.notes,
     this.location,
@@ -2578,9 +2526,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
     map['id'] = Variable<String>(id);
     map['book_id'] = Variable<String>(bookId);
     map['date'] = Variable<DateTime>(date);
-    map['start_page'] = Variable<int>(startPage);
     map['end_page'] = Variable<int>(endPage);
-    map['pages_read'] = Variable<int>(pagesRead);
     map['duration_minutes'] = Variable<int>(durationMinutes);
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
@@ -2597,9 +2543,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
       id: Value(id),
       bookId: Value(bookId),
       date: Value(date),
-      startPage: Value(startPage),
       endPage: Value(endPage),
-      pagesRead: Value(pagesRead),
       durationMinutes: Value(durationMinutes),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
@@ -2620,9 +2564,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
       id: serializer.fromJson<String>(json['id']),
       bookId: serializer.fromJson<String>(json['bookId']),
       date: serializer.fromJson<DateTime>(json['date']),
-      startPage: serializer.fromJson<int>(json['startPage']),
       endPage: serializer.fromJson<int>(json['endPage']),
-      pagesRead: serializer.fromJson<int>(json['pagesRead']),
       durationMinutes: serializer.fromJson<int>(json['durationMinutes']),
       notes: serializer.fromJson<String?>(json['notes']),
       location: serializer.fromJson<String?>(json['location']),
@@ -2636,9 +2578,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
       'id': serializer.toJson<String>(id),
       'bookId': serializer.toJson<String>(bookId),
       'date': serializer.toJson<DateTime>(date),
-      'startPage': serializer.toJson<int>(startPage),
       'endPage': serializer.toJson<int>(endPage),
-      'pagesRead': serializer.toJson<int>(pagesRead),
       'durationMinutes': serializer.toJson<int>(durationMinutes),
       'notes': serializer.toJson<String?>(notes),
       'location': serializer.toJson<String?>(location),
@@ -2650,9 +2590,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
     String? id,
     String? bookId,
     DateTime? date,
-    int? startPage,
     int? endPage,
-    int? pagesRead,
     int? durationMinutes,
     Value<String?> notes = const Value.absent(),
     Value<String?> location = const Value.absent(),
@@ -2661,9 +2599,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
     id: id ?? this.id,
     bookId: bookId ?? this.bookId,
     date: date ?? this.date,
-    startPage: startPage ?? this.startPage,
     endPage: endPage ?? this.endPage,
-    pagesRead: pagesRead ?? this.pagesRead,
     durationMinutes: durationMinutes ?? this.durationMinutes,
     notes: notes.present ? notes.value : this.notes,
     location: location.present ? location.value : this.location,
@@ -2674,9 +2610,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
       id: data.id.present ? data.id.value : this.id,
       bookId: data.bookId.present ? data.bookId.value : this.bookId,
       date: data.date.present ? data.date.value : this.date,
-      startPage: data.startPage.present ? data.startPage.value : this.startPage,
       endPage: data.endPage.present ? data.endPage.value : this.endPage,
-      pagesRead: data.pagesRead.present ? data.pagesRead.value : this.pagesRead,
       durationMinutes: data.durationMinutes.present
           ? data.durationMinutes.value
           : this.durationMinutes,
@@ -2692,9 +2626,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
           ..write('id: $id, ')
           ..write('bookId: $bookId, ')
           ..write('date: $date, ')
-          ..write('startPage: $startPage, ')
           ..write('endPage: $endPage, ')
-          ..write('pagesRead: $pagesRead, ')
           ..write('durationMinutes: $durationMinutes, ')
           ..write('notes: $notes, ')
           ..write('location: $location, ')
@@ -2708,9 +2640,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
     id,
     bookId,
     date,
-    startPage,
     endPage,
-    pagesRead,
     durationMinutes,
     notes,
     location,
@@ -2723,9 +2653,7 @@ class ReadingSession extends DataClass implements Insertable<ReadingSession> {
           other.id == this.id &&
           other.bookId == this.bookId &&
           other.date == this.date &&
-          other.startPage == this.startPage &&
           other.endPage == this.endPage &&
-          other.pagesRead == this.pagesRead &&
           other.durationMinutes == this.durationMinutes &&
           other.notes == this.notes &&
           other.location == this.location &&
@@ -2736,9 +2664,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
   final Value<String> id;
   final Value<String> bookId;
   final Value<DateTime> date;
-  final Value<int> startPage;
   final Value<int> endPage;
-  final Value<int> pagesRead;
   final Value<int> durationMinutes;
   final Value<String?> notes;
   final Value<String?> location;
@@ -2748,9 +2674,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
     this.id = const Value.absent(),
     this.bookId = const Value.absent(),
     this.date = const Value.absent(),
-    this.startPage = const Value.absent(),
     this.endPage = const Value.absent(),
-    this.pagesRead = const Value.absent(),
     this.durationMinutes = const Value.absent(),
     this.notes = const Value.absent(),
     this.location = const Value.absent(),
@@ -2761,9 +2685,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
     required String id,
     required String bookId,
     this.date = const Value.absent(),
-    required int startPage,
     required int endPage,
-    required int pagesRead,
     this.durationMinutes = const Value.absent(),
     this.notes = const Value.absent(),
     this.location = const Value.absent(),
@@ -2771,16 +2693,12 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        bookId = Value(bookId),
-       startPage = Value(startPage),
-       endPage = Value(endPage),
-       pagesRead = Value(pagesRead);
+       endPage = Value(endPage);
   static Insertable<ReadingSession> custom({
     Expression<String>? id,
     Expression<String>? bookId,
     Expression<DateTime>? date,
-    Expression<int>? startPage,
     Expression<int>? endPage,
-    Expression<int>? pagesRead,
     Expression<int>? durationMinutes,
     Expression<String>? notes,
     Expression<String>? location,
@@ -2791,9 +2709,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
       if (id != null) 'id': id,
       if (bookId != null) 'book_id': bookId,
       if (date != null) 'date': date,
-      if (startPage != null) 'start_page': startPage,
       if (endPage != null) 'end_page': endPage,
-      if (pagesRead != null) 'pages_read': pagesRead,
       if (durationMinutes != null) 'duration_minutes': durationMinutes,
       if (notes != null) 'notes': notes,
       if (location != null) 'location': location,
@@ -2806,9 +2722,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
     Value<String>? id,
     Value<String>? bookId,
     Value<DateTime>? date,
-    Value<int>? startPage,
     Value<int>? endPage,
-    Value<int>? pagesRead,
     Value<int>? durationMinutes,
     Value<String?>? notes,
     Value<String?>? location,
@@ -2819,9 +2733,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
       id: id ?? this.id,
       bookId: bookId ?? this.bookId,
       date: date ?? this.date,
-      startPage: startPage ?? this.startPage,
       endPage: endPage ?? this.endPage,
-      pagesRead: pagesRead ?? this.pagesRead,
       durationMinutes: durationMinutes ?? this.durationMinutes,
       notes: notes ?? this.notes,
       location: location ?? this.location,
@@ -2842,14 +2754,8 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
     }
-    if (startPage.present) {
-      map['start_page'] = Variable<int>(startPage.value);
-    }
     if (endPage.present) {
       map['end_page'] = Variable<int>(endPage.value);
-    }
-    if (pagesRead.present) {
-      map['pages_read'] = Variable<int>(pagesRead.value);
     }
     if (durationMinutes.present) {
       map['duration_minutes'] = Variable<int>(durationMinutes.value);
@@ -2875,9 +2781,7 @@ class ReadingSessionsCompanion extends UpdateCompanion<ReadingSession> {
           ..write('id: $id, ')
           ..write('bookId: $bookId, ')
           ..write('date: $date, ')
-          ..write('startPage: $startPage, ')
           ..write('endPage: $endPage, ')
-          ..write('pagesRead: $pagesRead, ')
           ..write('durationMinutes: $durationMinutes, ')
           ..write('notes: $notes, ')
           ..write('location: $location, ')
@@ -4040,9 +3944,7 @@ typedef $$ReadingSessionsTableCreateCompanionBuilder =
       required String id,
       required String bookId,
       Value<DateTime> date,
-      required int startPage,
       required int endPage,
-      required int pagesRead,
       Value<int> durationMinutes,
       Value<String?> notes,
       Value<String?> location,
@@ -4054,9 +3956,7 @@ typedef $$ReadingSessionsTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> bookId,
       Value<DateTime> date,
-      Value<int> startPage,
       Value<int> endPage,
-      Value<int> pagesRead,
       Value<int> durationMinutes,
       Value<String?> notes,
       Value<String?> location,
@@ -4088,18 +3988,8 @@ class $$ReadingSessionsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get startPage => $composableBuilder(
-    column: $table.startPage,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<int> get endPage => $composableBuilder(
     column: $table.endPage,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get pagesRead => $composableBuilder(
-    column: $table.pagesRead,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4148,18 +4038,8 @@ class $$ReadingSessionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get startPage => $composableBuilder(
-    column: $table.startPage,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<int> get endPage => $composableBuilder(
     column: $table.endPage,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get pagesRead => $composableBuilder(
-    column: $table.pagesRead,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -4202,14 +4082,8 @@ class $$ReadingSessionsTableAnnotationComposer
   GeneratedColumn<DateTime> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
 
-  GeneratedColumn<int> get startPage =>
-      $composableBuilder(column: $table.startPage, builder: (column) => column);
-
   GeneratedColumn<int> get endPage =>
       $composableBuilder(column: $table.endPage, builder: (column) => column);
-
-  GeneratedColumn<int> get pagesRead =>
-      $composableBuilder(column: $table.pagesRead, builder: (column) => column);
 
   GeneratedColumn<int> get durationMinutes => $composableBuilder(
     column: $table.durationMinutes,
@@ -4266,9 +4140,7 @@ class $$ReadingSessionsTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> bookId = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
-                Value<int> startPage = const Value.absent(),
                 Value<int> endPage = const Value.absent(),
-                Value<int> pagesRead = const Value.absent(),
                 Value<int> durationMinutes = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<String?> location = const Value.absent(),
@@ -4278,9 +4150,7 @@ class $$ReadingSessionsTableTableManager
                 id: id,
                 bookId: bookId,
                 date: date,
-                startPage: startPage,
                 endPage: endPage,
-                pagesRead: pagesRead,
                 durationMinutes: durationMinutes,
                 notes: notes,
                 location: location,
@@ -4292,9 +4162,7 @@ class $$ReadingSessionsTableTableManager
                 required String id,
                 required String bookId,
                 Value<DateTime> date = const Value.absent(),
-                required int startPage,
                 required int endPage,
-                required int pagesRead,
                 Value<int> durationMinutes = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<String?> location = const Value.absent(),
@@ -4304,9 +4172,7 @@ class $$ReadingSessionsTableTableManager
                 id: id,
                 bookId: bookId,
                 date: date,
-                startPage: startPage,
                 endPage: endPage,
-                pagesRead: pagesRead,
                 durationMinutes: durationMinutes,
                 notes: notes,
                 location: location,
