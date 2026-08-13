@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:bookscout/models/book.dart';
+import 'package:bookscout/models/search_filter.dart';
 import 'package:bookscout/services/api/google_books_service.dart';
 import 'package:bookscout/utils/app_constants.dart';
 
@@ -14,6 +15,7 @@ class BookSearchService extends ChangeNotifier {
   bool _hasMore = false;
   int _totalItems = 0;
   String _currentQuery = '';
+  SearchFilter _currentFilter = SearchFilter.title;
   String? _errorMessage;
   int _nextStartIndex = 0;
 
@@ -27,6 +29,7 @@ class BookSearchService extends ChangeNotifier {
   bool get hasMore => _hasMore;
   int get totalItems => _totalItems;
   String get currentQuery => _currentQuery;
+  SearchFilter get currentFilter => _currentFilter;
   String? get errorMessage => _errorMessage;
   bool get hasError => _errorMessage != null;
   bool get isEmpty => !_isLoading && _books.isEmpty && _currentQuery.isNotEmpty;
@@ -38,7 +41,11 @@ class BookSearchService extends ChangeNotifier {
     return null;
   }
 
-  Future<void> search(String query, {String? langCode}) async {
+  Future<void> search(
+    String query, {
+    String? langCode,
+    SearchFilter filter = SearchFilter.title,
+  }) async {
     final cleanQuery = query.trim();
     if (cleanQuery.isEmpty) {
       clear();
@@ -46,6 +53,7 @@ class BookSearchService extends ChangeNotifier {
     }
 
     _currentQuery = cleanQuery;
+    _currentFilter = filter;
     _isLoading = true;
     _isLoadingMore = false;
     _errorMessage = null;
@@ -61,6 +69,7 @@ class BookSearchService extends ChangeNotifier {
         startIndex: 0,
         maxResults: _pageSize,
         langRestrict: langCode,
+        filter: _currentFilter,
       );
 
       if (_currentQuery != cleanQuery) return;
@@ -98,6 +107,7 @@ class BookSearchService extends ChangeNotifier {
         startIndex: _nextStartIndex,
         maxResults: _pageSize,
         langRestrict: langCode,
+        filter: _currentFilter,
       );
 
       if (result.books.isNotEmpty) {

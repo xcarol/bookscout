@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:bookscout/models/book.dart';
+import 'package:bookscout/models/search_filter.dart';
 import 'package:bookscout/services/api/google_books_service.dart';
 import 'package:bookscout/services/core/error_service.dart';
 import 'package:bookscout/utils/api_constants.dart';
@@ -21,11 +22,11 @@ class OpenLibraryService {
 
   OpenLibraryService({http.Client? client}) : _client = client ?? http.Client();
 
-  /// Searches for books using the OpenLibrary API.
   Future<GoogleBooksSearchResult> searchBooks(
     String query, {
     int startIndex = 0,
     int maxResults = AppConstants.maxSearchBooks,
+    SearchFilter filter = SearchFilter.title,
   }) async {
     final cleanQuery = query.trim();
     if (cleanQuery.isEmpty) {
@@ -34,10 +35,23 @@ class OpenLibraryService {
 
     final page = (startIndex ~/ maxResults) + 1;
     final queryParameters = <String, String>{
-      ApiConstants.q: cleanQuery,
       ApiConstants.limit: maxResults.toString(),
       ApiConstants.page: page.toString(),
     };
+
+    switch (filter) {
+      case SearchFilter.title:
+        queryParameters['title'] = cleanQuery;
+        break;
+      case SearchFilter.author:
+        queryParameters['author'] = cleanQuery;
+        break;
+      case SearchFilter.isbn:
+        queryParameters['isbn'] = cleanQuery;
+        break;
+      case SearchFilter.all:
+        queryParameters[ApiConstants.q] = cleanQuery;
+    }
 
     final uri = Uri.https(_authority, _unencodedPath, queryParameters);
 

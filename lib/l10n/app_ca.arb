@@ -122,5 +122,13 @@
   "noReadingSessions": "No hi ha sessions",
   "@noReadingSessions": {},
   "actionDelete": "Eliminar",
-  "@actionDelete": {}
+  "@actionDelete": {},
+  "searchFilterAll": "Tots",
+  "@searchFilterAll": {},
+  "searchFilterTitle": "Títol",
+  "@searchFilterTitle": {},
+  "searchFilterAuthor": "Autor",
+  "@searchFilterAuthor": {},
+  "searchFilterIsbn": "ISBN",
+  "@searchFilterIsbn": {}
 }

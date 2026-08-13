@@ -435,6 +435,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get actionDelete;
+
+  /// No description provided for @searchFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get searchFilterAll;
+
+  /// No description provided for @searchFilterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get searchFilterTitle;
+
+  /// No description provided for @searchFilterAuthor.
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
+  String get searchFilterAuthor;
+
+  /// No description provided for @searchFilterIsbn.
+  ///
+  /// In en, this message translates to:
+  /// **'ISBN'**
+  String get searchFilterIsbn;
 }
 
 class _AppLocalizationsDelegate
