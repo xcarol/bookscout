@@ -21,6 +21,12 @@ class SearchHistoryService {
     _history.removeWhere(
       (item) => item.toLowerCase() == cleanTerm.toLowerCase(),
     );
+
+    // Smart replace: if the new term is an extension of an existing term (e.g. typing "Harry" -> "Harry Potter"), remove the shorter prefix.
+    _history.removeWhere(
+      (item) => cleanTerm.toLowerCase().startsWith(item.toLowerCase()),
+    );
+
     _history.insert(0, cleanTerm);
 
     if (_history.length > _maxHistory) {
