@@ -176,12 +176,12 @@ class LibraryRepository extends ChangeNotifier {
     return query.get();
   }
 
-  Future<void> insertReadingSession(ReadingSessionsCompanion session) async {
+  Future<void> insertReadingSession(ReadingSession session) async {
     await _db.transaction(() async {
       await _db.into(_db.readingSessions).insert(session);
 
-      final bookId = session.bookId.value;
-      final endPage = session.endPage.value;
+      final bookId = session.bookId;
+      final endPage = session.endPage;
 
       final currentStatus = await (_db.select(
         _db.userBookStatuses,
@@ -193,6 +193,16 @@ class LibraryRepository extends ChangeNotifier {
             .write(UserBookStatusesCompanion(currentPage: Value(endPage)));
       }
     });
+    notifyListeners();
+  }
+
+  Future<void> deleteReadingSession(String id) async {
+    await (_db.delete(_db.readingSessions)..where((t) => t.id.equals(id))).go();
+    notifyListeners();
+  }
+
+  Future<void> updateReadingSession(ReadingSession session) async {
+    await _db.update(_db.readingSessions).replace(session);
     notifyListeners();
   }
 }

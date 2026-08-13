@@ -179,4 +179,17 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get labelAuthors => 'Autors';
+
+  @override
+  String get confirmDeleteSession => 'Confirmar eliminació';
+
+  @override
+  String get confirmDeleteSessionMessage =>
+      'Estàs segur que vols eliminar aquesta sessió?';
+
+  @override
+  String get noReadingSessions => 'No hi ha sessions';
+
+  @override
+  String get actionDelete => 'Eliminar';
 }

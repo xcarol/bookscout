@@ -128,5 +128,13 @@
   "labelRating": "Valoración",
   "@labelRating": {},
   "labelAuthors": "Autores",
-  "@labelAuthors": {}
+  "@labelAuthors": {},
+  "confirmDeleteSession": "Confirmar eliminación",
+  "@confirmDeleteSession": {},
+  "confirmDeleteSessionMessage": "¿Estás seguro de que quieres eliminar esta sesión?",
+  "@confirmDeleteSessionMessage": {},
+  "noReadingSessions": "No hay sesiones",
+  "@noReadingSessions": {},
+  "actionDelete": "Eliminar",
+  "@actionDelete": {}
 }

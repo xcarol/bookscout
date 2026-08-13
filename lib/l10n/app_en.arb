@@ -128,5 +128,13 @@
   "labelRating": "Rating",
   "@labelRating": {},
   "labelAuthors": "Authors",
-  "@labelAuthors": {}
+  "@labelAuthors": {},
+  "confirmDeleteSession": "Confirm Delete",
+  "@confirmDeleteSession": {},
+  "confirmDeleteSessionMessage": "Are you sure you want to delete this session?",
+  "@confirmDeleteSessionMessage": {},
+  "noReadingSessions": "No sessions",
+  "@noReadingSessions": {},
+  "actionDelete": "Delete",
+  "@actionDelete": {}
 }
