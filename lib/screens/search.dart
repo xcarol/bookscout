@@ -112,13 +112,10 @@ class _SearchState extends State<Search> {
         const Duration(milliseconds: AppConstants.searchDebounceMs),
         () {
           if (mounted) {
-            searchBooks(_controller.text, addToHistory: false);
+            searchBooks(_controller.text);
           }
         },
       );
-      Timer(const Duration(seconds: 2), () {
-        _historyService.add(_controller.text);
-      });
     } else if (text.trim().isEmpty) {
       _resetLastSearch();
       _searchService.clear();
@@ -200,7 +197,7 @@ class _SearchState extends State<Search> {
             onTap: () {
               _controller.text = suggestion;
               _removeOverlay();
-              searchBooks(suggestion, addToHistory: true);
+              searchBooks(suggestion);
             },
           );
         },
@@ -228,13 +225,11 @@ class _SearchState extends State<Search> {
     _searchService.clear();
   }
 
-  void searchBooks(String query, {bool addToHistory = false}) async {
+  void searchBooks(String query) async {
     final term = query.trim();
     if (term.isEmpty) return;
 
-    if (addToHistory) {
-      await _historyService.add(term);
-    }
+    await _historyService.add(term);
 
     if (term == _lastSearchedText) return;
 
@@ -326,7 +321,7 @@ class _SearchState extends State<Search> {
           ),
         ),
         onSubmitted: (title) {
-          searchBooks(title, addToHistory: true);
+          searchBooks(title);
         },
       ),
     );
@@ -388,7 +383,7 @@ class _SearchState extends State<Search> {
                 if (_lastSearchedText.isNotEmpty) {
                   final term = _lastSearchedText;
                   _lastSearchedText = '';
-                  searchBooks(term, addToHistory: true);
+                  searchBooks(term);
                 }
               },
               icon: const Icon(Icons.refresh),
