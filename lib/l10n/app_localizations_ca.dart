@@ -111,16 +111,6 @@ class AppLocalizationsCa extends AppLocalizations {
   }
 
   @override
-  String errorConflictStartedPage(String date, int page) {
-    return 'Conflicte: La sessió del $date va començar a la pàgina $page.';
-  }
-
-  @override
-  String errorEndPageLessThanStart(int end, int start) {
-    return 'La pàgina final ($end) ha de ser major que la inicial ($start).';
-  }
-
-  @override
   String get startLabel => 'Inici:';
 
   @override

@@ -292,18 +292,6 @@ abstract class AppLocalizations {
   /// **'Conflict: Session on {date} reached page {page}.'**
   String errorConflictReachedPage(String date, int page);
 
-  /// No description provided for @errorConflictStartedPage.
-  ///
-  /// In en, this message translates to:
-  /// **'Conflict: Session on {date} started at page {page}.'**
-  String errorConflictStartedPage(String date, int page);
-
-  /// No description provided for @errorEndPageLessThanStart.
-  ///
-  /// In en, this message translates to:
-  /// **'End page ({end}) must be greater than start page ({start}).'**
-  String errorEndPageLessThanStart(int end, int start);
-
   /// No description provided for @startLabel.
   ///
   /// In en, this message translates to:

@@ -109,6 +109,10 @@ class ReadingSessionsScreen extends StatelessWidget {
                 itemCount: sessions.length,
                 itemBuilder: (context, index) {
                   final session = sessions[index];
+                  final int startPage = (index + 1 < sessions.length)
+                      ? sessions[index + 1].endPage
+                      : 0;
+                  final int pagesRead = session.endPage - startPage;
 
                   return Dismissible(
                     key: Key(session.id),
@@ -133,7 +137,7 @@ class ReadingSessionsScreen extends StatelessWidget {
                         leading: const Icon(Icons.auto_stories),
                         title: Text(df.format(session.date)),
                         subtitle: Text(
-                          '${l10n.labelPages}: ${session.pagesRead} (${session.startPage} - ${session.endPage})\n'
+                          '${l10n.labelPages}: $pagesRead ($startPage - ${session.endPage})\n'
                           '${session.durationMinutes} min',
                         ),
                         isThreeLine: true,

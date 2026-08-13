@@ -151,11 +151,6 @@ class _FinishReadingDialogState extends State<FinishReadingDialog> {
     }
 
     final int endPage = int.parse(_pageController.text);
-    final int startPage = ReadingSessionValidator.calculateStartPage(
-      start,
-      _previousSessions,
-    );
-
     final duration = end.difference(start).inMinutes;
     final libraryRepo = context.read<LibraryRepository>();
     final sessionService = context.read<ReadingSessionService>();
@@ -173,9 +168,7 @@ class _FinishReadingDialogState extends State<FinishReadingDialog> {
         id: widget.existingSession!.id,
         bookId: widget.bookId,
         date: end,
-        startPage: startPage,
         endPage: endPage,
-        pagesRead: endPage - startPage,
         durationMinutes: duration,
         location: locationToSave,
         createdAt: widget.existingSession!.createdAt,
@@ -187,9 +180,7 @@ class _FinishReadingDialogState extends State<FinishReadingDialog> {
         id: id,
         bookId: widget.bookId,
         date: end,
-        startPage: startPage,
         endPage: endPage,
-        pagesRead: endPage - startPage,
         durationMinutes: duration,
         location: locationToSave,
         createdAt: DateTime.now(),
@@ -207,20 +198,34 @@ class _FinishReadingDialogState extends State<FinishReadingDialog> {
   }
 
   void _ensureChronologicalOrder() {
-    final start = DateTime(
+    DateTime start = DateTime(
       _startDate.year,
       _startDate.month,
       _startDate.day,
       _startTime.hour,
       _startTime.minute,
     );
-    final end = DateTime(
+    DateTime end = DateTime(
       _endDate.year,
       _endDate.month,
       _endDate.day,
       _endTime.hour,
       _endTime.minute,
     );
+
+    final now = DateTime.now();
+
+    if (start.isAfter(now)) {
+      start = now;
+      _startDate = start;
+      _startTime = TimeOfDay.fromDateTime(start);
+    }
+
+    if (end.isAfter(now)) {
+      end = now;
+      _endDate = end;
+      _endTime = TimeOfDay.fromDateTime(end);
+    }
 
     if (start.isAfter(end)) {
       _endDate = start;
@@ -260,12 +265,22 @@ class _FinishReadingDialogState extends State<FinishReadingDialog> {
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
     );
-    if (d != null) setState(() => _endDate = d);
+    if (d != null) {
+      setState(() {
+        _endDate = d;
+        _ensureChronologicalOrder();
+      });
+    }
   }
 
   Future<void> _pickEndTime() async {
     final t = await showTimePicker(context: context, initialTime: _endTime);
-    if (t != null) setState(() => _endTime = t);
+    if (t != null) {
+      setState(() {
+        _endTime = t;
+        _ensureChronologicalOrder();
+      });
+    }
   }
 
   @override

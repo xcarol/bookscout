@@ -110,16 +110,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String errorConflictStartedPage(String date, int page) {
-    return 'Conflict: Session on $date started at page $page.';
-  }
-
-  @override
-  String errorEndPageLessThanStart(int end, int start) {
-    return 'End page ($end) must be greater than start page ($start).';
-  }
-
-  @override
   String get startLabel => 'Start:';
 
   @override

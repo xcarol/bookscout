@@ -75,20 +75,6 @@
       "page": {"type": "int"}
     }
   },
-  "errorConflictStartedPage": "Conflicto: La sesión del {date} empezó en la página {page}.",
-  "@errorConflictStartedPage": {
-    "placeholders": {
-      "date": {"type": "String"},
-      "page": {"type": "int"}
-    }
-  },
-  "errorEndPageLessThanStart": "La página final ({end}) debe ser mayor que la inicial ({start}).",
-  "@errorEndPageLessThanStart": {
-    "placeholders": {
-      "end": {"type": "int"},
-      "start": {"type": "int"}
-    }
-  },
   "startLabel": "Inicio:",
   "@startLabel": {},
   "endLabel": "Fin:",

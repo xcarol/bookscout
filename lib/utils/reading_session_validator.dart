@@ -22,43 +22,20 @@ class ReadingSessionValidator {
     }
 
     for (final s in previousSessions) {
-      if (end.isAfter(s.date) && endPage < s.endPage) {
+      if (end.isAfter(s.date) && endPage <= s.endPage) {
         return l10n.errorConflictReachedPage(
           DateFormat('dd/MM/yy HH:mm').format(s.date),
           s.endPage,
         );
       }
-      if (start.isBefore(s.date) && endPage > s.startPage) {
-        return l10n.errorConflictStartedPage(
+      if (start.isBefore(s.date) && endPage >= s.endPage) {
+        return l10n.errorConflictReachedPage(
           DateFormat('dd/MM/yy HH:mm').format(s.date),
-          s.startPage,
+          s.endPage,
         );
       }
     }
 
-    int startPage = 0;
-    for (final s in previousSessions) {
-      if (s.date.isBefore(start) && s.endPage > startPage) {
-        startPage = s.endPage;
-      }
-    }
-    if (endPage <= startPage) {
-      return l10n.errorEndPageLessThanStart(endPage, startPage);
-    }
-
     return null;
-  }
-
-  static int calculateStartPage(
-    DateTime start,
-    List<ReadingSession> previousSessions,
-  ) {
-    int startPage = 0;
-    for (final s in previousSessions) {
-      if (s.date.isBefore(start) && s.endPage > startPage) {
-        startPage = s.endPage;
-      }
-    }
-    return startPage;
   }
 }
