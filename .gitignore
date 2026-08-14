@@ -5,7 +5,7 @@ firebase.json
 .cxx
 .kotlin
 coverage/
-
+node_modules/
 
 # Miscellaneous
 *.class
