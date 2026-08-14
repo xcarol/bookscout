@@ -6,6 +6,7 @@ firebase.json
 .kotlin
 coverage/
 node_modules/
+*firebase-adminsdk*.json
 
 # Miscellaneous
 *.class
