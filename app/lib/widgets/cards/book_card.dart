@@ -23,7 +23,7 @@ class BookCard extends StatelessWidget {
   final Book book;
   final VoidCallback? onTap;
 
-  static const double cardHeight = 160.0;
+  static const double cardHeight = 170.0;
 
   const BookCard({super.key, required this.book, this.onTap});
 
