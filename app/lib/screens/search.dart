@@ -44,7 +44,6 @@ class _SearchState extends State<Search> {
     _controller = TextEditingController();
     _controller.addListener(_onSearchChanged);
     _searchFocusNode.addListener(_onFocusChanged);
-    _scrollController.addListener(_onScroll);
     _historyService.load();
   }
 
@@ -52,7 +51,6 @@ class _SearchState extends State<Search> {
   void dispose() {
     _debounce?.cancel();
     _removeOverlay();
-    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _controller.removeListener(_onSearchChanged);
     _searchFocusNode.removeListener(_onFocusChanged);
@@ -60,16 +58,6 @@ class _SearchState extends State<Search> {
     _searchFocusNode.dispose();
     _searchService.dispose();
     super.dispose();
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
-      if (_searchService.hasMore && !_searchService.isLoadingMore) {
-        final langCode = Localizations.localeOf(context).languageCode;
-        _searchService.loadMore(langCode: langCode);
-      }
-    }
   }
 
   StateSetter? _overlaySetState;
@@ -498,21 +486,8 @@ class _SearchState extends State<Search> {
         controller: _scrollController,
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: EdgeInsets.zero,
-        itemCount: service.count + (service.hasMore ? 1 : 0),
+        itemCount: service.count,
         itemBuilder: (context, index) {
-          if (index == service.count) {
-            return const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20.0),
-              child: Center(
-                child: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(strokeWidth: 2.5),
-                ),
-              ),
-            );
-          }
-
           final Book? book = service.getItem(index);
           if (book == null) return const SizedBox.shrink();
 

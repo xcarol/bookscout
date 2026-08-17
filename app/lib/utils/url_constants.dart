@@ -1,23 +1,17 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+
 class UrlConstants {
-  // Google Books API
-  static const String googleBooksApiAuthority = 'www.googleapis.com';
-  static const String googleBooksApiPath = '/books/v1/volumes';
-  static const String googleBooksApiBaseUrl =
-      'https://$googleBooksApiAuthority$googleBooksApiPath';
-
-  // OpenLibrary API
-  static const String openLibraryApiAuthority = 'openlibrary.org';
-  static const String openLibraryApiPath = '/search.json';
-  static const String openLibraryApiBooksPath = '/api/books';
-  static const String openLibraryBaseUrl = 'https://openlibrary.org';
-  static const String openLibraryCoversBaseUrl =
-      'https://covers.openlibrary.org/b/id/';
-
-  // Templates
-  static const String openLibraryCoverMediumTemplate =
-      '$openLibraryCoversBaseUrl{ID}-M.jpg';
-  static const String openLibraryCoverLargeTemplate =
-      '$openLibraryCoversBaseUrl{ID}-L.jpg';
+  // BookScout BFF
+  static String get bffBaseUrl {
+    if (kIsWeb) {
+      return 'http://localhost:8080/api';
+    }
+    if (Platform.isAndroid) {
+      return 'http://10.0.2.2:8080/api';
+    }
+    return 'http://localhost:8080/api';
+  }
 
   // Repository & Web
   static const String githubRepoUrl = 'https://github.com/xcarol/bookscout';

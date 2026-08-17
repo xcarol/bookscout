@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:bookscout/database/app_database.dart' as db;
-import 'package:bookscout/utils/url_constants.dart';
 
 class Book {
   final String id;
@@ -71,270 +70,99 @@ class Book {
 
   String? get isbn => isbn13 ?? isbn10;
 
-  factory Book.fromGoogleBooksJson(
-    Map<String, dynamic> json, {
-    bool isLite = false,
-  }) {
-    final id = json['id'] as String? ?? '';
-    final volumeInfo = json['volumeInfo'] as Map<String, dynamic>? ?? {};
+  factory Book.fromBffLiteJson(Map<String, dynamic> json) {
+    final String id = json['isbn']?.toString() ?? '';
+    final String title = json['title']?.toString() ?? '';
+    final String? subtitle = json['subtitle']?.toString();
 
-    final title = volumeInfo['title'] as String? ?? '';
-    final subtitle = volumeInfo['subtitle'] as String?;
-    final publisher = volumeInfo['publisher'] as String?;
-    final publishedDate = volumeInfo['publishedDate'] as String?;
-    final description = volumeInfo['description'] as String?;
-    final language = volumeInfo['language'] as String?;
+    final List<String> authors =
+        (json['authors'] as List?)?.map((e) => e.toString()).toList() ??
+        const [];
 
-    final authorsList =
-        (volumeInfo['authors'] as List?)
-            ?.map((author) => author.toString())
-            .toList() ??
-        const <String>[];
-
-    final categoriesList =
-        (volumeInfo['categories'] as List?)
-            ?.map((cat) => cat.toString())
-            .toList() ??
-        const <String>[];
+    final String? publisher = json['publisher']?.toString();
+    final String? publishedYear = json['publishedYear']?.toString();
 
     int? pageCount;
-    if (volumeInfo['pageCount'] is num) {
-      pageCount = (volumeInfo['pageCount'] as num).toInt();
+    if (json['pageCount'] is num) {
+      pageCount = (json['pageCount'] as num).toInt();
     }
+
+    final List<String> categories =
+        (json['categories'] as List?)?.map((e) => e.toString()).toList() ??
+        const [];
+
+    final String? coverUrl = json['coverUrl']?.toString();
 
     double? averageRating;
-    if (volumeInfo['averageRating'] is num) {
-      averageRating = (volumeInfo['averageRating'] as num).toDouble();
-    }
-
-    int? ratingsCount;
-    if (volumeInfo['ratingsCount'] is num) {
-      ratingsCount = (volumeInfo['ratingsCount'] as num).toInt();
-    }
-
-    String? isbn10;
-    String? isbn13;
-    final industryIdentifiers = volumeInfo['industryIdentifiers'] as List?;
-    if (industryIdentifiers != null) {
-      for (final item in industryIdentifiers) {
-        if (item is Map<String, dynamic>) {
-          final type = item['type'] as String?;
-          final identifier = item['identifier'] as String?;
-          if (type == 'ISBN_10') {
-            isbn10 = identifier;
-          } else if (type == 'ISBN_13') {
-            isbn13 = identifier;
-          }
-        }
-      }
-    }
-
-    String? coverUrl;
-    final imageLinks = volumeInfo['imageLinks'] as Map<String, dynamic>?;
-    if (imageLinks != null) {
-      final rawCover =
-          imageLinks['extraLarge'] ??
-          imageLinks['large'] ??
-          imageLinks['medium'] ??
-          imageLinks['small'] ??
-          imageLinks['thumbnail'] ??
-          imageLinks['smallThumbnail'];
-
-      coverUrl = (rawCover is String)
-          ? rawCover
-                .replaceFirst('http://', 'https://')
-                .replaceAll('&edge=curl', '')
-          : null;
+    if (json['averageRating'] is num) {
+      averageRating = (json['averageRating'] as num).toDouble();
     }
 
     return Book(
       id: id,
       title: title,
       subtitle: subtitle,
-      authors: authorsList,
+      authors: authors,
       publisher: publisher,
-      publishedDate: publishedDate,
-      description: description,
-      isbn10: isbn10,
-      isbn13: isbn13,
+      publishedDate: publishedYear,
+      isbn10: id.length == 10 ? id : null,
+      isbn13: id.length == 13 ? id : null,
       pageCount: pageCount,
-      categories: categoriesList,
-      averageRating: averageRating,
-      ratingsCount: ratingsCount,
+      categories: categories,
       coverUrl: coverUrl,
-      language: language,
-      previewLink: volumeInfo['previewLink'] as String?,
-      infoLink: volumeInfo['infoLink'] as String?,
-      isLite: isLite,
+      averageRating: averageRating,
+      isLite: true,
     );
   }
 
-  factory Book.fromOpenLibraryJson(
-    Map<String, dynamic> json, {
-    bool isLite = false,
-  }) {
-    final key = json['key'] as String? ?? '';
-    final id = key.replaceAll('/works/', '');
-    final title = json['title'] as String? ?? '';
+  factory Book.fromBffFullJson(Map<String, dynamic> json) {
+    final String id = json['isbn']?.toString() ?? '';
+    final String title = json['title']?.toString() ?? '';
+    final String? subtitle = json['subtitle']?.toString();
+    final String? description = json['description']?.toString();
 
-    final authorsList =
-        (json['author_name'] as List?)
-            ?.map((author) => author.toString())
+    final List<String> authors =
+        (json['contributors'] as List?)
+            ?.map((e) => (e as Map)['name']?.toString() ?? '')
+            .where((name) => name.isNotEmpty)
             .toList() ??
-        const <String>[];
+        const [];
 
-    final firstPublishYear = json['first_publish_year']?.toString();
-    final publisherList = (json['publisher'] as List?)
-        ?.map((p) => p.toString())
-        .toList();
-    final publisher = publisherList?.isNotEmpty == true
-        ? publisherList!.first
-        : null;
-
-    final isbns = (json['isbn'] as List?)?.map((i) => i.toString()).toList();
-    String? isbn10;
-    String? isbn13;
-    if (isbns != null) {
-      for (final isbn in isbns) {
-        final clean = isbn.replaceAll('-', '').trim();
-        if (clean.length == 10 && isbn10 == null) {
-          isbn10 = clean;
-        } else if (clean.length == 13 && isbn13 == null) {
-          isbn13 = clean;
-        }
-      }
-    }
+    final String? publisher = json['publisher']?.toString();
+    final String? publishedDate = json['publishedDate']?.toString();
+    final String? language = json['language']?.toString();
 
     int? pageCount;
-    if (json['number_of_pages_median'] is num) {
-      pageCount = (json['number_of_pages_median'] as num).toInt();
+    if (json['pageCount'] is num) {
+      pageCount = (json['pageCount'] as num).toInt();
     }
+
+    final List<String> categories =
+        (json['categories'] as List?)?.map((e) => e.toString()).toList() ??
+        const [];
+
+    final String? coverUrl = json['coverUrl']?.toString();
 
     double? averageRating;
-    if (json['ratings_average'] is num) {
-      averageRating = (json['ratings_average'] as num).toDouble();
+    if (json['averageRating'] is num) {
+      averageRating = (json['averageRating'] as num).toDouble();
     }
-
-    int? ratingsCount;
-    if (json['ratings_count'] is num) {
-      ratingsCount = (json['ratings_count'] as num).toInt();
-    }
-
-    final coverId = json['cover_i'];
-    String? coverUrl;
-    if (coverId != null) {
-      coverUrl = UrlConstants.openLibraryCoverMediumTemplate.replaceAll(
-        '{ID}',
-        coverId.toString(),
-      );
-    }
-
-    final languageList = (json['language'] as List?)
-        ?.map((l) => l.toString())
-        .toList();
-    final language = languageList?.isNotEmpty == true
-        ? languageList!.first
-        : null;
 
     return Book(
       id: id,
       title: title,
-      authors: authorsList,
+      subtitle: subtitle,
+      description: description,
+      authors: authors,
       publisher: publisher,
-      publishedDate: firstPublishYear,
-      isbn10: isbn10,
-      isbn13: isbn13,
-      pageCount: pageCount,
-      averageRating: averageRating,
-      ratingsCount: ratingsCount,
-      coverUrl: coverUrl,
+      publishedDate: publishedDate,
       language: language,
-      isLite: isLite,
-    );
-  }
-
-  factory Book.fromOpenLibraryDataJson(Map<String, dynamic> json) {
-    final title = json['title'] as String? ?? '';
-    final url = json['url'] as String?;
-    final id = json['key']?.toString().replaceAll('/books/', '') ?? '';
-
-    final authorsList =
-        (json['authors'] as List?)
-            ?.map((a) => (a as Map)['name'].toString())
-            .toList() ??
-        const <String>[];
-
-    final publishDate = json['publish_date']?.toString();
-    final publishersList = (json['publishers'] as List?)
-        ?.map((p) => (p as Map)['name'].toString())
-        .toList();
-    final publisher = publishersList?.isNotEmpty == true
-        ? publishersList!.first
-        : null;
-
-    int? pageCount;
-    if (json['number_of_pages'] is num) {
-      pageCount = (json['number_of_pages'] as num).toInt();
-    }
-
-    final categoriesList =
-        (json['subjects'] as List?)
-            ?.map((s) => (s as Map)['name'].toString())
-            .toList() ??
-        const <String>[];
-
-    String? coverUrl;
-    final cover = json['cover'] as Map?;
-    if (cover != null) {
-      coverUrl = cover['large'] ?? cover['medium'] ?? cover['small'];
-    }
-
-    return Book(
-      id: id,
-      title: title,
-      authors: authorsList,
-      publisher: publisher,
-      publishedDate: publishDate,
+      isbn10: id.length == 10 ? id : null,
+      isbn13: id.length == 13 ? id : null,
       pageCount: pageCount,
-      categories: categoriesList,
+      categories: categories,
       coverUrl: coverUrl,
-      infoLink: url,
-    );
-  }
-
-  Book merge(Book other) {
-    return copyWith(
-      title: title.isEmpty ? other.title : title,
-      subtitle: subtitle?.isNotEmpty == true ? subtitle : other.subtitle,
-      originalTitle: originalTitle?.isNotEmpty == true
-          ? originalTitle
-          : other.originalTitle,
-      authors: authors.isNotEmpty ? authors : other.authors,
-      publisher: publisher?.isNotEmpty == true ? publisher : other.publisher,
-      publishedDate: publishedDate?.isNotEmpty == true
-          ? publishedDate
-          : other.publishedDate,
-      description: description?.isNotEmpty == true
-          ? description
-          : other.description,
-      isbn10: isbn10?.isNotEmpty == true ? isbn10 : other.isbn10,
-      isbn13: isbn13?.isNotEmpty == true ? isbn13 : other.isbn13,
-      pageCount: (pageCount != null && pageCount! > 0)
-          ? pageCount
-          : other.pageCount,
-      categories: categories.isNotEmpty ? categories : other.categories,
-      averageRating: averageRating ?? other.averageRating,
-      ratingsCount: ratingsCount ?? other.ratingsCount,
-      coverUrl: coverUrl?.isNotEmpty == true ? coverUrl : other.coverUrl,
-      language: language?.isNotEmpty == true ? language : other.language,
-      previewLink: previewLink?.isNotEmpty == true
-          ? previewLink
-          : other.previewLink,
-      infoLink: infoLink?.isNotEmpty == true ? infoLink : other.infoLink,
-      createdAt: createdAt ?? other.createdAt,
-      userRating: userRating ?? other.userRating,
-      readingStatus: readingStatus ?? other.readingStatus,
-      currentPage: currentPage ?? other.currentPage,
+      averageRating: averageRating,
       isLite: false,
     );
   }

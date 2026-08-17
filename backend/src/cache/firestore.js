@@ -3,9 +3,7 @@ const { getFirestore } = require('firebase-admin/firestore');
 
 // Initialize a default dummy app for now
 if (!getApps().length) {
-  initializeApp({
-    // TODO: Add credentials here later (e.g. credential: admin.credential.cert(serviceAccount))
-  });
+  initializeApp();
 }
 
 const db = getFirestore();
@@ -16,10 +14,14 @@ const db = getFirestore();
  * @returns {Promise<import('../models/BookModels').BookEdition|null>}
  */
 async function getEdition(isbn) {
-  const docRef = db.collection('editions').doc(isbn);
-  const docSnap = await docRef.get();
-  if (docSnap.exists) {
-    return docSnap.data();
+  try {
+    const docRef = db.collection('editions').doc(isbn);
+    const docSnap = await docRef.get();
+    if (docSnap.exists) {
+      return docSnap.data();
+    }
+  } catch (error) {
+    console.error(`Firestore getEdition error for ISBN ${isbn}:`, error.message);
   }
   return null;
 }
@@ -30,8 +32,12 @@ async function getEdition(isbn) {
  * @param {import('../models/BookModels').BookEdition} bookEditionData 
  */
 async function saveEdition(isbn, bookEditionData) {
-  const docRef = db.collection('editions').doc(isbn);
-  await docRef.set(bookEditionData);
+  try {
+    const docRef = db.collection('editions').doc(isbn);
+    await docRef.set(bookEditionData);
+  } catch (error) {
+    console.error(`Firestore saveEdition error for ISBN ${isbn}:`, error.message);
+  }
 }
 
 // Export the db instance so we can wire it up later

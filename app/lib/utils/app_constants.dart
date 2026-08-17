@@ -29,7 +29,6 @@ class AppConstants {
   static const String saveLogsMessage = 'saveLogs';
   static const String enableLogs = 'ENABLE_LOGS';
   static const String appVersion = 'VERSION';
-  static const String googleBooksApiKey = 'GOOGLE_BOOKS_API_KEY';
 
   // Search & Pagination Limits
   static const int minSearchChars = 3;

@@ -4,8 +4,7 @@ import 'package:bookscout/database/app_database.dart';
 import 'package:bookscout/database/tables/user_book_status.dart';
 import 'package:bookscout/models/book.dart' as model;
 import 'package:bookscout/services/core/database_service.dart';
-import 'package:bookscout/services/api/google_books_service.dart';
-import 'package:bookscout/services/api/open_library_service.dart';
+import 'package:bookscout/services/api/bookscout_api_service.dart';
 
 class LibraryRepository extends ChangeNotifier {
   final AppDatabase _db = DatabaseService.instance;
@@ -39,18 +38,10 @@ class LibraryRepository extends ChangeNotifier {
 
   Future<void> addToLibrary(model.Book book) async {
     model.Book bookToSave = book;
-    if (book.isLite) {
-      final googleBook = await GoogleBooksService().getBookById(book.id);
-      if (googleBook != null) {
-        bookToSave = googleBook;
-      }
-      if (bookToSave.isbn != null) {
-        final olBook = await OpenLibraryService().getBookByIsbn(
-          bookToSave.isbn!,
-        );
-        if (olBook != null) {
-          bookToSave = bookToSave.merge(olBook);
-        }
+    if (book.isLite && book.isbn != null) {
+      final fullBook = await BookScoutApiService().getBookDetails(book.isbn!);
+      if (fullBook != null) {
+        bookToSave = fullBook;
       }
     }
 

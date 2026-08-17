@@ -2,32 +2,23 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:bookscout/models/book.dart';
 import 'package:bookscout/models/search_filter.dart';
-import 'package:bookscout/services/api/google_books_service.dart';
-import 'package:bookscout/utils/app_constants.dart';
+import 'package:bookscout/services/api/bookscout_api_service.dart';
 
 class BookSearchService extends ChangeNotifier {
-  final GoogleBooksService _apiService;
-  static const int _pageSize = AppConstants.maxSearchBooks;
+  final BookScoutApiService _apiService;
 
   final List<Book> _books = [];
   bool _isLoading = false;
-  bool _isLoadingMore = false;
-  bool _hasMore = false;
-  int _totalItems = 0;
   String _currentQuery = '';
   SearchFilter _currentFilter = SearchFilter.title;
   String? _errorMessage;
-  int _nextStartIndex = 0;
 
-  BookSearchService({GoogleBooksService? apiService})
-    : _apiService = apiService ?? GoogleBooksService();
+  BookSearchService({BookScoutApiService? apiService})
+    : _apiService = apiService ?? BookScoutApiService();
 
   List<Book> get books => List.unmodifiable(_books);
   int get count => _books.length;
   bool get isLoading => _isLoading;
-  bool get isLoadingMore => _isLoadingMore;
-  bool get hasMore => _hasMore;
-  int get totalItems => _totalItems;
   String get currentQuery => _currentQuery;
   SearchFilter get currentFilter => _currentFilter;
   String? get errorMessage => _errorMessage;
@@ -55,29 +46,16 @@ class BookSearchService extends ChangeNotifier {
     _currentQuery = cleanQuery;
     _currentFilter = filter;
     _isLoading = true;
-    _isLoadingMore = false;
     _errorMessage = null;
     _books.clear();
-    _nextStartIndex = 0;
-    _hasMore = false;
-    _totalItems = 0;
     notifyListeners();
 
     try {
-      final result = await _apiService.searchBooks(
-        cleanQuery,
-        startIndex: 0,
-        maxResults: _pageSize,
-        langRestrict: langCode,
-        filter: _currentFilter,
-      );
+      final books = await _apiService.searchBooks(cleanQuery);
 
       if (_currentQuery != cleanQuery) return;
 
-      _books.addAll(result.books);
-      _totalItems = result.totalItems;
-      _nextStartIndex = _books.length;
-      _hasMore = _books.length < _totalItems && result.books.isNotEmpty;
+      _books.addAll(books);
       _isLoading = false;
       notifyListeners();
     } on TimeoutException {
@@ -93,54 +71,11 @@ class BookSearchService extends ChangeNotifier {
     }
   }
 
-  Future<void> loadMore({String? langCode}) async {
-    if (_isLoading || _isLoadingMore || !_hasMore || _currentQuery.isEmpty) {
-      return;
-    }
-
-    _isLoadingMore = true;
-    notifyListeners();
-
-    try {
-      final result = await _apiService.searchBooks(
-        _currentQuery,
-        startIndex: _nextStartIndex,
-        maxResults: _pageSize,
-        langRestrict: langCode,
-        filter: _currentFilter,
-      );
-
-      if (result.books.isNotEmpty) {
-        final existingIds = _books.map((b) => b.id).toSet();
-        final newBooks = result.books
-            .where((b) => !existingIds.contains(b.id))
-            .toList();
-
-        _books.addAll(newBooks);
-        _nextStartIndex += result.books.length;
-        _hasMore =
-            _books.length < _totalItems && result.books.length >= _pageSize;
-      } else {
-        _hasMore = false;
-      }
-
-      _isLoadingMore = false;
-      notifyListeners();
-    } catch (e) {
-      _isLoadingMore = false;
-      notifyListeners();
-    }
-  }
-
   void clear() {
     _books.clear();
     _currentQuery = '';
-    _totalItems = 0;
-    _nextStartIndex = 0;
-    _hasMore = false;
     _errorMessage = null;
     _isLoading = false;
-    _isLoadingMore = false;
     notifyListeners();
   }
 }

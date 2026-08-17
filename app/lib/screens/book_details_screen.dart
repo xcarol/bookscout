@@ -6,8 +6,7 @@ import 'package:bookscout/l10n/app_localizations.dart';
 import 'package:bookscout/models/custom_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:bookscout/services/books/library_repository.dart';
-import 'package:bookscout/services/api/google_books_service.dart';
-import 'package:bookscout/services/api/open_library_service.dart';
+import 'package:bookscout/services/api/bookscout_api_service.dart';
 import 'package:bookscout/screens/reading_sessions_screen.dart';
 
 class BookDetailsScreen extends StatefulWidget {
@@ -42,18 +41,12 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
         setState(() => _book = fullBook);
       }
     } else {
-      var fullBook = await GoogleBooksService().getBookById(_book.id);
-      if (fullBook != null) {
-        if (fullBook.isbn != null) {
-          final olBook = await OpenLibraryService().getBookByIsbn(
-            fullBook.isbn!,
-          );
-          if (olBook != null) {
-            fullBook = fullBook.merge(olBook);
-          }
-        }
-        if (mounted) {
-          setState(() => _book = fullBook!);
+      if (_book.isbn != null) {
+        final fullBook = await BookScoutApiService().getBookDetails(
+          _book.isbn!,
+        );
+        if (fullBook != null && mounted) {
+          setState(() => _book = fullBook);
         }
       }
     }
