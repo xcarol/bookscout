@@ -1,6 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { getBookDetails } = require('./orchestrator/bookService');
+const { fastSearch } = require('./orchestrator/searchService');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -10,6 +12,20 @@ app.use(express.json());
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date() });
+});
+
+app.get('/api/search', async (req, res) => {
+  try {
+    const query = req.query.q;
+    if (!query) {
+      return res.status(400).json({ error: "Query parameter 'q' is required" });
+    }
+    const results = await fastSearch(query);
+    res.json(results);
+  } catch (error) {
+    console.error(`Error in fast search for query "${req.query.q}":`, error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 app.get('/api/books/:isbn', async (req, res) => {

@@ -1,4 +1,18 @@
 /**
+ * @typedef {Object} BookLite
+ * @property {string} isbn
+ * @property {string} title
+ * @property {string|null} subtitle
+ * @property {string[]} authors
+ * @property {string|null} publisher
+ * @property {string|null} publishedYear
+ * @property {number|null} pageCount
+ * @property {string[]} categories
+ * @property {string|null} coverUrl
+ * @property {number|null} averageRating
+ */
+
+/**
  * @typedef {Object} ContributorLight
  * @property {string} id
  * @property {string} name
