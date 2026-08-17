@@ -2,49 +2,73 @@
 
 This document contains technical information and setup instructions for developing and building the BookScout application.
 
-## Google Books API Key Setup
+## Project Structure
 
-BookScout uses the Google Books API to search for books. To ensure the app functions correctly both locally and when published, follow these instructions to set up your API Key.
+BookScout is split into two main components:
+- `app/`: The Flutter frontend client.
+- `backend/`: The Node.js Backend-for-Frontend (BFF) which handles search orchestration, caching, and rate limiting by communicating with Google Books, Open Library, and Firestore.
 
-### 1. Enable the API
+---
+
+## 1. Local Development Setup
+
+To run the full stack locally, you need to start the backend server and then the Flutter app.
+
+### Backend Setup
+1. Navigate to the `backend/` directory: `cd backend`
+2. Install dependencies: `npm install`
+3. Create a `.env` file in the `backend/` directory (see API Key & Firebase setup below).
+4. Start the server: `npm start` (Runs on port 8080 by default).
+
+### Frontend Setup
+1. Navigate to the `app/` directory: `cd app`
+2. Fetch dependencies: `flutter pub get`
+3. Run the app: `flutter run`
+
+---
+
+## 2. API Keys and Credentials
+
+### Google Books API Key
+BookScout uses the Google Books API for search. The API key is managed securely by the backend.
+
 1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
-2. Select your project.
-3. Navigate to **APIs & Services > Library**.
-4. Search for **Books API** and click **Enable**.
-
-### 2. Create the API Key
-1. Navigate to **APIs & Services > Credentials**.
-2. Click **Create Credentials > API key**.
-3. Copy the generated API key.
-
-### 3. Configure API Key Restrictions (Crucial)
-Since we are calling the Google Books API via REST (HTTP `GET`) from a Flutter app, standard "Android apps" restrictions will **not** work automatically (the API won't know the app's package name or certificate). Instead, we must use **HTTP Referrers**.
-
-1. In the API Key settings page, under **Application restrictions**, select **Websites (HTTP referrers)**.
-2. Under **Website restrictions**, click **ADD**.
-3. Enter the following referrer exact URL (or wildcard):
-   `https://com.xicra.bookscout/*`
-4. Click **Save**.
-
-*Note: The Flutter code (`lib/services/api/google_books_service.dart`) is configured to send the `Referer: https://com.xicra.bookscout/` header in every request to validate this restriction.*
-
-### 4. Configure `.env` for Local Development
-1. Create a `.env` file in the root directory of the project (if it doesn't exist).
-2. Add your API key to the file:
+2. Enable the **Books API** under **APIs & Services > Library**.
+3. Create an API key under **APIs & Services > Credentials**.
+4. **Configure Restrictions**: 
+   - Under **Application restrictions**, select **None**.
+   *(Note: Since the API key is now securely stored in the Node.js backend and not shipped with the mobile app, we no longer need HTTP Referrer restrictions.)*
+5. Add the key to `backend/.env`:
    ```env
    GOOGLE_BOOKS_API_KEY=your_api_key_here
    ```
-3. Do **not** commit the `.env` file to version control (it should be in `.gitignore`).
 
-### 5. Configure GitHub Actions Secrets
-For CI/CD to build the app with the API key, you must inject the `.env` file during the GitHub Actions workflow.
+### Firebase Admin SDK (Firestore Cache)
+The backend uses Firestore to cache full book metadata.
+
+1. Go to the [Firebase Console](https://console.firebase.google.com/) and select your project.
+2. Navigate to **Project Settings** (the gear icon) > **Service Accounts**.
+3. Click **Generate new private key** to download the Firebase Admin SDK Service Account key (JSON format).
+2. Place the JSON file in the `backend/` directory (e.g., `bookscout-firebase-adminsdk.json`). Do not commit this to source control.
+3. Add the credential path to `backend/.env`:
+   ```env
+   GOOGLE_APPLICATION_CREDENTIALS=./bookscout-firebase-adminsdk.json
+   ```
+
+*Note: If the Firebase credentials are not provided, the backend will gracefully skip the Firestore cache and query external APIs directly.*
+
+---
+
+## 3. Configure GitHub Actions Secrets
+For CI/CD workflows to build the backend or frontend with necessary keys, inject the `.env` file during the GitHub Actions workflow.
 
 1. Go to your repository on GitHub.
 2. Navigate to **Settings > Secrets and variables > Actions**.
 3. Click **New repository secret**.
 4. Name the secret: `ENV_FILE`
-5. Set the value to the contents of your `.env` file:
+5. Set the value to the contents of your backend `.env` file:
    ```env
    GOOGLE_BOOKS_API_KEY=your_api_key_here
+   GOOGLE_APPLICATION_CREDENTIALS=./bookscout-firebase-adminsdk.json
    ```
-6. The GitHub Actions workflow (e.g., `.github/workflows/android-build-publish.yml`) will automatically read this secret and recreate the `.env` file before compiling the app bundle.
+6. Your deployment workflow will automatically read this secret and recreate the `.env` file for the backend.

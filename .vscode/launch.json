@@ -8,7 +8,7 @@
       "name": "Emulador (Debug)",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart",
+      "program": "app/lib/main.dart",
       "flutterMode": "debug",
       "args": [
         "--device-id", "emulator-5554",
@@ -26,14 +26,14 @@
       "name": "Web",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart",
+      "program": "app/lib/main.dart",
       "args": ["--web-port", "8080", "--device-id", "chrome"],
     },
     {
       "name": "Linux",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart",
+      "program": "app/lib/main.dart",
       "flutterMode": "debug",
       "args": ["--device-id", "linux"],
     },
@@ -41,7 +41,7 @@
       "name": "Mòbil jocs (Release)",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart",
+      "program": "app/lib/main.dart",
       "flutterMode": "release",
       "args": ["--device-id", "1485ABB7"]
     },
@@ -49,7 +49,7 @@
       "name": "Mòbil jocs (Debug)",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart",
+      "program": "app/lib/main.dart",
       "flutterMode": "debug",
       "args": [
         "--device-id", "1485ABB7",
@@ -60,7 +60,7 @@
       "name": "Mòbil meu (Release)",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart",
+      "program": "app/lib/main.dart",
       "flutterMode": "release",
       "args": ["--device-id", "2312DRA50G"]
     },
@@ -68,7 +68,7 @@
       "name": "Mòbil meu (Profile)",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart",
+      "program": "app/lib/main.dart",
       "flutterMode": "profile",
       "args": ["--device-id", "2312DRA50G"]
     },
@@ -76,7 +76,7 @@
       "name": "Mòbil meu (Debug)",
       "request": "launch",
       "type": "dart",
-      "program": "${workspaceFolder}/lib/main.dart",
+      "program": "${workspaceFolder}/app/lib/main.dart",
       "flutterMode": "debug",
       "args": [
         "--device-id", "2312DRA50G",
