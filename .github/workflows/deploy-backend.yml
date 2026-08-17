@@ -1,9 +1,8 @@
 name: Deploy Backend to Cloud Run
 
 on:
-  push:
-    branches:
-      - master
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   deploy:
