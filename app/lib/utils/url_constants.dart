@@ -4,6 +4,9 @@ import 'package:flutter/foundation.dart';
 class UrlConstants {
   // BookScout BFF
   static String get bffBaseUrl {
+    if (kReleaseMode) {
+      return 'https://bookscout-backend-320007455582.europe-southwest1.run.app/api';
+    }
     if (kIsWeb) {
       return 'http://localhost:8080/api';
     }
