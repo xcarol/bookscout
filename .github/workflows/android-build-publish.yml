@@ -34,6 +34,7 @@ jobs:
 
       # 4. Recreate .env file
       - name: Create .env file
+        working-directory: ./app
         env:
           ENV_FILE_CONTENT: ${{ secrets.ENV_FILE }}
         run: |
@@ -54,7 +55,7 @@ jobs:
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > app/android/app/upload-keystore.jks
 
       # 6. Recreate key.properties file
       - name: Create key.properties
@@ -63,17 +64,19 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
         run: |
-          echo "storePassword=$ANDROID_KEYSTORE_PASSWORD" > android/key.properties
-          echo "keyPassword=$ANDROID_KEY_PASSWORD" >> android/key.properties
-          echo "keyAlias=$ANDROID_KEY_ALIAS" >> android/key.properties
-          echo "storeFile=upload-keystore.jks" >> android/key.properties
+          echo "storePassword=$ANDROID_KEYSTORE_PASSWORD" > app/android/key.properties
+          echo "keyPassword=$ANDROID_KEY_PASSWORD" >> app/android/key.properties
+          echo "keyAlias=$ANDROID_KEY_ALIAS" >> app/android/key.properties
+          echo "storeFile=upload-keystore.jks" >> app/android/key.properties
 
       # 7. Fetch Flutter dependencies
       - name: Install dependencies
+        working-directory: ./app
         run: flutter pub get
 
       # 8. Build Release AppBundle
       - name: Build Android AppBundle
+        working-directory: ./app
         run: flutter build appbundle --release
 
       # 9. Upload AAB as workflow artifact
@@ -81,7 +84,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-release-aab
-          path: build/app/outputs/bundle/release/app-release.aab
+          path: app/build/app/outputs/bundle/release/app-release.aab
 
       # 10. Deploy to Google Play Console (Internal Track)
       - name: Deploy to Google Play Internal Testing
@@ -89,6 +92,6 @@ jobs:
         with:
           service_account_json: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
           package_name: com.xicra.bookscout
-          aab_file_path: build/app/outputs/bundle/release/app-release.aab
+          aab_file_path: app/build/app/outputs/bundle/release/app-release.aab
           track: internal
           release_status: completed

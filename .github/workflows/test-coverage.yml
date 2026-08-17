@@ -14,17 +14,20 @@ jobs:
           flutter-version: 'any'
 
       - name: Install dependencies
+        working-directory: ./app
         run: flutter pub get
 
       - name: Create dummy .env file
+        working-directory: ./app
         run: touch .env
 
       - name: Run tests with coverage
+        working-directory: ./app
         run: flutter test --coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage/lcov.info
+          files: app/coverage/lcov.info
           fail_ci_if_error: true

@@ -28,7 +28,7 @@ jobs:
           
           VERSION=${BRANCH_NAME#release/}
           
-          echo "Creanting a release for version: $VERSION"
+          echo "Creating a release for version: $VERSION"
           
           gh release create "$VERSION" \
             --target "$BASE_REF" \
