@@ -1,0 +1,18 @@
+const FORMATS = Object.freeze({
+  PHYSICAL: 'PHYSICAL',
+  DIGITAL: 'DIGITAL',
+  AUDIO: 'AUDIO',
+  UNKNOWN: 'UNKNOWN'
+});
+
+const STATUSES = Object.freeze({
+  IN_STOCK: 'IN_STOCK',
+  OUT_OF_STOCK: 'OUT_OF_STOCK',
+  AVAILABLE_SOON: 'AVAILABLE_SOON',
+  UNKNOWN: 'UNKNOWN'
+});
+
+module.exports = {
+  FORMATS,
+  STATUSES
+};
