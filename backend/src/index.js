@@ -43,7 +43,8 @@ app.get('/api/books/:isbn', async (req, res) => {
 app.get('/api/availability/:isbn', async (req, res) => {
   try {
     const { isbn } = req.params;
-    const results = await checkAvailability(isbn);
+    const { country, lang } = req.query;
+    const results = await checkAvailability(isbn, country, lang);
     res.json(results);
   } catch (error) {
     console.error(`Error fetching availability for ${req.params.isbn}:`, error);
