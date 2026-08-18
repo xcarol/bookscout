@@ -1,3 +1,6 @@
+import 'package:bookscout/utils/url_constants.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -5,6 +8,8 @@ import 'package:bookscout/l10n/app_localizations.dart';
 import 'package:bookscout/services/settings/language_service.dart';
 import 'package:bookscout/utils/app_constants.dart';
 import 'package:bookscout/widgets/dialogs_and_forms/language_form.dart';
+import 'package:bookscout/screens/logs_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -115,8 +120,67 @@ class AppDrawer extends StatelessWidget {
         color: Theme.of(context).colorScheme.primary,
       ),
       aboutBoxChildren: [
+        Text(AppLocalizations.of(context)!.aboutDescription),
         const SizedBox(height: 8),
-        Text(l10n.aboutDescription),
+        SelectableText.rich(
+          TextSpan(
+            children: [
+              TextSpan(text: AppLocalizations.of(context)!.aboutGithub),
+              TextSpan(
+                text: 'github',
+                style: const TextStyle(
+                  decoration: TextDecoration.underline,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap =
+                      () => launchUrl(Uri.parse(UrlConstants.githubRepoUrl)),
+              ),
+            ],
+          ),
+        ),
+        SelectableText.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                  text: AppLocalizations.of(context)!.privacyDisclaimerPrefix),
+              TextSpan(
+                text: AppLocalizations.of(context)!.privacyDisclaimer,
+                style: const TextStyle(
+                  decoration: TextDecoration.underline,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () => launchUrl(Uri.parse(
+                      'https://xcarol.github.io/bookscout/privacy.html')),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 32),
+        Text(
+          AppLocalizations.of(context)!.apiDisclaimer,
+          style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+        ),
+        const SizedBox(height: 16),
+        if (kDebugMode || dotenv.env[AppConstants.enableLogs] == 'true')
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton.icon(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close About dialog
+                  Navigator.pop(context); // Close Drawer
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LogsScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.history),
+                label: const Text('App logs'),
+              ),
+            ],
+          ),
       ],
       child: Text(l10n.about),
     );

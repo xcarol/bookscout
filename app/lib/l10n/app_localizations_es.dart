@@ -36,8 +36,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get about => 'Acerca de';
 
   @override
-  String get aboutDescription =>
-      'BookScout es una aplicación para organizar y seguir tus lecturas.';
+  String get aboutDescription => 'BookScout es una aplicación para organizar y seguir tus lecturas.';
+
+  @override
+  String get aboutGithub => 'Visita el proyecto en ';
+
+  @override
+  String get apiDisclaimer => 'Este producto utiliza las APIs de Google Books y OpenLibrary entre otros, pero no está respaldado ni certificado por Google Books, OpenLibrary ni ningún otro proveedor de datos.';
+
+  @override
+  String get privacyDisclaimerPrefix => 'Consulta la ';
+
+  @override
+  String get privacyDisclaimer => 'política de privacidad';
 
   @override
   String get cancel => 'Cancelar';
@@ -99,8 +110,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get endReadingSessionTitle => 'Finalizar Sesión de Lectura';
 
   @override
-  String get errorEndTimeBeforeStart =>
-      'La hora de fin no puede ser anterior a la de inicio.';
+  String get errorEndTimeBeforeStart => 'La hora de fin no puede ser anterior a la de inicio.';
 
   @override
   String get errorInvalidPage => 'Número de página inválido.';
@@ -174,8 +184,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get confirmDeleteSession => 'Confirmar eliminación';
 
   @override
-  String get confirmDeleteSessionMessage =>
-      '¿Estás seguro de que quieres eliminar esta sesión?';
+  String get confirmDeleteSessionMessage => '¿Estás seguro de que quieres eliminar esta sesión?';
 
   @override
   String get noReadingSessions => 'No hay sesiones';
