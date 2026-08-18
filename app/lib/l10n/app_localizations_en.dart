@@ -36,8 +36,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get about => 'About';
 
   @override
-  String get aboutDescription =>
-      'BookScout is an application to organize and track your readings.';
+  String get aboutDescription => 'BookScout is an application to organize and track your readings.';
+
+  @override
+  String get aboutGithub => 'Visit the project on ';
+
+  @override
+  String get apiDisclaimer => 'This product uses the Google Books and OpenLibrary APIs among others but is not endorsed or certified by Google Books, OpenLibrary or any other data provider.';
+
+  @override
+  String get privacyDisclaimerPrefix => 'Check the ';
+
+  @override
+  String get privacyDisclaimer => 'privacy policy';
 
   @override
   String get cancel => 'Cancel';
@@ -173,8 +184,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmDeleteSession => 'Confirm Delete';
 
   @override
-  String get confirmDeleteSessionMessage =>
-      'Are you sure you want to delete this session?';
+  String get confirmDeleteSessionMessage => 'Are you sure you want to delete this session?';
 
   @override
   String get noReadingSessions => 'No sessions';

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:bookscout/services/core/error_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:bookscout/models/book.dart';
 
@@ -25,19 +25,20 @@ class BookScoutApiService {
             .map((json) => Book.fromBffLiteJson(json as Map<String, dynamic>))
             .toList();
       } else {
-        debugPrint(
+        ErrorService.log(
           'API Error: ${response.statusCode} - Failed to load search results: ${response.body}',
+          showSnackBar: true,
         );
         return [];
       }
     } on SocketException catch (e) {
-      debugPrint('Network connection error: $e');
+      ErrorService.log('Network connection error: $e');
       return [];
     } on TimeoutException catch (e) {
-      debugPrint('Request timed out: $e');
+      ErrorService.log('Request timed out: $e');
       return [];
     } catch (e, stackTrace) {
-      debugPrint('Failed to search books in BFF: $e\n$stackTrace');
+      ErrorService.log('Failed to search books in BFF: $e\n$stackTrace');
       return [];
     }
   }
@@ -56,19 +57,20 @@ class BookScoutApiService {
       } else if (response.statusCode == 404) {
         return null;
       } else {
-        debugPrint(
+        ErrorService.log(
           'API Error: ${response.statusCode} - Failed to load book details: ${response.body}',
+          showSnackBar: true,
         );
         return null;
       }
     } on SocketException catch (e) {
-      debugPrint('Network connection error: $e');
+      ErrorService.log('Network connection error: $e');
       return null;
     } on TimeoutException catch (e) {
-      debugPrint('Request timed out: $e');
+      ErrorService.log('Request timed out: $e');
       return null;
     } catch (e, stackTrace) {
-      debugPrint('Failed to fetch book details from BFF: $e\n$stackTrace');
+      ErrorService.log('Failed to fetch book details from BFF: $e\n$stackTrace');
       return null;
     }
   }
