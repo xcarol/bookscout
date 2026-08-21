@@ -2,6 +2,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const { buildPluginResult } = require('../models/PluginContract');
 const { FORMATS, STATUSES } = require('../models/Constants');
+const { sendTelegramAlert } = require('../services/telegramNotifier');
 
 const EBIBLIO_DOMAINS = {
   'ca': 'biblioteca.ebiblio.cat', // Catalunya
@@ -50,6 +51,11 @@ async function scrapeEBiblio(isbn, lang) {
       status = STATUSES.AVAILABLE_SOON;
     } else if (bodyText.includes('Prestar') || bodyText.includes('Visualitzar') || bodyText.includes('Visualizar') || bodyText.includes('Préstec')) {
       status = STATUSES.IN_STOCK;
+    }
+
+    // Sanity check: if we found the ISBN but couldn't parse the status
+    if (status === STATUSES.UNKNOWN) {
+      sendTelegramAlert('eBiblio', isbn, 'Odilo DOM changed. ISBN found on page but unable to parse status or internal ID.').catch(console.error);
     }
 
     return buildPluginResult({
