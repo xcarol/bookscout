@@ -18,6 +18,9 @@ async function sendTelegramAlert(scraperName, isbn, reason) {
     });
   } catch (error) {
     console.error('Failed to send Telegram alert:', error.message);
+    if (error.response && error.response.data) {
+      console.error('Telegram API Error Data:', error.response.data);
+    }
   }
 }
 
