@@ -32,7 +32,9 @@ app.get('/api/search', async (req, res) => {
 app.get('/api/books/:isbn', async (req, res) => {
   try {
     const { isbn } = req.params;
+    console.info(`\n[INFO] Received request for /api/books/${isbn}`);
     const book = await getBookDetails(isbn);
+    console.info(`[INFO] Successfully fetched details for ${isbn}`);
     res.json(book);
   } catch (error) {
     console.error(`Error fetching book ${req.params.isbn}:`, error);
@@ -43,8 +45,10 @@ app.get('/api/books/:isbn', async (req, res) => {
 app.get('/api/availability/:isbn', async (req, res) => {
   try {
     const { isbn } = req.params;
+    console.info(`\n[INFO] Received request for /api/availability/${isbn}`);
     const { country, lang } = req.query;
     const results = await checkAvailability(isbn, country, lang);
+    console.info(`[INFO] Successfully fetched availability for ${isbn}`);
     res.json(results);
   } catch (error) {
     console.error(`Error fetching availability for ${req.params.isbn}:`, error);

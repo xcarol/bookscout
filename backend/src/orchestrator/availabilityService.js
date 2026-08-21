@@ -2,13 +2,16 @@ const { db } = require('../cache/firestore');
 const plugins = require('../plugins');
 
 async function checkAvailability(isbn, country = 'GLOBAL', lang = 'en') {
+  const normalizedCountry = country.toUpperCase();
   // Filter plugins by region
   const filteredPlugins = plugins.filter(plugin => 
-    plugin.regions.includes(country) || plugin.regions.includes('GLOBAL')
+    plugin.regions.includes(normalizedCountry) || plugin.regions.includes('GLOBAL')
   );
 
   // Execute all filtered plugins concurrently
-  const promises = filteredPlugins.map(plugin => plugin.execute(isbn, lang));
+  const promises = filteredPlugins.map(plugin => {
+    return plugin.execute(isbn, lang);
+  });
   const results = await Promise.allSettled(promises);
 
   const successfulResults = [];
