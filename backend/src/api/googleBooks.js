@@ -1,4 +1,4 @@
-const axios = require('axios');
+const googleBooksClient = require('../utils/googleBooksClient');
 
 const API_KEY = process.env.GOOGLE_BOOKS_API_KEY;
 
@@ -12,7 +12,7 @@ async function searchGoogleBooks(query, maxResults = 40) {
     if (API_KEY) {
       url += `&key=${API_KEY}`;
     }
-    const response = await axios.get(url);
+    const response = await googleBooksClient.get(url, { __shortRetries: true });
     return response.data?.items || [];
   } catch (error) {
     console.error(`Error searching Google Books for query "${query}":`, error.message);
@@ -29,7 +29,7 @@ async function fetchFromGoogleBooks(isbn) {
     if (API_KEY) {
       url += `&key=${API_KEY}`;
     }
-    const response = await axios.get(url);
+    const response = await googleBooksClient.get(url);
     
     if (response.data?.items?.length > 0) {
       return response.data.items[0];
