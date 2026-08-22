@@ -1,7 +1,7 @@
 const { db } = require('../cache/firestore');
 const plugins = require('../plugins');
 
-async function checkAvailability(isbn, country = 'GLOBAL', lang = 'en') {
+async function checkAvailability(isbn, country = 'GLOBAL', region = null) {
   const normalizedCountry = country.toUpperCase();
   // Filter plugins by region
   const filteredPlugins = plugins.filter(plugin => 
@@ -10,7 +10,7 @@ async function checkAvailability(isbn, country = 'GLOBAL', lang = 'en') {
 
   // Execute all filtered plugins concurrently
   const promises = filteredPlugins.map(plugin => {
-    return plugin.execute(isbn, lang);
+    return plugin.execute(isbn, region);
   });
   const results = await Promise.allSettled(promises);
 

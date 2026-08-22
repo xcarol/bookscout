@@ -4,8 +4,8 @@ const { FORMATS, STATUSES } = require('../models/Constants.js');
 const { sendTelegramAlert } = require('../services/telegramNotifier.js');
 const stealthClient = require('../utils/httpClient.js');
 
-async function scrapeEBiblioCat(isbn, lang) {
-  if (lang !== 'ca') return null;
+async function scrapeEBiblioCat(isbn, region) {
+  if (region?.toLowerCase() !== 'catalunya') return null;
 
   const providerName = 'eBiblio Catalunya';
   const searchUrl = `https://biblioteca.ebiblio.cat/results?query=${isbn}`;
