@@ -128,12 +128,10 @@ class AppDrawer extends StatelessWidget {
               TextSpan(text: AppLocalizations.of(context)!.aboutGithub),
               TextSpan(
                 text: 'github',
-                style: const TextStyle(
-                  decoration: TextDecoration.underline,
-                ),
+                style: const TextStyle(decoration: TextDecoration.underline),
                 recognizer: TapGestureRecognizer()
-                  ..onTap =
-                      () => launchUrl(Uri.parse(UrlConstants.githubRepoUrl)),
+                  ..onTap = () =>
+                      launchUrl(Uri.parse(UrlConstants.githubRepoUrl)),
               ),
             ],
           ),
@@ -142,15 +140,17 @@ class AppDrawer extends StatelessWidget {
           TextSpan(
             children: [
               TextSpan(
-                  text: AppLocalizations.of(context)!.privacyDisclaimerPrefix),
+                text: AppLocalizations.of(context)!.privacyDisclaimerPrefix,
+              ),
               TextSpan(
                 text: AppLocalizations.of(context)!.privacyDisclaimer,
-                style: const TextStyle(
-                  decoration: TextDecoration.underline,
-                ),
+                style: const TextStyle(decoration: TextDecoration.underline),
                 recognizer: TapGestureRecognizer()
-                  ..onTap = () => launchUrl(Uri.parse(
-                      'https://xcarol.github.io/bookscout/privacy.html')),
+                  ..onTap = () => launchUrl(
+                    Uri.parse(
+                      'https://xcarol.github.io/bookscout/privacy.html',
+                    ),
+                  ),
               ),
             ],
           ),
@@ -171,9 +171,7 @@ class AppDrawer extends StatelessWidget {
                   Navigator.pop(context); // Close Drawer
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const LogsScreen(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const LogsScreen()),
                   );
                 },
                 icon: const Icon(Icons.history),

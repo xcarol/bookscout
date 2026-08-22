@@ -139,6 +139,8 @@ class ThemeService with ChangeNotifier {
     appBarText: lightColorSchemeDefault.onSurface,
     chipCardBackground: const Color.fromARGB(0xFF, 0x2B, 0x2B, 0x2B),
     bookCoverShadow: lightColorSchemeDefault.onSurface.withValues(alpha: 0.25),
+    availabilityAvailable: Colors.green,
+    availabilityUnavailable: Colors.orange,
   );
 
   static ColorScheme darkColorSchemeDefault = lightColorSchemeDefault.copyWith(
