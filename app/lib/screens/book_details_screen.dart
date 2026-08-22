@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:bookscout/models/book.dart';
+import 'package:bookscout/models/availability_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:bookscout/utils/app_constants.dart';
 import 'package:bookscout/widgets/buttons/library_button.dart';
 import 'package:bookscout/widgets/text_and_info/expandable_description.dart';
 import 'package:bookscout/l10n/app_localizations.dart';
@@ -21,12 +24,30 @@ class BookDetailsScreen extends StatefulWidget {
 class _BookDetailsScreenState extends State<BookDetailsScreen> {
   late Book _book;
   bool _isLoadingFull = false;
+  List<AvailabilityProvider>? _providers;
+  bool _isLoadingAvailability = true;
 
   @override
   void initState() {
     super.initState();
     _book = widget.book;
     _loadFullDetailsIfNeeded();
+    _loadAvailability();
+  }
+
+  Future<void> _loadAvailability() async {
+    if (_book.isbn == null) {
+      if (mounted) setState(() => _isLoadingAvailability = false);
+      return;
+    }
+
+    final providers = await BookScoutApiService().getAvailability(_book.isbn!);
+    if (mounted) {
+      setState(() {
+        _providers = providers;
+        _isLoadingAvailability = false;
+      });
+    }
   }
 
   Future<void> _loadFullDetailsIfNeeded() async {
@@ -187,6 +208,8 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
               initialMaxLines: 20,
             ),
             const SizedBox(height: 40),
+            _buildAvailabilitySection(context),
+            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -295,6 +318,71 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
         '$label: $value',
         style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
       ),
+    );
+  }
+
+  Widget _buildAvailabilitySection(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final customColors = theme.extension<CustomColors>()!;
+
+    if (_isLoadingAvailability) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_providers == null || _providers!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.availability,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        ..._providers!.map(
+          (provider) => Card(
+            margin: const EdgeInsets.only(bottom: 12),
+            child: ListTile(
+              leading: Icon(
+                provider.format.toUpperCase() == ProviderFormat.digital ||
+                        provider.format.toUpperCase() ==
+                            ProviderFormat.audiobook
+                    ? Icons.devices
+                    : Icons.menu_book,
+                color: provider.isAvailable
+                    ? customColors.availabilityAvailable
+                    : customColors.availabilityUnavailable,
+              ),
+              title: Text(
+                provider.providerName,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                provider.status.replaceAll('_', ' '),
+                style: TextStyle(
+                  color: provider.isAvailable
+                      ? customColors.availabilityAvailable
+                      : customColors.availabilityUnavailable,
+                ),
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.open_in_new),
+                onPressed: () async {
+                  final url = Uri.parse(provider.url);
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  }
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

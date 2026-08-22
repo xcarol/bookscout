@@ -61,8 +61,7 @@ class _LogsScreenState extends State<LogsScreen>
 
     if (mounted) {
       setState(() {
-        _logs = (prefs.getStringList(AppConstants.updateLogs) ?? [])
-            .reversed
+        _logs = (prefs.getStringList(AppConstants.updateLogs) ?? []).reversed
             .toList();
       });
     }
@@ -85,8 +84,9 @@ class _LogsScreenState extends State<LogsScreen>
               tooltip: 'Share logs',
               onPressed: () {
                 final String logText = _logs.join('\n\n---\n\n');
-                SharePlus.instance
-                    .share(ShareParams(text: logText, subject: 'App Logs'));
+                SharePlus.instance.share(
+                  ShareParams(text: logText, subject: 'App Logs'),
+                );
               },
             ),
             IconButton(
@@ -97,8 +97,9 @@ class _LogsScreenState extends State<LogsScreen>
                   context: context,
                   builder: (context) => AlertDialog(
                     title: const Text('Clear Logs'),
-                    content:
-                        const Text('Are you sure you want to delete all logs?'),
+                    content: const Text(
+                      'Are you sure you want to delete all logs?',
+                    ),
                     actions: [
                       FilledButton.tonal(
                         onPressed: () => Navigator.pop(context),
@@ -111,8 +112,9 @@ class _LogsScreenState extends State<LogsScreen>
                         },
                         style: FilledButton.styleFrom(
                           backgroundColor: Theme.of(context).colorScheme.error,
-                          foregroundColor:
-                              Theme.of(context).colorScheme.onError,
+                          foregroundColor: Theme.of(
+                            context,
+                          ).colorScheme.onError,
                         ),
                         child: const Text('Clear'),
                       ),
@@ -137,7 +139,11 @@ class _LogsScreenState extends State<LogsScreen>
                 : ListView.separated(
                     controller: _scrollController,
                     padding: const EdgeInsets.only(
-                        left: 16, right: 16, top: 16, bottom: 80),
+                      left: 16,
+                      right: 16,
+                      top: 16,
+                      bottom: 80,
+                    ),
                     itemCount: _logs.length,
                     separatorBuilder: (context, index) =>
                         const Divider(height: 32),

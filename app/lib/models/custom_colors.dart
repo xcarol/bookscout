@@ -11,6 +11,8 @@ class CustomColors extends ThemeExtension<CustomColors> {
   final Color appBarText;
   final Color chipCardBackground;
   final Color bookCoverShadow;
+  final Color availabilityAvailable;
+  final Color availabilityUnavailable;
 
   const CustomColors({
     required this.ratedBook,
@@ -22,6 +24,8 @@ class CustomColors extends ThemeExtension<CustomColors> {
     required this.appBarText,
     required this.chipCardBackground,
     required this.bookCoverShadow,
+    required this.availabilityAvailable,
+    required this.availabilityUnavailable,
   });
 
   @override
@@ -35,6 +39,8 @@ class CustomColors extends ThemeExtension<CustomColors> {
     Color? appBarText,
     Color? chipCardBackground,
     Color? bookCoverShadow,
+    Color? availabilityAvailable,
+    Color? availabilityUnavailable,
   }) {
     return CustomColors(
       ratedBook: ratedBook ?? this.ratedBook,
@@ -49,6 +55,10 @@ class CustomColors extends ThemeExtension<CustomColors> {
       appBarText: appBarText ?? this.appBarText,
       chipCardBackground: chipCardBackground ?? this.chipCardBackground,
       bookCoverShadow: bookCoverShadow ?? this.bookCoverShadow,
+      availabilityAvailable:
+          availabilityAvailable ?? this.availabilityAvailable,
+      availabilityUnavailable:
+          availabilityUnavailable ?? this.availabilityUnavailable,
     );
   }
 
@@ -87,6 +97,16 @@ class CustomColors extends ThemeExtension<CustomColors> {
         t,
       )!,
       bookCoverShadow: Color.lerp(bookCoverShadow, other.bookCoverShadow, t)!,
+      availabilityAvailable: Color.lerp(
+        availabilityAvailable,
+        other.availabilityAvailable,
+        t,
+      )!,
+      availabilityUnavailable: Color.lerp(
+        availabilityUnavailable,
+        other.availabilityUnavailable,
+        t,
+      )!,
     );
   }
 }

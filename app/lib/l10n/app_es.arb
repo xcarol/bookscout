@@ -138,5 +138,7 @@
   "searchFilterAuthor": "Autor",
   "@searchFilterAuthor": {},
   "searchFilterIsbn": "ISBN",
-  "@searchFilterIsbn": {}
+  "@searchFilterIsbn": {},
+  "availability": "Disponibilidad",
+  "@availability": {}
 }

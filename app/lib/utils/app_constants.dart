@@ -43,3 +43,17 @@ class AppConstants {
   static const int apiTimeoutSeconds = 10;
   static const int openLibraryTimeoutSeconds = 12;
 }
+
+class ProviderFormat {
+  static const String physical = 'PHYSICAL';
+  static const String digital = 'DIGITAL';
+  static const String audiobook = 'AUDIOBOOK';
+  static const String unknown = 'UNKNOWN';
+}
+
+class ProviderStatus {
+  static const String inStock = 'IN_STOCK';
+  static const String availableSoon = 'AVAILABLE_SOON';
+  static const String outOfStock = 'OUT_OF_STOCK';
+  static const String unknown = 'UNKNOWN';
+}

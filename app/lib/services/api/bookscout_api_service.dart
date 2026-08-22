@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:bookscout/services/core/error_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:bookscout/models/book.dart';
+import 'package:bookscout/models/availability_provider.dart';
 
 import 'package:bookscout/utils/url_constants.dart';
 
@@ -70,8 +71,52 @@ class BookScoutApiService {
       ErrorService.log('Request timed out: $e');
       return null;
     } catch (e, stackTrace) {
-      ErrorService.log('Failed to fetch book details from BFF: $e\n$stackTrace');
+      ErrorService.log(
+        'Failed to fetch book details from BFF: $e\n$stackTrace',
+      );
       return null;
+    }
+  }
+
+  Future<List<AvailabilityProvider>> getAvailability(String isbn) async {
+    final cleanIsbn = isbn.trim().replaceAll('-', '');
+    if (cleanIsbn.isEmpty) return [];
+
+    try {
+      final localeParts = Platform.localeName.split('_');
+      final country = localeParts.length > 1 ? localeParts.last : 'ES';
+      final region = 'madrid'; // Hardcoded as per user request
+
+      final uri = Uri.parse(
+        '${UrlConstants.bffBaseUrl}/availability/$cleanIsbn?country=$country&region=$region',
+      );
+      final response = await http.get(uri).timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonList = json.decode(response.body);
+        return jsonList
+            .map(
+              (json) =>
+                  AvailabilityProvider.fromJson(json as Map<String, dynamic>),
+            )
+            .toList();
+      } else {
+        ErrorService.log(
+          'API Error: ${response.statusCode} - Failed to load availability: ${response.body}',
+        );
+        return [];
+      }
+    } on SocketException catch (e) {
+      ErrorService.log('Network connection error: $e');
+      return [];
+    } on TimeoutException catch (e) {
+      ErrorService.log('Request timed out: $e');
+      return [];
+    } catch (e, stackTrace) {
+      ErrorService.log(
+        'Failed to fetch availability from BFF: $e\n$stackTrace',
+      );
+      return [];
     }
   }
 }
