@@ -16,6 +16,14 @@
     "cors": "^2.8.6",
     "dotenv": "^16.4.5",
     "express": "^5.2.1",
-    "firebase-admin": "^14.2.0"
+    "firebase-admin": "^14.2.0",
+    "puppeteer": "^24.15.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  },
+  "allowScripts": {
+    "puppeteer@24.43.1": true,
+    "protobufjs@7.6.5": true,
+    "@firebase/util@1.15.2": true
   }
 }

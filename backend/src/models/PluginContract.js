@@ -9,6 +9,9 @@ const { FORMATS, STATUSES } = require('./Constants');
  * @property {string} [coverUrl]
  * @property {number} [pages]
  * @property {string} [binding]
+ * @property {string} [language]
+ * @property {string[]} [categories]
+ * @property {string[]} [contributors]
  */
 
 /**
