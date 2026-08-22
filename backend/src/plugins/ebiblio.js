@@ -39,7 +39,7 @@ async function scrapeEBiblio(isbn, region) {
   const domain = EBIBLIO_DOMAINS[region.toLowerCase()];
   if (!domain) return null;
 
-  const url = `https://${domain}/resources?q=${isbn}`;
+  const url = `https://${domain}/resources?q=${isbn}&l=es`;
   try {
     const headers = {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
@@ -63,7 +63,7 @@ async function scrapeEBiblio(isbn, region) {
       });
     }
 
-    const detailUrl = `https://${domain}${detailLink}`;
+    const detailUrl = `https://${domain}${detailLink}${detailLink.includes('?') ? '&' : '?'}l=es`;
     const detailResponse = await axios.get(detailUrl, { headers });
     const $ = cheerio.load(detailResponse.data);
 
