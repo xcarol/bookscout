@@ -4,23 +4,23 @@ const { buildPluginResult } = require('../models/PluginContract');
 const { FORMATS, STATUSES, ERROR_TYPES } = require('../models/Constants.js');
 
 const EBIBLIO_DOMAINS = {
-  andalucia: 'andalucia.ebiblio.es',
-  aragon: 'aragon.ebiblio.es',
-  asturias: 'asturias.ebiblio.es',
-  canarias: 'canarias.ebiblio.es',
-  cantabria: 'cantabria.ebiblio.es',
-  castillalamancha: 'castillalamancha.ebiblio.es',
-  castillayleon: 'castillayleon.ebiblio.es',
-  ceuta: 'ceuta.ebiblio.es',
-  comunitatvalenciana: 'comunitatvalenciana.ebiblio.es',
-  extremadura: 'extremadura.ebiblio.es',
-  galicia: 'galicia.ebiblio.es',
-  illesbalears: 'illesbalears.ebiblio.es',
-  larioja: 'larioja.ebiblio.es',
-  madrid: 'madrid.ebiblio.es',
-  melilla: 'melilla.ebiblio.es',
-  murcia: 'murcia.ebiblio.es',
-  navarra: 'navarra.ebiblio.es',
+  'Andalucía': 'andalucia.ebiblio.es',
+  'Aragón': 'aragon.ebiblio.es',
+  'Asturias': 'asturias.ebiblio.es',
+  'Canarias': 'canarias.ebiblio.es',
+  'Cantabria': 'cantabria.ebiblio.es',
+  'Castilla-La Mancha': 'castillalamancha.ebiblio.es',
+  'Castilla y León': 'castillayleon.ebiblio.es',
+  'Ceuta': 'ceuta.ebiblio.es',
+  'Comunitat Valenciana': 'comunitatvalenciana.ebiblio.es',
+  'Extremadura': 'extremadura.ebiblio.es',
+  'Galicia': 'galicia.ebiblio.es',
+  'Illes Balears': 'illesbalears.ebiblio.es',
+  'La Rioja': 'larioja.ebiblio.es',
+  'Madrid': 'madrid.ebiblio.es',
+  'Melilla': 'melilla.ebiblio.es',
+  'Región de Murcia': 'murcia.ebiblio.es',
+  'Navarra': 'navarra.ebiblio.es',
 };
 
 /**
@@ -35,7 +35,7 @@ async function scrapeEBiblio(isbn, region) {
   if (!region) return null;
   if (region.toLowerCase() === 'catalunya') return null;
 
-  const domain = EBIBLIO_DOMAINS[region.toLowerCase()];
+  const domain = EBIBLIO_DOMAINS[region];
   if (!domain) return null;
 
   const url = `https://${domain}/resources?q=${isbn}&l=es`;
@@ -150,4 +150,4 @@ async function scrapeEBiblio(isbn, region) {
   }
 }
 
-module.exports = { scrapeEBiblio };
+module.exports = { scrapeEBiblio, ebiblioRegions: Object.keys(EBIBLIO_DOMAINS) };

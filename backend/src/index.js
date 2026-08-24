@@ -11,8 +11,34 @@ const PORT = process.env.PORT || 8080;
 app.use(cors());
 app.use(express.json());
 
+const plugins = require('./plugins');
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date() });
+});
+
+app.get('/api/locations', (req, res) => {
+  const locationsMap = new Map();
+
+  plugins.forEach(plugin => {
+    if (plugin.countries) {
+      plugin.countries.forEach(country => {
+        if (!locationsMap.has(country)) {
+          locationsMap.set(country, new Set());
+        }
+        if (plugin.regions) {
+          plugin.regions.forEach(region => locationsMap.get(country).add(region));
+        }
+      });
+    }
+  });
+
+  const response = Array.from(locationsMap.entries()).map(([countryCode, regionsSet]) => ({
+    countryCode,
+    regions: Array.from(regionsSet).sort() // sort regions alphabetically
+  })).sort((a, b) => a.countryCode.localeCompare(b.countryCode)); // sort countries
+
+  res.json(response);
 });
 
 app.get('/api/search', async (req, res) => {

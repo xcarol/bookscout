@@ -209,4 +209,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get availability => 'Availability';
+
+  @override
+  String get country => 'Country';
+
+  @override
+  String get region => 'Region';
+
+  @override
+  String get setLocation => 'Set location';
+
+  @override
+  String get clearLocation => 'Clear location';
 }

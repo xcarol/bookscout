@@ -8,6 +8,8 @@ import 'package:bookscout/l10n/app_localizations.dart';
 import 'package:bookscout/services/settings/language_service.dart';
 import 'package:bookscout/utils/app_constants.dart';
 import 'package:bookscout/widgets/dialogs_and_forms/language_form.dart';
+import 'package:bookscout/widgets/dialogs_and_forms/location_form.dart';
+import 'package:bookscout/services/settings/location_service.dart';
 import 'package:bookscout/screens/logs_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -22,6 +24,7 @@ class AppDrawer extends StatelessWidget {
         children: <Widget>[
           _headerTile(context),
           _languageTile(context),
+          _locationTile(context),
           const Divider(),
           _aboutTile(context),
         ],
@@ -97,6 +100,35 @@ class AppDrawer extends StatelessWidget {
         }
       },
     );
+  }
+
+  Widget _locationTile(BuildContext context) {
+    final locationService = context.watch<LocationService>();
+    final l10n = AppLocalizations.of(context)!;
+
+    String subtitle = l10n.setLocation;
+    if (locationService.currentCountry != null) {
+      subtitle = _getCountryLabel(locationService.currentCountry!);
+      if (locationService.currentRegion != null) {
+        subtitle += ' - ${locationService.currentRegion}';
+      }
+    }
+
+    return ListTile(
+      leading: const Icon(Icons.location_on),
+      title: Text(l10n.locationLabel),
+      subtitle: Text(subtitle),
+      onTap: () async {
+        await showDialog(
+          context: context,
+          builder: (context) => const LocationForm(),
+        );
+      },
+    );
+  }
+
+  String _getCountryLabel(String countryCode) {
+    return AppConstants.countryNames[countryCode] ?? countryCode;
   }
 
   String _getLanguageLabel(BuildContext context, String langCode) {

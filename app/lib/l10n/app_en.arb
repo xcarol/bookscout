@@ -140,5 +140,13 @@
   "searchFilterIsbn": "ISBN",
   "@searchFilterIsbn": {},
   "availability": "Availability",
-  "@availability": {}
+  "@availability": {},
+  "country": "Country",
+  "@country": {},
+  "region": "Region",
+  "@region": {},
+  "setLocation": "Set location",
+  "@setLocation": {},
+  "clearLocation": "Clear location",
+  "@clearLocation": {}
 }

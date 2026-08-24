@@ -5,8 +5,8 @@ const { FORMATS, ERROR_TYPES } = require('../models/Constants');
 
 async function checkAvailability(isbn, country = 'GLOBAL', region = null) {
   const normalizedCountry = country.toUpperCase();
-  const normalizedRegion = region ? region.toLowerCase() : 'global';
-  const cacheId = `${isbn}_${normalizedCountry}_${normalizedRegion}`;
+  const normalizedRegion = region || 'global';
+  const cacheId = `${isbn}_${normalizedCountry}_${normalizedRegion.replace(/\s+/g, '_')}`;
 
   // 1. Check cache first
   try {
@@ -24,10 +24,18 @@ async function checkAvailability(isbn, country = 'GLOBAL', region = null) {
 
   console.info(`[CACHE MISS] Fetching fresh availability for ${cacheId}...`);
 
-  // Filter plugins by region
-  const filteredPlugins = plugins.filter(
-    (plugin) => plugin.regions.includes(normalizedCountry) || plugin.regions.includes('GLOBAL'),
-  );
+  // Filter plugins by country and region
+  const filteredPlugins = plugins.filter((plugin) => {
+    const matchesCountry = !plugin.countries || plugin.countries.includes(normalizedCountry) || plugin.countries.includes('GLOBAL');
+    if (!matchesCountry) return false;
+
+    if (plugin.regions && plugin.regions.length > 0) {
+      if (!region) return false;
+      return plugin.regions.includes(region);
+    }
+    
+    return true;
+  });
 
   // Execute all filtered plugins concurrently
   const promises = filteredPlugins.map((plugin) => {

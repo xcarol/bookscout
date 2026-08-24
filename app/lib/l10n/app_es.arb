@@ -140,5 +140,13 @@
   "searchFilterIsbn": "ISBN",
   "@searchFilterIsbn": {},
   "availability": "Disponibilidad",
-  "@availability": {}
+  "@availability": {},
+  "country": "País",
+  "@country": {},
+  "spain": "España",
+  "@spain": {},
+  "setLocation": "Configurar ubicación",
+  "@setLocation": {},
+  "clearLocation": "Borra la ubicación",
+  "@clearLocation": {}
 }

@@ -10,6 +10,7 @@ import 'package:bookscout/models/custom_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:bookscout/services/books/library_repository.dart';
 import 'package:bookscout/services/api/bookscout_api_service.dart';
+import 'package:bookscout/services/settings/location_service.dart';
 import 'package:bookscout/screens/reading_sessions_screen.dart';
 
 class BookDetailsScreen extends StatefulWidget {
@@ -41,7 +42,15 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
       return;
     }
 
-    final providers = await BookScoutApiService().getAvailability(_book.isbn!);
+    final locationService = context.read<LocationService>();
+    final country = locationService.currentCountry;
+    final region = locationService.currentRegion;
+
+    final providers = await BookScoutApiService().getAvailability(
+      _book.isbn!,
+      country: country,
+      region: region,
+    );
     if (mounted) {
       setState(() {
         _providers = providers;
