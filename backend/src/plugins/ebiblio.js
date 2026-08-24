@@ -1,8 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { buildPluginResult } = require('../models/PluginContract');
-const { FORMATS, STATUSES } = require('../models/Constants');
-const { sendTelegramAlert } = require('../services/telegramNotifier');
+const { FORMATS, STATUSES, ERROR_TYPES } = require('../models/Constants.js');
 
 const EBIBLIO_DOMAINS = {
   'andalucia': 'andalucia.ebiblio.es',
@@ -54,12 +53,9 @@ async function scrapeEBiblio(isbn, region) {
     if (!detailLink) {
       return buildPluginResult({
         providerName: 'eBiblio',
-        isAvailable: false,
-        price: null,
-        currency: null,
-        url: url,
-        format: FORMATS.DIGITAL,
-        status: STATUSES.UNKNOWN
+        error: true,
+        errorType: ERROR_TYPES.NOT_FOUND,
+        errorMessage: `Book ${isbn} not found in region ${region}`
       });
     }
 
@@ -100,7 +96,12 @@ async function scrapeEBiblio(isbn, region) {
 
     // Sanity check: if we couldn't parse the status
     if (status === STATUSES.UNKNOWN) {
-      sendTelegramAlert('eBiblio', isbn, 'Odilo DOM changed on detail page. Unable to parse status.').catch(console.error);
+      return buildPluginResult({
+        providerName: 'eBiblio',
+        error: true,
+        errorType: ERROR_TYPES.DOM_CHANGED,
+        errorMessage: 'Odilo DOM changed on detail page. Unable to parse status.'
+      });
     }
 
     return buildPluginResult({
@@ -124,16 +125,22 @@ async function scrapeEBiblio(isbn, region) {
     });
 
   } catch (error) {
-    console.error(`[ERROR] eBiblio: Error occurred for region ${region} -`, error.message);
-    return buildPluginResult({
-      providerName: 'eBiblio',
-      isAvailable: false,
-      price: null,
-      currency: null,
-      url: url,
-      format: FORMATS.DIGITAL,
-      status: STATUSES.UNKNOWN
-    });
+    if (error.response && error.response.status === 404) {
+      return buildPluginResult({
+        providerName: 'eBiblio',
+        error: true,
+        errorType: ERROR_TYPES.NOT_FOUND,
+        errorMessage: `Book ${isbn} not found (404) in region ${region}`
+      });
+    } else {
+      const statusCode = error.response ? error.response.status : 'Network/Other';
+      return buildPluginResult({
+        providerName: 'eBiblio',
+        error: true,
+        errorType: ERROR_TYPES.UNEXPECTED,
+        errorMessage: `Unexpected scraping error in region ${region}. Status: ${statusCode}, Error: ${error.message}`
+      });
+    }
   }
 }
 

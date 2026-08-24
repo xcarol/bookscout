@@ -24,6 +24,9 @@ const { FORMATS, STATUSES } = require('./Constants');
  * @property {typeof FORMATS[keyof typeof FORMATS]} format - Format of the book.
  * @property {typeof STATUSES[keyof typeof STATUSES]} status - Availability status.
  * @property {PluginMetadata} [metadata] - Additional scraped metadata.
+ * @property {boolean} [error] - Whether an error occurred.
+ * @property {string} [errorType] - Type of error (e.g. 'NOT_FOUND', 'DOM_CHANGED', 'UNEXPECTED').
+ * @property {string} [errorMessage] - Detail of the error.
  */
 
 /**
@@ -42,6 +45,9 @@ function buildPluginResult(data) {
     format: data.format || FORMATS.UNKNOWN,
     status: data.status || STATUSES.UNKNOWN,
     metadata: data.metadata,
+    error: !!data.error,
+    errorType: data.errorType || null,
+    errorMessage: data.errorMessage || null,
   };
 }
 

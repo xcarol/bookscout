@@ -1,7 +1,6 @@
 const cheerio = require('cheerio');
 const { buildPluginResult } = require('../models/PluginContract');
-const { FORMATS, STATUSES } = require('../models/Constants.js');
-const { sendTelegramAlert } = require('../services/telegramNotifier.js');
+const { FORMATS, STATUSES, ERROR_TYPES } = require('../models/Constants.js');
 const stealthClient = require('../utils/httpClient.js');
 
 async function scrapeEBiblioCat(isbn, region) {
@@ -20,7 +19,12 @@ async function scrapeEBiblioCat(isbn, region) {
     const article = await page.$(articleSelector);
     
     if (!article) {
-      return null;
+      return buildPluginResult({
+        providerName: 'eBiblio Catalunya',
+        error: true,
+        errorType: ERROR_TYPES.NOT_FOUND,
+        errorMessage: `Book ${isbn} not found`
+      });
     }
 
     // Click the article and wait for navigation
@@ -68,6 +72,15 @@ async function scrapeEBiblioCat(isbn, region) {
     } else if (allBtnText.includes('prestar') || allBtnText.includes('llegir') || allBtnText.includes('borrow') || allBtnText.includes('read')) {
       status = STATUSES.IN_STOCK;
       isAvailable = true;
+    }
+
+    if (status === STATUSES.UNKNOWN) {
+      return buildPluginResult({
+        providerName: 'eBiblio Catalunya',
+        error: true,
+        errorType: ERROR_TYPES.DOM_CHANGED,
+        errorMessage: 'Odilo DOM changed on detail page. Unable to parse status.'
+      });
     }
 
     // 4. Extract Extra Metadata from DOM
@@ -121,16 +134,19 @@ async function scrapeEBiblioCat(isbn, region) {
       });
     }
 
-    return null;
+    return buildPluginResult({
+      providerName: 'eBiblio Catalunya',
+      error: true,
+      errorType: ERROR_TYPES.DOM_CHANGED,
+      errorMessage: 'Could not extract title from DOM'
+    });
 
   } catch (error) {
-    console.error(`[ERROR] eBiblioCat: Error occurred -`, error.message);
-    if (typeof sendTelegramAlert === 'function') {
-      sendTelegramAlert('eBiblio Catalunya', isbn, `Scraping failed: ${error.message}`).catch(() => { });
-    }
     return buildPluginResult({
-      providerName, isAvailable: false, status: STATUSES.UNKNOWN,
-      url: searchUrl, format: FORMATS.DIGITAL, price: null, currency: null
+      providerName: 'eBiblio Catalunya',
+      error: true,
+      errorType: ERROR_TYPES.UNEXPECTED,
+      errorMessage: `Unexpected scraping error. Error: ${error.message}`
     });
   }
 }

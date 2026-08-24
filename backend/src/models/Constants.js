@@ -12,7 +12,14 @@ const STATUSES = Object.freeze({
   UNKNOWN: 'UNKNOWN'
 });
 
+const ERROR_TYPES = Object.freeze({
+  NOT_FOUND: 'NOT_FOUND',
+  DOM_CHANGED: 'DOM_CHANGED',
+  UNEXPECTED: 'UNEXPECTED'
+});
+
 module.exports = {
   FORMATS,
-  STATUSES
+  STATUSES,
+  ERROR_TYPES
 };

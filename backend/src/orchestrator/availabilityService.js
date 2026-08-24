@@ -1,5 +1,7 @@
 const { db } = require('../cache/firestore');
 const plugins = require('../plugins');
+const { sendTelegramAlert } = require('../services/telegramNotifier');
+const { FORMATS, ERROR_TYPES } = require('../models/Constants');
 
 async function checkAvailability(isbn, country = 'GLOBAL', region = null) {
   const normalizedCountry = country.toUpperCase();
@@ -40,16 +42,28 @@ async function checkAvailability(isbn, country = 'GLOBAL', region = null) {
     editionPromise.catch(() => null)
   ]);
 
-  const bookFormat = editionDoc?.exists ? (editionDoc.data().format || 'UNKNOWN') : 'UNKNOWN';
+  const bookFormat = editionDoc?.exists ? (editionDoc.data().format || FORMATS.UNKNOWN) : FORMATS.UNKNOWN;
 
   const successfulResults = [];
   let metadataUpdated = false;
 
   results.forEach(result => {
     if (result.status === 'fulfilled' && result.value) {
+      if (result.value.error) {
+        if (result.value.errorType === ERROR_TYPES.NOT_FOUND) {
+          console.info(`[INFO] ${result.value.providerName}: Book ${isbn} not found.`);
+        } else {
+          console.error(`[ERROR] ${result.value.providerName}: Error - ${result.value.errorMessage}`);
+          if (typeof sendTelegramAlert === 'function') {
+            sendTelegramAlert(result.value.providerName, isbn, result.value.errorMessage || 'Unknown error').catch(() => {});
+          }
+        }
+        return; // Skip adding to successfulResults
+      }
+
       const providerFormat = result.value.format;
       
-      if (bookFormat !== 'UNKNOWN' && providerFormat !== 'UNKNOWN' && bookFormat !== providerFormat) {
+      if (bookFormat !== FORMATS.UNKNOWN && providerFormat !== FORMATS.UNKNOWN && bookFormat !== providerFormat) {
         console.info(`[FILTER] Skipping provider ${result.value.providerName} for ISBN ${isbn} because formats do not match (${providerFormat} vs ${bookFormat})`);
         return;
       }

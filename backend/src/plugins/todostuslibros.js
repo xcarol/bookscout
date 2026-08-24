@@ -1,8 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { buildPluginResult } = require('../models/PluginContract');
-const { FORMATS, STATUSES } = require('../models/Constants');
-const { sendTelegramAlert } = require('../services/telegramNotifier');
+const { FORMATS, STATUSES, ERROR_TYPES } = require('../models/Constants');
 
 /**
  * Scrapes book availability, price, and metadata from todostuslibros.com
@@ -90,9 +89,13 @@ async function scrapeTodostuslibros(isbn) {
       metadata.coverUrl = imgElement.attr('src');
     }
 
-    // Sanity Check for DOM changes
     if (isAvailable && price === null && Object.keys(metadata).length === 0) {
-      sendTelegramAlert('Todostuslibros', isbn, 'DOM parse failure. Found availability text but failed to extract price and metadata.').catch(console.error);
+      return buildPluginResult({
+        providerName: 'Todostuslibros',
+        error: true,
+        errorType: ERROR_TYPES.DOM_CHANGED,
+        errorMessage: 'DOM parse failure. Found availability text but failed to extract price and metadata.'
+      });
     }
 
     return buildPluginResult({
@@ -107,15 +110,22 @@ async function scrapeTodostuslibros(isbn) {
     });
 
   } catch (error) {
-    return buildPluginResult({
-      providerName: 'Todostuslibros',
-      isAvailable: false,
-      price: null,
-      currency: null,
-      url: url,
-      format: FORMATS.PHYSICAL,
-      status: STATUSES.UNKNOWN
-    });
+    if (error.response && error.response.status === 404) {
+      return buildPluginResult({
+        providerName: 'Todostuslibros',
+        error: true,
+        errorType: ERROR_TYPES.NOT_FOUND,
+        errorMessage: 'Book not found (404)'
+      });
+    } else {
+      const statusCode = error.response ? error.response.status : 'Network/Other';
+      return buildPluginResult({
+        providerName: 'Todostuslibros',
+        error: true,
+        errorType: ERROR_TYPES.UNEXPECTED,
+        errorMessage: `Unexpected scraping error. Status: ${statusCode}, Error: ${error.message}`
+      });
+    }
   }
 }
 
