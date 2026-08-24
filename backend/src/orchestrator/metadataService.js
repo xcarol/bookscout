@@ -108,12 +108,23 @@ async function buildBookEdition(isbn) {
     }
   }
 
+  // Format
+  let format = 'UNKNOWN';
+  if (googleData?.saleInfo?.isEbook || olData?.physical_format?.toLowerCase().includes('ebook') || olData?.physical_format?.toLowerCase().includes('digital')) {
+    format = 'DIGITAL';
+  } else if (olData?.physical_format?.toLowerCase().includes('audio')) {
+    format = 'AUDIOBOOK';
+  } else if (volumeInfo.printType === 'BOOK' || olData?.physical_format) {
+    format = 'PHYSICAL';
+  }
+
   return {
     isbn,
     title,
     subtitle,
     description,
     workId,
+    format,
     physicalFormat,
     series,
     categories,
