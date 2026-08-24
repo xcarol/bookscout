@@ -12,7 +12,7 @@ class StealthClient {
     if (!this.browserPromise) {
       this.browserPromise = puppeteer.launch({
         headless: 'new',
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
       });
     }
     return this.browserPromise;
@@ -28,18 +28,18 @@ class StealthClient {
     }
   }
 
-  async getPage(url, options = {}) {
+  async getPage(url) {
     const browser = await this.getBrowser();
     const page = await browser.newPage();
 
     // Set realistic user agent
     await page.setUserAgent(
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     );
 
     await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
     // Wait an extra second just in case Angular is doing some final rendering
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 2000));
 
     return { browser, page };
   }

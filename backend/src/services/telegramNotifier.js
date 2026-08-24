@@ -14,7 +14,7 @@ async function sendTelegramAlert(scraperName, isbn, reason) {
   try {
     await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
       chat_id: chatId,
-      text: message
+      text: message,
     });
   } catch (error) {
     console.error('Failed to send Telegram alert:', error.message);

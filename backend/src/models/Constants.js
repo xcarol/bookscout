@@ -2,17 +2,24 @@ const FORMATS = Object.freeze({
   PHYSICAL: 'PHYSICAL',
   DIGITAL: 'DIGITAL',
   AUDIO: 'AUDIO',
-  UNKNOWN: 'UNKNOWN'
+  UNKNOWN: 'UNKNOWN',
 });
 
 const STATUSES = Object.freeze({
   IN_STOCK: 'IN_STOCK',
   OUT_OF_STOCK: 'OUT_OF_STOCK',
   AVAILABLE_SOON: 'AVAILABLE_SOON',
-  UNKNOWN: 'UNKNOWN'
+  UNKNOWN: 'UNKNOWN',
+});
+
+const ERROR_TYPES = Object.freeze({
+  NOT_FOUND: 'NOT_FOUND',
+  DOM_CHANGED: 'DOM_CHANGED',
+  UNEXPECTED: 'UNEXPECTED',
 });
 
 module.exports = {
   FORMATS,
-  STATUSES
+  STATUSES,
+  ERROR_TYPES,
 };

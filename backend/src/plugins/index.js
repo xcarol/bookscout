@@ -6,18 +6,18 @@ const plugins = [
   {
     id: 'todostuslibros',
     regions: ['ES'],
-    execute: scrapeTodostuslibros
+    execute: scrapeTodostuslibros,
   },
   {
     id: 'ebiblio_cat',
     regions: ['ES'],
-    execute: scrapeEBiblioCat
+    execute: scrapeEBiblioCat,
   },
   {
     id: 'ebiblio',
     regions: ['ES'],
-    execute: scrapeEBiblio
-  }
+    execute: scrapeEBiblio,
+  },
 ];
 
 module.exports = plugins;

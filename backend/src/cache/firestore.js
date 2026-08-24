@@ -10,7 +10,7 @@ const db = getFirestore();
 
 /**
  * Attempts to get the document from the editions collection
- * @param {string} isbn 
+ * @param {string} isbn
  * @returns {Promise<import('../models/BookModels').BookEdition|null>}
  */
 async function getEdition(isbn) {
@@ -28,8 +28,8 @@ async function getEdition(isbn) {
 
 /**
  * Saves or overwrites the document in the editions collection
- * @param {string} isbn 
- * @param {import('../models/BookModels').BookEdition} bookEditionData 
+ * @param {string} isbn
+ * @param {import('../models/BookModels').BookEdition} bookEditionData
  */
 async function saveEdition(isbn, bookEditionData) {
   try {
@@ -44,5 +44,5 @@ async function saveEdition(isbn, bookEditionData) {
 module.exports = {
   db,
   getEdition,
-  saveEdition
+  saveEdition,
 };
