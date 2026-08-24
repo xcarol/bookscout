@@ -1,21 +1,24 @@
 const { scrapeTodostuslibros } = require('./todostuslibros');
-const { scrapeEBiblioCat } = require('./ebiblio_cat');
-const { scrapeEBiblio } = require('./ebiblio');
+const { scrapeEBiblioCat, ebiblioCatRegions } = require('./ebiblio_cat');
+const { scrapeEBiblio, ebiblioRegions } = require('./ebiblio');
 
 const plugins = [
   {
     id: 'todostuslibros',
-    regions: ['ES'],
+    countries: ['ES'],
+    regions: [], // TodoTusLibros is nationwide, no specific regions required
     execute: scrapeTodostuslibros,
   },
   {
     id: 'ebiblio_cat',
-    regions: ['ES'],
+    countries: ['ES'],
+    regions: ebiblioCatRegions,
     execute: scrapeEBiblioCat,
   },
   {
     id: 'ebiblio',
-    regions: ['ES'],
+    countries: ['ES'],
+    regions: ebiblioRegions,
     execute: scrapeEBiblio,
   },
 ];

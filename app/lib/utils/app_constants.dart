@@ -25,6 +25,19 @@ class AppConstants {
 
   static const List<String> supportedLanguages = [catalan, spanish, english];
 
+  // Countries
+  static const Map<String, String> countryNames = {
+    'ES': 'España',
+    'FR': 'France',
+    'IT': 'Italia',
+    'DE': 'Deutschland',
+    'PT': 'Portugal',
+    'US': 'United States',
+    'GB': 'United Kingdom',
+    'CA': 'Canada',
+    'MX': 'México',
+  };
+
   // Environment & Keys
   static const String saveLogsMessage = 'saveLogs';
   static const String enableLogs = 'ENABLE_LOGS';

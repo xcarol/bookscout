@@ -78,18 +78,46 @@ class BookScoutApiService {
     }
   }
 
-  Future<List<AvailabilityProvider>> getAvailability(String isbn) async {
+  Future<List<Map<String, dynamic>>> getLocations() async {
+    try {
+      final uri = Uri.parse('${UrlConstants.bffBaseUrl}/locations');
+      final response = await http.get(uri).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonList = json.decode(response.body);
+        return jsonList.cast<Map<String, dynamic>>();
+      } else {
+        ErrorService.log(
+          'API Error: ${response.statusCode} - Failed to load locations: ${response.body}',
+        );
+        return [];
+      }
+    } catch (e, stackTrace) {
+      ErrorService.log('Failed to fetch locations from BFF: $e\n$stackTrace');
+      return [];
+    }
+  }
+
+  Future<List<AvailabilityProvider>> getAvailability(
+    String isbn, {
+    required String? country,
+    required String? region,
+  }) async {
+    if (country == null || country.isEmpty) {
+      return [];
+    }
+
     final cleanIsbn = isbn.trim().replaceAll('-', '');
     if (cleanIsbn.isEmpty) return [];
 
     try {
-      final localeParts = Platform.localeName.split('_');
-      final country = localeParts.length > 1 ? localeParts.last : 'ES';
-      final region = 'madrid'; // Hardcoded as per user request
+      var urlStr =
+          '${UrlConstants.bffBaseUrl}/availability/$cleanIsbn?country=$country';
+      if (region != null && region.isNotEmpty) {
+        urlStr += '&region=${Uri.encodeComponent(region)}';
+      }
 
-      final uri = Uri.parse(
-        '${UrlConstants.bffBaseUrl}/availability/$cleanIsbn?country=$country&region=$region',
-      );
+      final uri = Uri.parse(urlStr);
       final response = await http.get(uri).timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {

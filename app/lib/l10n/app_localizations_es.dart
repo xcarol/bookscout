@@ -210,4 +210,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get availability => 'Disponibilidad';
+
+  @override
+  String get country => 'País';
+
+  @override
+  String get region => 'Region';
+
+  @override
+  String get setLocation => 'Configurar ubicación';
+
+  @override
+  String get clearLocation => 'Borra la ubicación';
 }

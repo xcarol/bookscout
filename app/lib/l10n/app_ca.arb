@@ -140,5 +140,15 @@
   "searchFilterIsbn": "ISBN",
   "@searchFilterIsbn": {},
   "availability": "Disponibilitat",
-  "@availability": {}
+  "@availability": {},
+  "country": "País",
+  "@country": {},
+  "region": "Regió",
+  "@region": {},
+  "spain": "Espanya",
+  "@spain": {},
+  "setLocation": "Configurar ubicació",
+  "@setLocation": {},
+  "clearLocation": "Esborra la ubicació",
+  "@clearLocation": {}
 }

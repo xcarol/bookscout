@@ -168,4 +168,6 @@ async function scrapeEBiblioCat(isbn, region) {
   }
 }
 
-module.exports = { scrapeEBiblioCat };
+const ebiblioCatRegions = ['Catalunya'];
+
+module.exports = { scrapeEBiblioCat, ebiblioCatRegions };

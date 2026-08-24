@@ -489,6 +489,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Availability'**
   String get availability;
+
+  /// No description provided for @country.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get country;
+
+  /// No description provided for @region.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get region;
+
+  /// No description provided for @setLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Set location'**
+  String get setLocation;
+
+  /// No description provided for @clearLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear location'**
+  String get clearLocation;
 }
 
 class _AppLocalizationsDelegate
