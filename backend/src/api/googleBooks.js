@@ -3,7 +3,9 @@ const googleBooksClient = require('../utils/googleBooksClient');
 const API_KEY = process.env.GOOGLE_BOOKS_API_KEY;
 
 if (!API_KEY) {
-  console.warn("WARNING: GOOGLE_BOOKS_API_KEY is not defined in environment variables. Falling back to unauthenticated Google Books API requests.");
+  console.warn(
+    'WARNING: GOOGLE_BOOKS_API_KEY is not defined in environment variables. Falling back to unauthenticated Google Books API requests.',
+  );
 }
 
 async function searchGoogleBooks(query, maxResults = 40) {
@@ -30,7 +32,7 @@ async function fetchFromGoogleBooks(isbn) {
       url += `&key=${API_KEY}`;
     }
     const response = await googleBooksClient.get(url);
-    
+
     if (response.data?.items?.length > 0) {
       return response.data.items[0];
     }

@@ -23,17 +23,21 @@ googleBooksClient.interceptors.response.use(
     if (shouldRetry && config.__retryCount < maxRetries) {
       const delay = delays[config.__retryCount] || 1500;
       config.__retryCount += 1;
-      
-      const now = new Date().toISOString();
-      const statusMsg = error.response?.status ? `status ${error.response.status}` : `message: ${error.message}`;
-      console.log(`[${now}] [googleBooksClient] Request failed with ${statusMsg}. Retrying (attempt ${config.__retryCount}/${maxRetries}) in ${delay}ms...`);
 
-      await new Promise(resolve => setTimeout(resolve, delay));
+      const now = new Date().toISOString();
+      const statusMsg = error.response?.status
+        ? `status ${error.response.status}`
+        : `message: ${error.message}`;
+      console.log(
+        `[${now}] [googleBooksClient] Request failed with ${statusMsg}. Retrying (attempt ${config.__retryCount}/${maxRetries}) in ${delay}ms...`,
+      );
+
+      await new Promise((resolve) => setTimeout(resolve, delay));
       return googleBooksClient(config);
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 module.exports = googleBooksClient;

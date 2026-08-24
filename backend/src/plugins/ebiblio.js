@@ -4,30 +4,30 @@ const { buildPluginResult } = require('../models/PluginContract');
 const { FORMATS, STATUSES, ERROR_TYPES } = require('../models/Constants.js');
 
 const EBIBLIO_DOMAINS = {
-  'andalucia': 'andalucia.ebiblio.es',
-  'aragon': 'aragon.ebiblio.es',
-  'asturias': 'asturias.ebiblio.es',
-  'canarias': 'canarias.ebiblio.es',
-  'cantabria': 'cantabria.ebiblio.es',
-  'castillalamancha': 'castillalamancha.ebiblio.es',
-  'castillayleon': 'castillayleon.ebiblio.es',
-  'ceuta': 'ceuta.ebiblio.es',
-  'comunitatvalenciana': 'comunitatvalenciana.ebiblio.es',
-  'extremadura': 'extremadura.ebiblio.es',
-  'galicia': 'galicia.ebiblio.es',
-  'illesbalears': 'illesbalears.ebiblio.es',
-  'larioja': 'larioja.ebiblio.es',
-  'madrid': 'madrid.ebiblio.es',
-  'melilla': 'melilla.ebiblio.es',
-  'murcia': 'murcia.ebiblio.es',
-  'navarra': 'navarra.ebiblio.es'
+  andalucia: 'andalucia.ebiblio.es',
+  aragon: 'aragon.ebiblio.es',
+  asturias: 'asturias.ebiblio.es',
+  canarias: 'canarias.ebiblio.es',
+  cantabria: 'cantabria.ebiblio.es',
+  castillalamancha: 'castillalamancha.ebiblio.es',
+  castillayleon: 'castillayleon.ebiblio.es',
+  ceuta: 'ceuta.ebiblio.es',
+  comunitatvalenciana: 'comunitatvalenciana.ebiblio.es',
+  extremadura: 'extremadura.ebiblio.es',
+  galicia: 'galicia.ebiblio.es',
+  illesbalears: 'illesbalears.ebiblio.es',
+  larioja: 'larioja.ebiblio.es',
+  madrid: 'madrid.ebiblio.es',
+  melilla: 'melilla.ebiblio.es',
+  murcia: 'murcia.ebiblio.es',
+  navarra: 'navarra.ebiblio.es',
 };
 
 /**
  * Scrapes book availability from eBiblio (Spanish public digital library network).
- * 
+ *
  * @param {string} isbn
- * @param {string} region 
+ * @param {string} region
  * @returns {Promise<import('../models/PluginContract').PluginContract>}
  */
 async function scrapeEBiblio(isbn, region) {
@@ -41,21 +41,22 @@ async function scrapeEBiblio(isbn, region) {
   const url = `https://${domain}/resources?q=${isbn}&l=es`;
   try {
     const headers = {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     };
 
     const searchResponse = await axios.get(url, { headers });
     const $search = cheerio.load(searchResponse.data);
-    
+
     // Find the first result link
     const detailLink = $search('.view-details a[href^="/resources/"]').first().attr('href');
-    
+
     if (!detailLink) {
       return buildPluginResult({
         providerName: 'eBiblio',
         error: true,
         errorType: ERROR_TYPES.NOT_FOUND,
-        errorMessage: `Book ${isbn} not found in region ${region}`
+        errorMessage: `Book ${isbn} not found in region ${region}`,
       });
     }
 
@@ -68,7 +69,7 @@ async function scrapeEBiblio(isbn, region) {
     const author = $('[itemprop="author"] [itemprop="name"]').first().text().trim();
     const description = $('[itemprop="description"]').text().replace(/\s+/g, ' ').trim();
     const coverUrl = $('img.cover[itemprop="image"]').first().attr('src');
-    
+
     const publisher = $('[itemprop="publisher"]').first().text().trim();
     const categories = [];
     $('[itemprop="genre"]').each((i, el) => {
@@ -77,7 +78,7 @@ async function scrapeEBiblio(isbn, region) {
     });
     const publishedDate = $('[itemprop="datePublished"]').text().trim();
     const language = $('[itemprop="inLanguage"]').text().trim();
-    
+
     const durationMatch = $('[itemprop="duration"]').attr('content');
     let format = FORMATS.DIGITAL;
     if ($('[itemprop="bookFormat"]').text().toLowerCase().includes('audio') || durationMatch) {
@@ -87,10 +88,16 @@ async function scrapeEBiblio(isbn, region) {
     // Status
     let status = STATUSES.UNKNOWN;
     const actionText = $('.button-borrow .action, .button-download .action').text().toLowerCase();
-    
+
     if (actionText.includes('reserv')) {
       status = STATUSES.AVAILABLE_SOON;
-    } else if (actionText.includes('prestar') || actionText.includes('visuali') || actionText.includes('préstec') || actionText.includes('descargar') || actionText.includes('escuchar')) {
+    } else if (
+      actionText.includes('prestar') ||
+      actionText.includes('visuali') ||
+      actionText.includes('préstec') ||
+      actionText.includes('descargar') ||
+      actionText.includes('escuchar')
+    ) {
       status = STATUSES.IN_STOCK;
     }
 
@@ -100,7 +107,7 @@ async function scrapeEBiblio(isbn, region) {
         providerName: 'eBiblio',
         error: true,
         errorType: ERROR_TYPES.DOM_CHANGED,
-        errorMessage: 'Odilo DOM changed on detail page. Unable to parse status.'
+        errorMessage: 'Odilo DOM changed on detail page. Unable to parse status.',
       });
     }
 
@@ -120,17 +127,16 @@ async function scrapeEBiblio(isbn, region) {
         publisher: publisher || undefined,
         categories: categories.length > 0 ? categories : undefined,
         publishedDate: publishedDate || undefined,
-        language: language || undefined
-      }
+        language: language || undefined,
+      },
     });
-
   } catch (error) {
     if (error.response && error.response.status === 404) {
       return buildPluginResult({
         providerName: 'eBiblio',
         error: true,
         errorType: ERROR_TYPES.NOT_FOUND,
-        errorMessage: `Book ${isbn} not found (404) in region ${region}`
+        errorMessage: `Book ${isbn} not found (404) in region ${region}`,
       });
     } else {
       const statusCode = error.response ? error.response.status : 'Network/Other';
@@ -138,7 +144,7 @@ async function scrapeEBiblio(isbn, region) {
         providerName: 'eBiblio',
         error: true,
         errorType: ERROR_TYPES.UNEXPECTED,
-        errorMessage: `Unexpected scraping error in region ${region}. Status: ${statusCode}, Error: ${error.message}`
+        errorMessage: `Unexpected scraping error in region ${region}. Status: ${statusCode}, Error: ${error.message}`,
       });
     }
   }

@@ -13,11 +13,11 @@ class BookPlugin {
   }
 
   /**
-   * @param {string} isbn 
+   * @param {string} _isbn
    * @returns {Promise<AvailabilityProvider[]>}
    */
-  async fetchAvailabilityByIsbn(isbn) {
-    throw new Error("fetchAvailabilityByIsbn() not implemented");
+  async fetchAvailabilityByIsbn(_isbn) {
+    throw new Error('fetchAvailabilityByIsbn() not implemented');
   }
 }
 

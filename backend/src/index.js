@@ -25,7 +25,7 @@ app.get('/api/search', async (req, res) => {
     res.json(results);
   } catch (error) {
     console.error(`Error in fast search for query "${req.query.q}":`, error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -38,7 +38,7 @@ app.get('/api/books/:isbn', async (req, res) => {
     res.json(book);
   } catch (error) {
     console.error(`Error fetching book ${req.params.isbn}:`, error);
-    res.status(error.status || 500).json({ error: error.message || "Internal server error" });
+    res.status(error.status || 500).json({ error: error.message || 'Internal server error' });
   }
 });
 
@@ -52,7 +52,7 @@ app.get('/api/availability/:isbn', async (req, res) => {
     res.json(results);
   } catch (error) {
     console.error(`Error fetching availability for ${req.params.isbn}:`, error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

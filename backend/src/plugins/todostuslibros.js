@@ -15,8 +15,9 @@ async function scrapeTodostuslibros(isbn) {
   try {
     const response = await axios.get(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-      }
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      },
     });
 
     const html = response.data;
@@ -80,7 +81,10 @@ async function scrapeTodostuslibros(isbn) {
     const synopsisElement = $('.book-description, .synopsis, .summary, [itemprop="description"]');
     if (synopsisElement.length > 0) {
       const rawText = synopsisElement.first().text();
-      metadata.synopsis = rawText.replace(/Leer todo|Leer menos/g, '').replace(/\s+/g, ' ').trim();
+      metadata.synopsis = rawText
+        .replace(/Leer todo|Leer menos/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
     }
 
     // Cover URL
@@ -94,7 +98,8 @@ async function scrapeTodostuslibros(isbn) {
         providerName: 'Todostuslibros',
         error: true,
         errorType: ERROR_TYPES.DOM_CHANGED,
-        errorMessage: 'DOM parse failure. Found availability text but failed to extract price and metadata.'
+        errorMessage:
+          'DOM parse failure. Found availability text but failed to extract price and metadata.',
       });
     }
 
@@ -106,16 +111,15 @@ async function scrapeTodostuslibros(isbn) {
       url: url,
       format: FORMATS.PHYSICAL,
       status: isAvailable ? STATUSES.IN_STOCK : STATUSES.OUT_OF_STOCK,
-      metadata: Object.keys(metadata).length > 0 ? metadata : undefined
+      metadata: Object.keys(metadata).length > 0 ? metadata : undefined,
     });
-
   } catch (error) {
     if (error.response && error.response.status === 404) {
       return buildPluginResult({
         providerName: 'Todostuslibros',
         error: true,
         errorType: ERROR_TYPES.NOT_FOUND,
-        errorMessage: 'Book not found (404)'
+        errorMessage: 'Book not found (404)',
       });
     } else {
       const statusCode = error.response ? error.response.status : 'Network/Other';
@@ -123,7 +127,7 @@ async function scrapeTodostuslibros(isbn) {
         providerName: 'Todostuslibros',
         error: true,
         errorType: ERROR_TYPES.UNEXPECTED,
-        errorMessage: `Unexpected scraping error. Status: ${statusCode}, Error: ${error.message}`
+        errorMessage: `Unexpected scraping error. Status: ${statusCode}, Error: ${error.message}`,
       });
     }
   }
