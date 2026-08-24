@@ -31,13 +31,29 @@ async function checkAvailability(isbn, country = 'GLOBAL', region = null) {
   const promises = filteredPlugins.map(plugin => {
     return plugin.execute(isbn, region);
   });
-  const results = await Promise.allSettled(promises);
+  
+  // Also get the book edition to know its format for filtering
+  const editionPromise = db.collection('editions').doc(isbn).get();
+  
+  const [results, editionDoc] = await Promise.all([
+    Promise.allSettled(promises),
+    editionPromise.catch(() => null)
+  ]);
+
+  const bookFormat = editionDoc?.exists ? (editionDoc.data().format || 'UNKNOWN') : 'UNKNOWN';
 
   const successfulResults = [];
   let metadataUpdated = false;
 
   results.forEach(result => {
     if (result.status === 'fulfilled' && result.value) {
+      const providerFormat = result.value.format;
+      
+      if (bookFormat !== 'UNKNOWN' && providerFormat !== 'UNKNOWN' && bookFormat !== providerFormat) {
+        console.info(`[FILTER] Skipping provider ${result.value.providerName} for ISBN ${isbn} because formats do not match (${providerFormat} vs ${bookFormat})`);
+        return;
+      }
+
       successfulResults.push(result.value);
 
       // Hydration logic: Take metadata from the first valid result that provides it
