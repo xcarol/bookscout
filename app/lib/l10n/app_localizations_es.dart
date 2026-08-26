@@ -215,11 +215,69 @@ class AppLocalizationsEs extends AppLocalizations {
   String get country => 'País';
 
   @override
-  String get region => 'Region';
+  String get region => 'Región';
 
   @override
   String get setLocation => 'Configurar ubicación';
 
   @override
   String get clearLocation => 'Borra la ubicación';
+
+  @override
+  String get backupSettings => 'Ajustes de copia de seguridad';
+
+  @override
+  String get backupFrequency => 'Frecuencia de copia de seguridad';
+
+  @override
+  String get backupFrequencyDaily => 'Diariamente';
+
+  @override
+  String get backupFrequencyWeekly => 'Semanalmente';
+
+  @override
+  String get backupFrequencyMonthly => 'Mensualmente';
+
+  @override
+  String get backupFrequencyDisabled => 'Desactivado';
+
+  @override
+  String get backupNow => 'Hacer copia ahora';
+
+  @override
+  String get restoreBackup => 'Restaurar copia';
+
+  @override
+  String get lastBackup => 'Última copia';
+
+  @override
+  String get noBackupFound => 'No se encontró copia de seguridad';
+
+  @override
+  String get backupSuccess => 'Copia de seguridad exitosa';
+
+  @override
+  String get backupError => 'Fallo al hacer copia de seguridad';
+
+  @override
+  String get restoreSuccess => 'Restauración exitosa';
+
+  @override
+  String get restoreError => 'Fallo al restaurar';
+
+  @override
+  String get restoreWarning =>
+      'La restauración reemplazará todos los datos locales actuales con la copia de seguridad. ¿Estás seguro?';
+
+  @override
+  String get signInRequired => 'Se requiere iniciar sesión';
+
+  @override
+  String get googleDriveBackup => 'Copia de seguridad en Google Drive';
+
+  @override
+  String get signInGoogle => 'Iniciar sesión con Google';
+
+  @override
+  String get signOut => 'Cerrar sesión';
 }

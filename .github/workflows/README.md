@@ -91,7 +91,7 @@ base64 -w 0 upload-keystore.jks > keystore_b64.txt
 ## Step 2: Firebase Configuration (google-services.json)
 
 1. Download `google-services.json` from your Firebase Console under
-   **Project Settings > General > Your Apps > Android app**.
+   **[Project Settings](https://console.firebase.google.com/project/bookscout-a206b/settings/general/android:com.xicra.bookscout) > General > Your Apps > Android app**.
 2. Save it locally to `android/app/google-services.json`.
 3. Convert the file to Base64 for GitHub Secrets:
 
