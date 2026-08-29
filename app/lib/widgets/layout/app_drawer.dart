@@ -11,6 +11,7 @@ import 'package:bookscout/widgets/dialogs_and_forms/language_form.dart';
 import 'package:bookscout/widgets/dialogs_and_forms/location_form.dart';
 import 'package:bookscout/services/settings/location_service.dart';
 import 'package:bookscout/screens/logs_screen.dart';
+import 'package:bookscout/screens/backup_settings_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -25,6 +26,7 @@ class AppDrawer extends StatelessWidget {
           _headerTile(context),
           _languageTile(context),
           _locationTile(context),
+          _backupTile(context),
           const Divider(),
           _aboutTile(context),
         ],
@@ -137,6 +139,21 @@ class AppDrawer extends StatelessWidget {
     if (langCode.startsWith('es')) return l10n.spanish;
     if (langCode.startsWith('en')) return l10n.english;
     return langCode;
+  }
+
+  Widget _backupTile(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return ListTile(
+      leading: const Icon(Icons.cloud_sync),
+      title: Text(l10n.backupSettings),
+      onTap: () {
+        Navigator.pop(context); // Close Drawer
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const BackupSettingsScreen()),
+        );
+      },
+    );
   }
 
   Widget _aboutTile(BuildContext context) {

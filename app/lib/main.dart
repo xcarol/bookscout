@@ -1,4 +1,7 @@
 import 'dart:ui';
+import 'package:workmanager/workmanager.dart';
+import 'package:bookscout/services/workers/backup_worker_service.dart';
+import 'package:bookscout/services/system/drive_backup_service.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -34,14 +37,30 @@ void main(List<String> args) async {
   _runMain();
 }
 
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    try {
+      if (task == backupTaskKey) {
+        await BackupWorkerService.executeBackupTask();
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  });
+}
+
 void _runMain() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Workmanager().initialize(callbackDispatcher);
 
   try {
     await Future.wait([
       dotenv.load(fileName: ".env"),
       PreferencesService().init(),
       DatabaseService.init(),
+      DriveBackupService().init(),
     ]);
   } catch (error, stackTrace) {
     ErrorService.log(

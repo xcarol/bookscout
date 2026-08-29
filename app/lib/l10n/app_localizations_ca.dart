@@ -222,4 +222,62 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get clearLocation => 'Esborra la ubicació';
+
+  @override
+  String get backupSettings => 'Configuració de còpia';
+
+  @override
+  String get backupFrequency => 'Freqüència de còpia';
+
+  @override
+  String get backupFrequencyDaily => 'Diàriament';
+
+  @override
+  String get backupFrequencyWeekly => 'Setmanalment';
+
+  @override
+  String get backupFrequencyMonthly => 'Mensualment';
+
+  @override
+  String get backupFrequencyDisabled => 'Desactivat';
+
+  @override
+  String get backupNow => 'Fes còpia ara';
+
+  @override
+  String get restoreBackup => 'Restaura còpia';
+
+  @override
+  String get lastBackup => 'Última còpia';
+
+  @override
+  String get noBackupFound => 'No s\'ha trobat cap còpia';
+
+  @override
+  String get backupSuccess => 'Còpia de seguretat completada';
+
+  @override
+  String get backupError => 'Error en fer la còpia';
+
+  @override
+  String get restoreSuccess => 'Restauració completada';
+
+  @override
+  String get restoreError => 'Error en restaurar';
+
+  @override
+  String get restoreWarning =>
+      'La restauració substituirà totes les dades locals actuals amb la còpia de seguretat. N\'estàs segur?';
+
+  @override
+  String get signInRequired => 'Cal iniciar sessió';
+
+  @override
+  String get googleDriveBackup => 'Còpia de seguretat a Google Drive';
+
+  @override
+  String get signInGoogle => 'Inicia la sessió amb Google';
+
+  @override
+  String get signOut => 'Tanca la sessió';
 }

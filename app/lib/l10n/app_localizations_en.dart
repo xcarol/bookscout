@@ -221,4 +221,62 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clearLocation => 'Clear location';
+
+  @override
+  String get backupSettings => 'Backup Settings';
+
+  @override
+  String get backupFrequency => 'Backup frequency';
+
+  @override
+  String get backupFrequencyDaily => 'Daily';
+
+  @override
+  String get backupFrequencyWeekly => 'Weekly';
+
+  @override
+  String get backupFrequencyMonthly => 'Monthly';
+
+  @override
+  String get backupFrequencyDisabled => 'Disabled';
+
+  @override
+  String get backupNow => 'Backup Now';
+
+  @override
+  String get restoreBackup => 'Restore Backup';
+
+  @override
+  String get lastBackup => 'Last Backup';
+
+  @override
+  String get noBackupFound => 'No backup found';
+
+  @override
+  String get backupSuccess => 'Backup successful';
+
+  @override
+  String get backupError => 'Backup failed';
+
+  @override
+  String get restoreSuccess => 'Restore successful';
+
+  @override
+  String get restoreError => 'Restore failed';
+
+  @override
+  String get restoreWarning =>
+      'Restoring will replace all current local data with the backup. Are you sure?';
+
+  @override
+  String get signInRequired => 'Sign in required for backup';
+
+  @override
+  String get googleDriveBackup => 'Google Drive Backup';
+
+  @override
+  String get signInGoogle => 'Sign in with Google';
+
+  @override
+  String get signOut => 'Sign out';
 }

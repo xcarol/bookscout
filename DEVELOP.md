@@ -1,12 +1,13 @@
-# BookScout Development Guide
+# BookScout Development & Deployment Guide
 
-This document contains technical information and setup instructions for developing and building the BookScout application.
+This document contains technical information and setup instructions for developing and building the BookScout application. It is designed as a complete guide for both development and rebuilding the entire infrastructure from scratch.
 
 ## Project Structure
 
 BookScout is split into two main components:
+
 - `app/`: The Flutter frontend client.
-- `backend/`: The Node.js Backend-for-Frontend (BFF) which handles search orchestration, caching, and rate limiting by communicating with Google Books, Open Library, and Firestore.
+- `backend/`: The Node.js Backend-for-Frontend (BFF) which handles search orchestration, caching, and rate limiting by communicating with Google Books, Open Library (no API key required), and Firestore.
 
 ---
 
@@ -15,60 +16,246 @@ BookScout is split into two main components:
 To run the full stack locally, you need to start the backend server and then the Flutter app.
 
 ### Backend Setup
+
 1. Navigate to the `backend/` directory: `cd backend`
 2. Install dependencies: `npm install`
-3. Create a `.env` file in the `backend/` directory (see API Key & Firebase setup below).
-4. Start the server: `npm start` (Runs on port 8080 by default).
+3. Create a `.env` file in the `backend/` directory (see _Environment Variables_ section below).
+4. Start the server: `npm start` (Runs on port `8080` by default).
 
 ### Frontend Setup
+
 1. Navigate to the `app/` directory: `cd app`
-2. Fetch dependencies: `flutter pub get`
-3. Run the app: `flutter run`
+2. Create an `app/.env` file (see _Environment Variables_ section below).
+3. Fetch dependencies: `flutter pub get`
+4. Run the app: `flutter run`
+
+### Environments (Dev vs Prod)
+
+- **Development**: When running locally, the Flutter app is configured to point to `localhost:8080` or `10.0.2.2:8080` for the backend API.
+- **Production**: When built in release mode, the app points to the Cloud Run backend URL (`https://bookscout-backend-*.run.app/api`). The backend connects to production Firestore.
 
 ---
 
-## 2. API Keys and Credentials
+## 2. Infrastructure Setup (Factory Reset)
 
-### Google Books API Key
-BookScout uses the Google Books API for search. The API key is managed securely by the backend.
+If you need to rebuild the project from scratch, follow these steps in order.
 
-1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
-2. Enable the **Books API** under **APIs & Services > Library**.
-3. Create an API key under **APIs & Services > Credentials**.
-4. **Configure Restrictions**: 
-   - Under **Application restrictions**, select **None**.
-   *(Note: Since the API key is now securely stored in the Node.js backend and not shipped with the mobile app, we no longer need HTTP Referrer restrictions.)*
-5. Add the key to `backend/.env`:
-   ```env
-   GOOGLE_BOOKS_API_KEY=your_api_key_here
-   ```
+### Step 2.1: Google Cloud Project & APIs
 
-### Firebase Admin SDK (Firestore Cache)
-The backend uses Firestore to cache full book metadata.
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project called **BookScout**.
+3. Initialize Firestore
+   - Navigate to Databases and storage > Firestore in the left menu.
+   - Click Create database.
+   - Select edition: Standard edition.
+   - Select your preferred location (e.g., eur3 for Europe) and start in Production.
+   - _(The backend will use three main collections without prefixes: editions, availability, and authors.)_
+4. Go to **APIs & Services > Library** and enable the following APIs:
+   - **Google Books API** (Used by the backend to search books).
+   - **Google Drive API** (Used by the mobile app for data backup/restore).
+   - **Cloud Run Admin API** (Required for GitHub Actions to deploy the backend).
+   - **Cloud Build API** (To build the Docker containers).
+   - **Artifact Registry API** (To store the built container images).
+   - _Important Billing Note: Enabling the Cloud Build API and Cloud Run Admin API requires an active billing account linked to your project. Google Cloud requires a credit card on file to use these compute resources. However, both services have generous free tiers (e.g., 2 million requests/month for Cloud Run and 120 free build minutes/day for Cloud Build) that are extremely difficult to exceed for a personal app. You will not be charged unless you exceed these limits._
 
-1. Go to the [Firebase Console](https://console.firebase.google.com/) and select your project.
-2. Navigate to **Project Settings** (the gear icon) > **Service Accounts**.
-3. Click **Generate new private key** to download the Firebase Admin SDK Service Account key (JSON format).
-2. Place the JSON file in the `backend/` directory (e.g., `bookscout-firebase-adminsdk.json`). Do not commit this to source control.
-3. Add the credential path to `backend/.env`:
-   ```env
-   GOOGLE_APPLICATION_CREDENTIALS=./bookscout-firebase-adminsdk.json
-   ```
+### Step 2.2: Register the Android App in Firebase (Client Setup)
 
-*Note: If the Firebase credentials are not provided, the backend will gracefully skip the Firestore cache and query external APIs directly.*
+1. Add the App to Firebase:
+   - Go to the Firebase Console and open the BookScout project.
+   - On the Project Overview page, click the Android icon (or click Add app > Android).
+2. Register App Details:
+   - Android package name: Enter your app's exact package name: com.xicra.bookscout.
+   - App nickname: BookScout.
+   - Click Register app.
+3. Download Configuration File:
+   - Click Download google-services.json.
+   - Move this downloaded file into your Flutter project, specifically inside the android/app/ folder.
+4. Update SHA-1 for Production:
+   - Once you upload your first .aab to the Google Play Console and Google generates your App Signing key, go back to Firebase Console > Project Settings > General.
+   - Scroll down to your Android app and click Add fingerprint.
+   - Paste the Production SHA-1 generated by Google Play (refer to next Step to obtain the SHA1 fingerprint). This ensures Firebase accepts traffic from the app downloaded directly from the store.
+
+### Step 2.3: Obtain the App Signing Keys
+
+1. Obtain the Production Key (Google Play Console)
+   To secure the Google Books API for production, you need the **App Signing Key** generated by Google Play. This key is different from your local Upload Key.
+   **Prerequisite**: Google Play only generates this key after you upload your very first `.aab` (Android App Bundle). If you haven't done so, build a release `.aab` and upload it to the Internal Testing track first.
+   - **Log in to Google Play Console**: Access the [Google Play Console](https://play.google.com/console/).
+   - **Navigate to the Security Menu**: On the left-hand menu, look for the section named **Protected with Play**.
+   - **Open Play Store Protection**: Within that section, click on **Play Store protection**.
+   - **Locate the App Signing Key**: Look for the sub-section **Protect your app signing key** and click on **Manage Play app signing**.
+   - **Find the Certificate**: Here you will see the **App signing key certificate**.
+   - **Copy the Fingerprint**: On the right of this certificate, you will find all the key fingerprints click on **SHA-1 fingerprint**. Clicking the button will copy this exact string.
+
+   **Note:** _If this section is empty or only shows the "Upload key certificate", it means you haven't uploaded an `.aab` yet. Upload one to Internal Testing and the App Signing Key will be generated instantly._
+
+2. How to Retrieve Your Debug SHA-1 Fingerprint
+   To test the API during local development, you must retrieve the SHA-1 fingerprint of your local debug keystore.
+
+   **Option A: Using `keytool` (Recommended)**  
+    You can query the keystore directly using your terminal.
+   1. Run the following standard Android command: `keytool -list -v -keystore ./upload-keystore.jks`
+   2. You will be asked for a password. (This password is in BitWarden)
+   3. Locate and copy the SHA-1 fingerprint from the Alias name: upload.
+
+   **Option B: Using Gradle**  
+    This is the easiest method because if the `debug.keystore` file does not exist yet, Gradle will automatically generate it for you.
+   1. Open your terminal and navigate to your project's `android` folder.
+   2. Run the following command: `./gradlew signingReport`.
+   3. Look for the `SHA1` line under the `Variant: debug` (or `Config: debug`) section and copy the fingerprint value.
+
+   **Note:** _The debug keystore is not created by default by the operating system. It is generated automatically the first time you build or run the app in debug mode on your machine._
+
+### Step 2.4: OAuth Consent Screen & Client ID
+
+1. Go to **APIs & Services > OAuth consent screen**:
+   - Fill in the required **App information** (App name, User support email) and **Developer contact information**.
+   - Select **Audience**: **External**.
+   - Fill in the Contact information.
+   - Agree the terms of use.
+   - Click **Create**.
+   - Click on **Create OAuth Client** in the next screen (or go to **Credentials > Create Credentials > OAuth client ID**).
+   - Select **Application type**: **Android**.
+   - Fill in the Name: BookScout.
+   - Fill in the package name with **com.xicra.bookscout**.
+   - Fill in the SHA1 fingerprint of the upload key (see step 2.3 above).
+   - Ignore the **Verify ownership** option, you don't need to do it now. You can do it later when the app is in the production channel.
+   - Click **Create**.
+
+2. **Add Test Users (Crucial for Testing)**:
+   - Since your app is in "Testing" mode (External), Google blocks all logins by default.
+   - Go back to **APIs & Services > OAuth consent screen > Audience**.
+   - Scroll down to the **Test users** section and click **+ Add users**.
+   - Add your own Google email address (and anyone else who needs to log in while developing) and save.
+
+3. **Update `google-services.json`**:
+   - For Firebase to include the OAuth credentials in your configuration file, it must know your app's fingerprint.
+   - Go back to the **Firebase Console > Project Settings > General**.
+   - Scroll down to your Android app, click **Add fingerprint**, and paste the exact same SHA-1 you used in the Google Cloud screen.
+   - Download the `google-services.json` file again and replace the old one in `app/android/app/`. This new file will automatically contain the `oauth_client` arrays. Do not edit it manually.
+
+### Step 2.5: Backend API Key (Google Books API)
+
+To allow your Node.js backend to fetch book metadata, you need a dedicated API key for server-to-server communication:
+
+- Go to the Google Cloud Console > APIs & Services > Credentials.
+- Click Create Credentials > API key (or rename an existing one to something like "BookScout Backend Key").
+- Set API restrictions to Google Books API.
+- Set Application restrictions to None. (Since the request originates from your Cloud Run server, it does not require an Android SHA-1 fingerprint).
+- Save this key in your backend's `.env` file as `GOOGLE_BOOKS_API_KEY` (and later add it to your GitHub Actions secrets).
+
+### Step 2.6: Service Accounts Creation
+
+You will need three specific Service Accounts for different parts of the system:
+
+1. **Firebase Admin SDK (Firestore Cache for Backend):**
+   - In Firebase Console > Project Settings > Service Accounts
+   - Click **Generate new private key**.
+   - Download the JSON file, rename it to `bookscout-firebase-adminsdk.json`, and place it in the `backend/` directory. _(Do not commit this file!)_
+   - Set the `GOOGLE_APPLICATION_CREDENTIALS` env variable to point to this file.
+
+2. **GCP Deploy Credentials (for GitHub Actions):**
+   - In Google Cloud Console > IAM & Admin > Service Accounts
+   - Click **Create a new service account** and name it `github-actions-deployer`.
+   - Assign the following roles:
+     - Cloud Run Admin
+     - Service Account User
+     - Cloud Build Editor
+     - Artifact Registry Administrator
+     - Storage Admin
+   - Create and download a JSON key. You will store this as the `GCP_CREDENTIALS` GitHub secret.
+
+3. **Google Play Console API (for Android Deployment):**
+   - In Google Cloud, create a Service Account
+     - Name it `play-store-publisher` and click Create and Continue
+     - You can leave the role assignment blank (this account doesn't need permissions over your cloud servers, only over the Play Store). Click Done.
+     - Locate the newly created `play-store-publisher` account in the list and click on it.
+     - Navigate to the Keys tab.
+     - Click Add Key > Create new key, select JSON, and click Create.
+     - Copy its email address: e.g. `play-store-publisher@bookscout-xxxxx.iam.gserviceaccount.com`
+     - Download the JSON key. Will be used in step 3.
+
+   - Link this service account in the [Google Play Console](https://play.google.com/console/):
+     - Go to **Users and permissions**.
+     - Click **Invite new users** and paste the Service Account email address.
+     - Select **BookScout** as the app, check it and Apply.
+     - In the permissions tab, grant it the **Release apps to testing tracks** permissions so it can manage app bundles.
+     - Send the invitation (Service Accounts accept it automatically).
+
+   - **Add to GitHub Secrets**
+     - Open the downloaded `.json` file (from step 3) using a standard text editor.
+     - Copy its entire raw contents.
+     - Go to your GitHub repository > Settings > Secrets and variables > Actions.
+     - Create a new repository secret named `PLAY_STORE_CREDENTIALS`.
+     - Paste the entire JSON string and save.
+
+### Step 2.7: Telegram Bot Setup (Scraper Alerts)
+
+The backend sends alerts to Telegram if a scraper fails. If starting from scratch, create a new bot:
+
+1. Open Telegram and search for `@BotFather`.
+2. Send `/newbot` and follow the instructions to create a bot.
+3. BotFather will provide an **HTTP API Token**. Save this as `TELEGRAM_BOT_TOKEN`.
+4. Start a chat with your new bot, send a test message, and visit `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates` to find your `chat_id`. Save this as `TELEGRAM_CHAT_ID`.
 
 ---
 
-## 3. Configure GitHub Actions Secrets
-For CI/CD workflows to build the backend or frontend with necessary keys, inject the `.env` file during the GitHub Actions workflow.
+## 3. Environment Variables (.env)
 
-1. Go to your repository on GitHub.
-2. Navigate to **Settings > Secrets and variables > Actions**.
-3. Click **New repository secret**.
-4. Name the secret: `ENV_FILE`
-5. Set the value to the contents of your backend `.env` file:
-   ```env
-   GOOGLE_BOOKS_API_KEY=your_api_key_here
-   GOOGLE_APPLICATION_CREDENTIALS=./bookscout-firebase-adminsdk.json
-   ```
-6. Your deployment workflow will automatically read this secret and recreate the `.env` file for the backend.
+### Backend (`backend/.env`)
+
+Create this file for local development. In production, these are injected via Cloud Run env vars or GitHub Secrets.
+
+```env
+# API Keys
+GOOGLE_BOOKS_API_KEY=your_books_api_key
+
+# Firebase Admin SDK (Local path)
+GOOGLE_APPLICATION_CREDENTIALS=./bookscout-firebase-adminsdk.json
+
+# Telegram Notifications
+TELEGRAM_BOT_TOKEN=your_bot_token
+TELEGRAM_CHAT_ID=your_chat_id
+```
+
+### Frontend (`app/.env`)
+
+Create this file in the `app/` folder.
+
+```env
+ENABLE_LOGS=true
+# Obtain this OAuth Client ID from Google Cloud Console > Credentials (Web Client ID auto-created by Firebase)
+GOOGLE_CLIENT_ID=your_web_client_id.apps.googleusercontent.com
+
+# Obtain this URL from the GitHub Actions logs of the `deploy-backend` workflow (Deploy to Cloud Run step).
+BACKEND_URL=https://bookscout-backend-1087498473835.europe-southwest1.run.app
+```
+
+---
+
+## 4. GitHub Actions & Secrets (CI/CD)
+
+The repository uses GitHub Actions for continuous integration (testing) and deployment (Cloud Run backend & Google Play Console).
+To ensure everything works, configure the following **Repository Secrets** in GitHub (Settings > Secrets and variables > Actions):
+
+| Secret Name                    | Description / Source                                                                                                      |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `ANDROID_KEYSTORE_BASE64`      | Base64 encoded string of the `upload-keystore.jks` file (stored in Bitwarden). Generate via: `base64 upload-keystore.jks` |
+| `ANDROID_KEYSTORE_PASSWORD`    | Password for the Keystore (stored in Bitwarden).                                                                          |
+| `ANDROID_KEY_ALIAS`            | Alias used for signing the Android app (stored in Bitwarden).                                                             |
+| `ANDROID_KEY_PASSWORD`         | Password for the specific Key alias (stored in Bitwarden).                                                                |
+| `APP_BACKEND_URL`              | The Cloud Run URL where the backend is deployed (e.g. `https://bookscout-backend-...run.app`).                            |
+| `APP_ENABLE_LOGS`              | Set to `true` or `false` to enable/disable frontend logs.                                                                 |
+| `APP_GOOGLE_CLIENT_ID`         | OAuth Client ID from Google Cloud Console > Credentials.                                                                  |
+| `BACKEND_GOOGLE_BOOKS_API_KEY` | The Google Books API Key, specifically passed as an environment variable to Cloud Run during deployment.                  |
+| `BACKEND_TELEGRAM_BOT_TOKEN`   | Token for the Telegram Bot used to send scraper alerts.                                                                   |
+| `BACKEND_TELEGRAM_CHAT_ID`     | Chat ID for the Telegram Bot to send alerts to.                                                                           |
+| `CODACY_PROJECT_TOKEN`         | Token for Codacy static code analysis.                                                                                    |
+| `CODECOV_TOKEN`                | Token for Codecov test coverage reports.                                                                                  |
+| `GCP_CREDENTIALS`              | The JSON key of the Service Account used to deploy to Cloud Run (created in Step 2.6.2).                                  |
+| `PLAY_STORE_CREDENTIALS`       | The JSON key for the Google Play Developer API to upload Android bundles to the Internal Track (created in Step 2.6.3).   |
+
+### Deployment Workflow
+
+1. **Backend**: Pushing changes to the backend triggers `deploy-backend.yml`, which authenticates via `GCP_CREDENTIALS` and deploys the Node.js server to Cloud Run.
+2. **Frontend**: Creating a GitHub Release triggers `android-build-publish.yml`, which rebuilds the `.env`, decodes the keystore, builds the Android App Bundle (AAB), and uploads it to the Google Play Internal track.

@@ -41,7 +41,13 @@ class AppConstants {
   // Environment & Keys
   static const String saveLogsMessage = 'saveLogs';
   static const String enableLogs = 'ENABLE_LOGS';
+  static const String googleClientId = 'GOOGLE_CLIENT_ID';
+  static const String backendUrl = 'BACKEND_URL';
   static const String appVersion = 'VERSION';
+
+  // Files & Database
+  static const String databaseName = 'bookscout_database.sqlite';
+  static const String backupFileName = 'bookscout_backup.sqlite';
 
   // Search & Pagination Limits
   static const int minSearchChars = 3;
