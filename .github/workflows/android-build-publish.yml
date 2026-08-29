@@ -32,20 +32,22 @@ jobs:
           channel: 'stable'
           cache: true
 
-      # 4. Recreate .env file
+      # 4. Create .env file
       - name: Create .env file
         working-directory: ./app
         env:
-          ENV_FILE_CONTENT: ${{ secrets.ENV_FILE }}
+          ENABLE_LOGS: ${{ secrets.APP_ENABLE_LOGS }}
+          GOOGLE_CLIENT_ID: ${{ secrets.APP_GOOGLE_CLIENT_ID }}
+          BACKEND_URL: ${{ secrets.APP_BACKEND_URL }}
         run: |
-          echo "$ENV_FILE_CONTENT" > .env
+          echo "ENABLE_LOGS=$ENABLE_LOGS" > .env
+          echo "GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" >> .env
+          echo "BACKEND_URL=$BACKEND_URL" >> .env
           VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}')
           if [ -z "$VERSION" ]; then
             echo "Error: Could not extract version from pubspec.yaml"
             exit 1
           fi
-          sed -i.bak '/^VERSION=/d' .env
-          [ -n "$(tail -c 1 .env)" ] && echo "" >> .env
           echo "VERSION=$VERSION" >> .env
 
 
@@ -90,7 +92,7 @@ jobs:
       - name: Deploy to Google Play Internal Testing
         uses: KevinRohn/github-action-upload-play-store@v1.0.2
         with:
-          service_account_json: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
+          service_account_json: ${{ secrets.PLAY_STORE_CREDENTIALS }}
           package_name: com.xicra.bookscout
           aab_file_path: app/build/app/outputs/bundle/release/app-release.aab
           track: internal

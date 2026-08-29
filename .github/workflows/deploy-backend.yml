@@ -26,4 +26,4 @@ jobs:
             --source . \
             --region europe-southwest1 \
             --allow-unauthenticated \
-            --set-env-vars GOOGLE_BOOKS_API_KEY=${{ secrets.GCP_GOOGLE_BOOKS_API_KEY }}
+            --set-env-vars GOOGLE_BOOKS_API_KEY=${{ secrets.BACKEND_GOOGLE_BOOKS_API_KEY }},TELEGRAM_BOT_TOKEN=${{ secrets.BACKEND_TELEGRAM_BOT_TOKEN }},TELEGRAM_CHAT_ID=${{ secrets.BACKEND_TELEGRAM_CHAT_ID }}
