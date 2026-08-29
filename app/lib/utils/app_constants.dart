@@ -42,6 +42,7 @@ class AppConstants {
   static const String saveLogsMessage = 'saveLogs';
   static const String enableLogs = 'ENABLE_LOGS';
   static const String googleClientId = 'GOOGLE_CLIENT_ID';
+  static const String backendUrl = 'BACKEND_URL';
   static const String appVersion = 'VERSION';
 
   // Files & Database
