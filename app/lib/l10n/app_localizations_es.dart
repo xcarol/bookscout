@@ -276,8 +276,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get googleDriveBackup => 'Copia de seguridad en Google Drive';
 
   @override
-  String get signInGoogle => 'Iniciar sesión con Google';
+  String get signInGoogle => 'Inicia sesión con Google';
 
   @override
   String get signOut => 'Cerrar sesión';
+
+  @override
+  String get signingIn => 'Iniciando sesión...';
 }

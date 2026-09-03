@@ -60,8 +60,8 @@ void _runMain() async {
       dotenv.load(fileName: ".env"),
       PreferencesService().init(),
       DatabaseService.init(),
-      DriveBackupService().init(),
     ]);
+    await DriveBackupService().init();
   } catch (error, stackTrace) {
     ErrorService.log(
       error,

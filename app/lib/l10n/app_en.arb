@@ -186,5 +186,7 @@
   "signInGoogle": "Sign in with Google",
   "@signInGoogle": {},
   "signOut": "Sign out",
-  "@signOut": {}
+  "@signOut": {},
+  "signingIn": "Signing in...",
+  "@signingIn": {}
 }

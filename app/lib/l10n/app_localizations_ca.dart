@@ -280,4 +280,7 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get signOut => 'Tanca la sessió';
+
+  @override
+  String get signingIn => 'Iniciant sessió...';
 }

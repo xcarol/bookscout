@@ -56,6 +56,7 @@ If you need to rebuild the project from scratch, follow these steps in order.
    - **Cloud Run Admin API** (Required for GitHub Actions to deploy the backend).
    - **Cloud Build API** (To build the Docker containers).
    - **Artifact Registry API** (To store the built container images).
+   - **Google Play Android Developer API** (Required for GitHub Actions to upload app bundles to the Play Store).
    - _Important Billing Note: Enabling the Cloud Build API and Cloud Run Admin API requires an active billing account linked to your project. Google Cloud requires a credit card on file to use these compute resources. However, both services have generous free tiers (e.g., 2 million requests/month for Cloud Run and 120 free build minutes/day for Cloud Build) that are extremely difficult to exceed for a personal app. You will not be charged unless you exceed these limits._
 
 ### Step 2.2: Register the Android App in Firebase (Client Setup)
@@ -128,7 +129,11 @@ If you need to rebuild the project from scratch, follow these steps in order.
    - Scroll down to the **Test users** section and click **+ Add users**.
    - Add your own Google email address (and anyone else who needs to log in while developing) and save.
 
-3. **Update `google-services.json`**:
+3. **Enable Google Sign-In in Firebase**:
+   - Go to **Firebase Console > Authentication > Sign-in method**.
+   - Add **Google** as a sign-in provider, enable it, and save. (This automatically generates a Web Client ID in Google Cloud, which is required for Google Drive access).
+
+4. **Update `google-services.json`**:
    - For Firebase to include the OAuth credentials in your configuration file, it must know your app's fingerprint.
    - Go back to the **Firebase Console > Project Settings > General**.
    - Scroll down to your Android app, click **Add fingerprint**, and paste the exact same SHA-1 you used in the Google Cloud screen.
@@ -173,7 +178,7 @@ You will need three specific Service Accounts for different parts of the system:
      - Navigate to the Keys tab.
      - Click Add Key > Create new key, select JSON, and click Create.
      - Copy its email address: e.g. `play-store-publisher@bookscout-xxxxx.iam.gserviceaccount.com`
-     - Download the JSON key. Will be used in step 3.
+     - Download the JSON key.
 
    - Link this service account in the [Google Play Console](https://play.google.com/console/):
      - Go to **Users and permissions**.
@@ -183,11 +188,12 @@ You will need three specific Service Accounts for different parts of the system:
      - Send the invitation (Service Accounts accept it automatically).
 
    - **Add to GitHub Secrets**
-     - Open the downloaded `.json` file (from step 3) using a standard text editor.
-     - Copy its entire raw contents.
+     - You must convert the downloaded `.json` file to a Base64 string before adding it to GitHub.
+     - Open your terminal and run: `base64 -w 0 <path/to/play-store-publisher.json> > <path/to/play-store-publisher.b64>`
+     - Copy the entire output string (no newlines).
      - Go to your GitHub repository > Settings > Secrets and variables > Actions.
      - Create a new repository secret named `PLAY_STORE_CREDENTIALS`.
-     - Paste the entire JSON string and save.
+     - Paste the Base64 string and save.
 
 ### Step 2.7: Telegram Bot Setup (Scraper Alerts)
 
@@ -224,7 +230,8 @@ Create this file in the `app/` folder.
 
 ```env
 ENABLE_LOGS=true
-# Obtain this OAuth Client ID from Google Cloud Console > Credentials (Web Client ID auto-created by Firebase)
+# Obtain this OAuth Client ID from Google Cloud Console > Credentials (select the "Web client (auto created by Google Service)").
+# Important: Do NOT use the Android client ID here.
 GOOGLE_CLIENT_ID=your_web_client_id.apps.googleusercontent.com
 
 # Obtain this URL from the GitHub Actions logs of the `deploy-backend` workflow (Deploy to Cloud Run step).
@@ -246,7 +253,7 @@ To ensure everything works, configure the following **Repository Secrets** in Gi
 | `ANDROID_KEY_PASSWORD`         | Password for the specific Key alias (stored in Bitwarden).                                                                |
 | `APP_BACKEND_URL`              | The Cloud Run URL where the backend is deployed (e.g. `https://bookscout-backend-...run.app`).                            |
 | `APP_ENABLE_LOGS`              | Set to `true` or `false` to enable/disable frontend logs.                                                                 |
-| `APP_GOOGLE_CLIENT_ID`         | OAuth Client ID from Google Cloud Console > Credentials.                                                                  |
+| `APP_GOOGLE_CLIENT_ID`         | The **Web client (auto created by Google Service)** Client ID from Google Cloud Console > Credentials.                    |
 | `BACKEND_GOOGLE_BOOKS_API_KEY` | The Google Books API Key, specifically passed as an environment variable to Cloud Run during deployment.                  |
 | `BACKEND_TELEGRAM_BOT_TOKEN`   | Token for the Telegram Bot used to send scraper alerts.                                                                   |
 | `BACKEND_TELEGRAM_CHAT_ID`     | Chat ID for the Telegram Bot to send alerts to.                                                                           |
