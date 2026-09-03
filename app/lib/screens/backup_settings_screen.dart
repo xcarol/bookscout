@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:bookscout/l10n/app_localizations.dart';
 import 'package:bookscout/services/system/drive_backup_service.dart';
@@ -42,7 +43,8 @@ class _BackupSettingsScreenState extends State<BackupSettingsScreen> {
       prefs.getString('backupFrequency'),
     );
 
-    final account = await _driveService.signInSilently();
+    GoogleSignInAccount? account = _driveService.currentUser;
+    account ??= await _driveService.signInSilently();
     _isSignedIn = account != null;
 
     if (_isSignedIn) {

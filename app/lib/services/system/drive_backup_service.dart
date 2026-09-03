@@ -54,15 +54,20 @@ class DriveBackupService {
   }
 
   Future<GoogleSignInAccount?> signIn() async {
-    return await GoogleSignIn.instance.authenticate();
+    final account = await GoogleSignIn.instance.authenticate();
+    _currentUser = account;
+    return account;
   }
 
   Future<GoogleSignInAccount?> signInSilently() async {
-    return await GoogleSignIn.instance.attemptLightweightAuthentication();
+    final account = await GoogleSignIn.instance.attemptLightweightAuthentication();
+    _currentUser = account;
+    return account;
   }
 
   Future<void> signOut() async {
     await GoogleSignIn.instance.disconnect();
+    _currentUser = null;
   }
 
   Future<drive.DriveApi?> _getDriveApi(GoogleSignInAccount account) async {
