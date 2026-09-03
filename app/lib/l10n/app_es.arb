@@ -183,8 +183,10 @@
   "@signInRequired": {},
   "googleDriveBackup": "Copia de seguridad en Google Drive",
   "@googleDriveBackup": {},
-  "signInGoogle": "Iniciar sesión con Google",
+  "signInGoogle": "Inicia sesión con Google",
   "@signInGoogle": {},
   "signOut": "Cerrar sesión",
-  "@signOut": {}
+  "@signOut": {},
+  "signingIn": "Iniciando sesión...",
+  "@signingIn": {}
 }

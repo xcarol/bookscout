@@ -186,5 +186,7 @@
   "signInGoogle": "Inicia la sessió amb Google",
   "@signInGoogle": {},
   "signOut": "Tanca la sessió",
-  "@signOut": {}
+  "@signOut": {},
+  "signingIn": "Iniciant sessió...",
+  "@signingIn": {}
 }
