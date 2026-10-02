@@ -5,6 +5,11 @@
 
 BookScout is a book tracking and reading management app built with Flutter.
 
+## BIG WARNING
+
+This project is currently on **stand-by**. Services at Google Cloud are disabled.  
+To resume development, billing on Google Cloud needs to be enabled and the APIs must be re-enabled.
+
 ## Key Features
 
 - **Reading Management**: Keep track of books to read, currently reading,
