@@ -54,10 +54,12 @@ If you need to rebuild the project from scratch, follow these steps in order.
    - **Google Books API** (Used by the backend to search books).
    - **Google Drive API** (Used by the mobile app for data backup/restore).
    - **Cloud Run Admin API** (Required for GitHub Actions to deploy the backend).
-   - **Cloud Build API** (To build the Docker containers).
-   - **Artifact Registry API** (To store the built container images).
+   - **Cloud Run API** (Required to run the backend in the Docker container). **This API generates expenses.**
+   - **Cloud Build API** (To build the Docker containers). **This API generates expenses.**
+   - **Artifact Registry API** (To store the built container images). **This API generates expenses.**
    - **Google Play Android Developer API** (Required for GitHub Actions to upload app bundles to the Play Store).
-   - _Important Billing Note: Enabling the Cloud Build API and Cloud Run Admin API requires an active billing account linked to your project. Google Cloud requires a credit card on file to use these compute resources. However, both services have generous free tiers (e.g., 2 million requests/month for Cloud Run and 120 free build minutes/day for Cloud Build) that are extremely difficult to exceed for a personal app. You will not be charged unless you exceed these limits._
+- _Important Billing Note: Enabling the Cloud Build API and Cloud Run Admin API requires an active billing account linked to your project. Google Cloud requires a credit card on file to use these compute resources. However, both services have generous free tiers (e.g., 2 million requests/month for Cloud Run and 120 free build minutes/day for Cloud Build) that are extremely difficult to exceed for a personal app. You will not be charged unless you exceed these limits._
+- _The Artifact Registry API generates expenses over 0.5GB of used space. Each deploy generates a new version of the container image, so the space usage grows over time._
 
 ### Step 2.2: Register the Android App in Firebase (Client Setup)
 
